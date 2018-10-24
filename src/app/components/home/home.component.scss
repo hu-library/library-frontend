@@ -1,1 +1,11 @@
-@import url(https://getbootstrap.com/docs/4.1/examples/sign-in/signin.css)
+form {
+    height: 100%;
+    padding-top: 10%;
+}
+
+button {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
