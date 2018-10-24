@@ -290,6 +290,16 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@ngrx/effects@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-6.1.0.tgz#3c1e1ab1e5a86c6d9c29d4f3771e42cc9bd8576c"
+  integrity sha512-euR/VHn0cEOkdZ3SqCzUvYHT0P5FcTBm4/xSE8gH85ORP0//owD3L6o8X3etfWLRS+BAELk1JcXkFeAVG9CXiQ==
+
+"@ngrx/store@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-6.1.0.tgz#5b027647a797bf027912568214b10375dd75af38"
+  integrity sha512-H5BGym1WtAX84/R4pTQ2MrrP87qYfXc6CoPghCZCK9LYxCodsI7KeQfpyNCg5qapxdH2EDqlHXTBJfMTLRiRGg==
+
 "@ngtools/webpack@7.0.2":
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/@ngtools/webpack/-/webpack-7.0.2.tgz#db7441757b8c412e1b08ad0b117646e911afd4bb"
@@ -5726,6 +5736,11 @@ requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
+
+reselect@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
+  integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
