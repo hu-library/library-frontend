@@ -1,8 +1,10 @@
 # Logs
 logs
 *.log
+npm-debug.log
 npm-debug.log*
 yarn-debug.log*
+yarn-error.log
 yarn-error.log*
 
 # Runtime data
@@ -15,6 +17,7 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
+/coverage
 coverage
 
 # nyc test coverage
@@ -37,6 +40,7 @@ node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
+/typings
 typings/
 
 # Optional npm cache directory
@@ -59,3 +63,36 @@ typings/
 
 # next.js build output
 .next
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/libpeerconnection.log
+testem.log
+
+# System Files
+.DS_Store
+Thumbs.db
