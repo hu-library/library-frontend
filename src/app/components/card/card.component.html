@@ -1,0 +1,14 @@
+<div class="card">
+    <div class="card-header" id="{{className}}">
+        <button class="btn btn-lg {{buttonColor}}" data-toggle="collapse" attr.data-target="#{{textName}}"
+            aria-expanded="true" [attr.aria-controls]="textName">
+            {{title}}
+        </button>
+    </div>
+
+    <div id="{{textName}}" class="collapse" [attr.aria-labelledby]="className" attr.data-parent="#{{className}}">
+        <div class="card-body">
+            {{title}} {{className}}
+        </div>
+    </div>
+</div>

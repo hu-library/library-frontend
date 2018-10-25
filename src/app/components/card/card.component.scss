@@ -1,0 +1,19 @@
+.card {
+    background-color: inherit;
+}
+
+@media screen and (min-width: 600px) {
+    button {
+        max-width: 50%;
+        display: block;
+        width: 100%;
+        margin-left: 25%;
+    }
+}
+
+@media not screen and (min-width: 600px) {
+    button {
+        width: 85%;
+        margin-left: 7.5%;
+    }
+}

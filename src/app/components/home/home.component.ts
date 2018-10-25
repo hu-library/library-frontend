@@ -8,28 +8,16 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
+  private readonly buttonNames = [
+    'Requested By Patron',
+    'Ongoing',
+    'Pending Investigation',
+    'Inventory',
+    'Follow Up'
+  ];
+
   constructor(private router: Router) { }
 
   ngOnInit() {
-  }
-
-  requestedByPatron() {
-    this.router.navigateByUrl('/list/requested-by-patron');
-  }
-
-  ongoing() {
-    this.router.navigateByUrl('/list/ongoing');
-  }
-
-  pendingInvestigation() {
-    this.router.navigateByUrl('/list/pending-investigation');
-  }
-
-  inventory() {
-    this.router.navigateByUrl('/list/inventory');
-  }
-
-  followUp() {
-    this.router.navigateByUrl('/list/follow-up');
   }
 }

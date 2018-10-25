@@ -1,17 +1,5 @@
-<form class="form-signin" (submit)="">
-    <button class="btn btn-lg btn-primary btn-block" (click)="requestedByPatron()">
-        Requested by Patron
-    </button>
-    <button class="btn btn-lg btn-info btn-block" (click)="ongoing()">
-        Ongoing
-    </button>
-    <button class="btn btn-lg btn-success btn-block" (click)="pendingInvestigation()">
-        Pending Investigation
-    </button>
-    <button class="btn btn-lg btn-warning btn-block" (click)="inventory()">
-        Inventory
-    </button>
-    <button class="btn btn-lg btn-primary btn-block" (click)="followUp()">
-        Follow Up
-    </button>
-</form>
+<div class="accordion homepage">
+    <div *ngFor="let name of buttonNames">
+        <app-card [title]="name"></app-card>
+    </div>
+</div>
