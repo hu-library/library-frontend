@@ -4,16 +4,12 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { ItemComponent } from './components/item/item.component';
-import { ListComponent } from './components/list/list.component';
 import { CardComponent } from './components/card/card.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    ItemComponent,
-    ListComponent,
     CardComponent
   ],
   imports: [

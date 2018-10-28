@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 enum Colors {
-  'primary',
-  'info',
-  'success',
-  'warning'
+  'primary', // dark blue
+  'info', // light blue
+  'success', // green
+  'warning' // yellow
 }
 
 @Component({
@@ -18,9 +18,12 @@ export class CardComponent implements OnInit {
   title: string;
 
   private className: string;
-  private textName: string;
-  private buttonColor: string;
-  private badgeColor: string;
+
+  // used in html
+  textName: string;
+  buttonColor: string;
+  badgeColor: string;
+
   constructor() { }
 
   ngOnInit() {
@@ -30,13 +33,19 @@ export class CardComponent implements OnInit {
     }
     this.textName = this.className + 'Text';
     const random = Math.floor(Math.random() * Math.floor(3));
-    console.log(random);
+
     const color = this.random(random);
     this.buttonColor = 'btn-' + Colors[color];
-    if (color > 0) {
-      this.badgeColor = 'badge-' + Colors[color - 1];
-    } else {
-      this.badgeColor = 'badge-' + Colors[Colors.warning];
+    this.badgeColor = 'badge-';
+
+    if (color === Colors.info) {
+      this.badgeColor += Colors[Colors.primary];
+    } else if (color === Colors.primary) {
+      this.badgeColor += Colors[Colors.info];
+    } else if (color === Colors.success) {
+      this.badgeColor += Colors[Colors.warning];
+    } else if (color === Colors.warning) {
+      this.badgeColor += Colors[Colors.success];
     }
   }
 
