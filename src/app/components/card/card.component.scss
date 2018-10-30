@@ -2,6 +2,10 @@
     background-color: inherit;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 @media screen and (min-width: 600px) {
     button {
         max-width: 50%;

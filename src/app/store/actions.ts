@@ -1,28 +1,29 @@
 import { Action } from '@ngrx/store';
+import { Book } from '../models/book.model';
 
-export const LOGIN = 'LOGIN';
-export const LOGOUT = 'LOGOUT';
-export const ORIGINAL_REQUEST = 'ORIGINAL_REQUEST';
+export const START_BOOK_SEARCH = 'START_BOOK_SEARCH';
+export const ADD_BOOK = 'ADD_BOOK';
+export const ADD_BOOK_BULK = 'ADD_BOOK_BULK';
 
-export class LoginAction implements Action {
-    readonly type = LOGIN;
-
-    constructor() { }
-}
-
-export class LogoutAction implements Action {
-    readonly type = LOGOUT;
-
-    constructor() { }
-}
-
-export class OriginalRequestAction implements Action {
-    readonly type = ORIGINAL_REQUEST;
+export class StartBookSearchAction implements Action {
+    readonly type = START_BOOK_SEARCH;
 
     constructor(public payload: string) { }
 }
 
+export class AddBookAction implements Action {
+    readonly type = ADD_BOOK;
+
+    constructor(public payload: Book) { }
+}
+
+export class AddBookBulkAction implements Action {
+    readonly type = ADD_BOOK_BULK;
+
+    constructor(public payload: Book[]) { }
+}
+
 export type Actions =
-    LoginAction |
-    LogoutAction |
-    OriginalRequestAction;
+    StartBookSearchAction |
+    AddBookAction |
+    AddBookBulkAction;

@@ -1,39 +1,55 @@
 import * as Actions from './actions';
+import { Book } from '../models/book.model';
 
 export interface State {
-    user: any;
-    loggedIn: boolean;
-    originalRequest: string;
-    pageLoaded: boolean;
+    books: Book[];
 }
 
 export const initialState: State = {
-    user: null,
-    loggedIn: null,
-    originalRequest: null,
-    pageLoaded: false,
+    books:
+    [
+        {
+            id: 'BV2061.3 .S2564 2001',
+            searching: 'Began searching'
+        },
+        {
+            id: 'RC440 .F58 2014',
+            searching: 'Began searching'
+        },
+        {
+            id: 'BS2655.S6 M33 1988',
+            searching: 'Found'
+        },
+        {
+            id: 'BestSell  RC394.C7 L37 2015',
+            searching: 'Not searched for yet'
+        }
+    ]
 };
 
 export function reducer(state = initialState, action: Actions.Actions): State {
     switch (action.type) {
-        case Actions.LOGIN: {
+        case Actions.START_BOOK_SEARCH: {
             return {
-                ...state,
-                loggedIn: true,
+                ...state
             };
         }
 
-        case Actions.ORIGINAL_REQUEST: {
+        case Actions.ADD_BOOK: {
             return {
                 ...state,
-                originalRequest: action.payload
+                books: [...state.books, action.payload ]
             };
         }
 
-        case Actions.LOGOUT: {
+        case Actions.ADD_BOOK_BULK: {
+            const books = state.books;
+            for (const book of action.payload) {
+                books.push(book);
+            }
             return {
                 ...state,
-                loggedIn: false
+                books
             };
         }
 
@@ -41,7 +57,4 @@ export function reducer(state = initialState, action: Actions.Actions): State {
     }
 }
 
-export const getIsLoggedIn = (state: State) => state.loggedIn;
-export const getUserInfo = (state: State) => state.user;
-export const getOriginalRequest = (state: State) => state.originalRequest;
-export const getPageLoaded = (state: State) => state.pageLoaded;
+export const getAllBooks = (state: State) => state.books;

@@ -1,4 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as fromRoot from '../../store';
+import { Book } from '../../models/book.model';
+import { ButtonNames } from 'src/app/models/buttonName.type';
 
 enum Colors {
   'primary', // dark blue
@@ -15,29 +20,55 @@ enum Colors {
 export class CardComponent implements OnInit {
 
   @Input()
-  title: string;
+  title: ButtonNames;
 
   private className: string;
 
-  // used in html
-  textName: string;
-  buttonColor: string;
-  badgeColor: string;
+  private textName: string;
+  private buttonColor: string;
+  private badgeColor: string;
 
-  constructor() { }
+  private books$: Observable<Book[]>;
+  private books: Book[] = [];
+
+  constructor(private store: Store<fromRoot.State>) {
+    this.books$ = store.select(fromRoot.getAllBooks);
+  }
 
   ngOnInit() {
+    this.books$.subscribe(books => {
+      for (const book of books) {
+        if (this.checkStatus(book)) {
+          this.books.push(book);
+        }
+      }
+    });
+    this.setUpCard();
+  }
+
+  private checkStatus(book: Book): boolean {
+    if (book.searching === 'Began searching' && this.title === 'Ongoing') {
+      return true;
+    } else if (book.searching === 'Found' && this.title === 'Follow Up') {
+      return true;
+    } else if (book.searching === 'Began searching' && this.title === 'Pending Investigation') {
+      return true;
+    } else if (book.searching === 'Not searched for yet' && this.title === 'Requested By Patron') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private setUpCard() {
     this.className = this.title;
     while (this.className.includes(' ')) {
       this.className = this.className.replace(' ', '');
     }
     this.textName = this.className + 'Text';
-    const random = Math.floor(Math.random() * Math.floor(3));
-
-    const color = this.random(random);
+    const color = this.randomColor(Math.floor(Math.random() * Math.floor(3)));
     this.buttonColor = 'btn-' + Colors[color];
     this.badgeColor = 'badge-';
-
     if (color === Colors.info) {
       this.badgeColor += Colors[Colors.primary];
     } else if (color === Colors.primary) {
@@ -49,7 +80,7 @@ export class CardComponent implements OnInit {
     }
   }
 
-  random(number: number): Colors {
+  randomColor(number: number): Colors {
     if (number === 0) {
       return Colors.primary;
     } else if (number === 1) {

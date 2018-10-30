@@ -12,7 +12,4 @@ export const reducers: ActionReducerMap<State> = {
 
 export const getStoreState = (state: State) => state.store;
 
-export const IsLoggedIn = createSelector(getStoreState, Store.getIsLoggedIn);
-export const getUserInfo = createSelector(getStoreState, Store.getUserInfo);
-export const getOriginalRequest = createSelector(getStoreState, Store.getOriginalRequest);
-export const getPageLoaded = createSelector(getStoreState, Store.getPageLoaded);
+export const getAllBooks = createSelector(getStoreState, Store.getAllBooks);
