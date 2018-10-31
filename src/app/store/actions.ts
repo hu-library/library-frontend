@@ -4,6 +4,7 @@ import { Book } from '../models/book.model';
 export const START_BOOK_SEARCH = 'START_BOOK_SEARCH';
 export const ADD_BOOK = 'ADD_BOOK';
 export const ADD_BOOK_BULK = 'ADD_BOOK_BULK';
+export const SELECT_BOOK = 'SELECT_BOOK';
 
 export class StartBookSearchAction implements Action {
     readonly type = START_BOOK_SEARCH;
@@ -23,7 +24,14 @@ export class AddBookBulkAction implements Action {
     constructor(public payload: Book[]) { }
 }
 
+export class SelectBookAction implements Action {
+    readonly type = SELECT_BOOK;
+
+    constructor(public payload: Book) { }
+}
+
 export type Actions =
     StartBookSearchAction |
     AddBookAction |
-    AddBookBulkAction;
+    AddBookBulkAction |
+    SelectBookAction;

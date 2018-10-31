@@ -13,3 +13,4 @@ export const reducers: ActionReducerMap<State> = {
 export const getStoreState = (state: State) => state.store;
 
 export const getAllBooks = createSelector(getStoreState, Store.getAllBooks);
+export const getSelectedBook = createSelector(getStoreState, Store.getSelectedBook);

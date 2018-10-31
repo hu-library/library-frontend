@@ -9,7 +9,7 @@
     <div id="{{textName}}" class="collapse" [attr.aria-labelledby]="className" attr.data-parent="#{{className}}">
         <div class="card-body">
             <div *ngFor="let book of books">
-                <span class="cursor-pointer" routerLink="{{book.id}}">
+                <span class="cursor-pointer" (click)="redirect(book)">
                     {{book.id}} {{book.searching}}
                 </span>
             </div>

@@ -3,7 +3,9 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../store';
 import { Book } from '../../models/book.model';
-import { ButtonNames } from 'src/app/models/buttonName.type';
+import { ButtonNames } from '../../models/buttonName.type';
+import { Router } from '@angular/router';
+import * as Actions from '../../store/actions';
 
 enum Colors {
   'primary', // dark blue
@@ -31,7 +33,7 @@ export class CardComponent implements OnInit {
   private books$: Observable<Book[]>;
   private books: Book[] = [];
 
-  constructor(private store: Store<fromRoot.State>) {
+  constructor(private store: Store<fromRoot.State>, private router: Router) {
     this.books$ = store.select(fromRoot.getAllBooks);
   }
 
@@ -60,6 +62,17 @@ export class CardComponent implements OnInit {
     }
   }
 
+  redirect(book: Book) {
+    console.log(book);
+    // this.store.dispatch(new Actions.SelectBookAction(book));
+    let url = book.id;
+    while (url.includes(' ')) {
+      url = url.replace(' ', '-');
+    }
+    this.router.navigateByUrl('/' + url);
+  }
+
+  // #region setUp
   private setUpCard() {
     this.className = this.title;
     while (this.className.includes(' ')) {
@@ -91,4 +104,5 @@ export class CardComponent implements OnInit {
       return Colors.warning;
     }
   }
+  // #endregion
 }
