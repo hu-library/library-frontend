@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Status } from '../../models/searchStatus.type';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as fromRoot from '../../store';
+import * as Actions from '../../store/actions';
+import { Book } from '../../models/book.model';
 
 @Component({
   selector: 'app-not-searched-before',
@@ -8,16 +12,18 @@ import { Status } from '../../models/searchStatus.type';
 })
 export class NotSearchedBeforeComponent implements OnInit {
 
-  private status: Status;
-  private searchCount: number;
-  private priority: 0|1|2|3|4|5|6|7|8|9|10;
+  private book$: Observable<Book>;
+  private book: Book;
 
-  constructor() { }
-
-  ngOnInit() {
-    this.status = 'Found';
-    this.searchCount = 3;
-    this.priority = 4;
+  constructor(private store: Store<fromRoot.State>) {
+    this.book$ = store.select(fromRoot.getSelectedBook);
   }
 
+  ngOnInit() {
+    this.book$.subscribe(book => this.book = book);
+  }
+
+  beginSearching() {
+    this.store.dispatch(new Actions.StartBookSearchAction(this.book.id));
+  }
 }

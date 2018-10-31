@@ -2,10 +2,10 @@
 
 </div>
 <div class="md-col-4">
-  <div class="card-title text-center">Status: {{status}}</div>
-  <div class="card-title text-center">Search Count: {{searchCount}}</div>
-  <div class="card-title text-center">Priority: {{priority}}</div>
-  <button class="btn btn-large">Begin Search</button>
+  <div class="card-title text-center">Status: {{book.searching}}</div>
+  <div class="card-title text-center">Search Count: {{book.searchCount}}</div>
+  <div class="card-title text-center">Priority: {{book.priority}}</div>
+  <button class="btn btn-large" (click)="beginSearching()">Begin Search</button>
 </div>
 <div class="md-col-4">
 

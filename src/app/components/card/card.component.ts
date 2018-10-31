@@ -64,7 +64,7 @@ export class CardComponent implements OnInit {
 
   redirect(book: Book) {
     console.log(book);
-    // this.store.dispatch(new Actions.SelectBookAction(book));
+    this.store.dispatch(new Actions.SelectBookAction(book));
     let url = book.id;
     while (url.includes(' ')) {
       url = url.replace(' ', '-');

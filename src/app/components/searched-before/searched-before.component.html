@@ -1,3 +1,12 @@
-<p>
-  searched-before works!
-</p>
+<div class="md-col-4">
+
+</div>
+<div class="md-col-4">
+  <div class="card-title text-center">Status: {{book.searching}}</div>
+  <div class="card-title text-center">Search Count: {{book.searchCount}}</div>
+  <div class="card-title text-center">Priority: {{book.priority}}</div>
+  <button class="btn btn-large" (click)="stopSearching()">Stop Search</button>
+</div>
+<div class="md-col-4">
+
+</div>

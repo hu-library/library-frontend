@@ -12,12 +12,6 @@ import { Book } from '../../models/book.model';
 })
 export class SearchViewComponent implements OnInit {
 
-  private card: string;
-  public bookTitle: string;
-  public author: string;
-  public callNumber: string;
-  private searchedPreviously: boolean;
-
   private selectedBook$: Observable<Book>;
   private book: Book;
 
@@ -26,20 +20,7 @@ export class SearchViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedBook$.subscribe(book => {
-      if (book === null) {
-        this.book = book;
-      } else {
-        this.book = JSON.parse(localStorage.getItem('selectedBook'));
-      }
-    });
-    this.route.params.forEach((param: Params) => {
-      this.card = param['card'];
-      this.bookTitle = 'Book Title';
-      this.author = 'Author';
-      this.callNumber = 'Call Number';
-      this.searchedPreviously = this.card === 'card' ? true : false;
-    });
+    this.selectedBook$.subscribe(book => this.book = book);
   }
 
 }
