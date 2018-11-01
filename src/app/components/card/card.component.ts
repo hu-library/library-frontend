@@ -49,13 +49,13 @@ export class CardComponent implements OnInit {
   }
 
   private checkStatus(book: Book): boolean {
-    if (book.searching === 'Began searching' && this.title === 'Ongoing') {
+    if (book.status === 'Began searching' && this.title === 'Ongoing') {
       return true;
-    } else if (book.searching === 'Found' && this.title === 'Follow Up') {
+    } else if (book.status === 'Found' && this.title === 'Follow Up') {
       return true;
-    } else if (book.searching === 'Began searching' && this.title === 'Pending Investigation') {
+    } else if (book.status === 'Began searching' && this.title === 'Pending Investigation') {
       return true;
-    } else if (book.searching === 'Not searched for yet' && this.title === 'Requested By Patron') {
+    } else if (book.status === 'Not searched for yet' && this.title === 'Requested By Patron') {
       return true;
     } else {
       return false;

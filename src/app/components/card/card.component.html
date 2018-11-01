@@ -10,7 +10,7 @@
         <div class="card-body">
             <div *ngFor="let book of books">
                 <span class="cursor-pointer" (click)="redirect(book)">
-                    {{book.id}} {{book.searching}}
+                    {{book.id}} {{book.status}}
                 </span>
             </div>
         </div>

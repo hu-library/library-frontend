@@ -2,19 +2,19 @@
 
 </div>
 <div class="md-col-4">
-  <div class="card-title text-center">Status: {{book.searching}}</div>
+  <div class="card-title text-center">Status: {{book.status}}</div>
   <div class="card-title text-center">Search Count: {{book.searchCount}}</div>
   <div class="card-title text-center">Priority: {{book.priority}}</div>
   <div class="card-title text-center">
-    <input type="checkbox"> Something 
-    <input type="checkbox"> Something 
-    <input type="checkbox"> Something 
-    <input type="checkbox"> Something 
-    <input type="checkbox"> Something 
+    <label><input type="checkbox" [checked]="checkboxes.get(1)" (change)="checkboxChanged(1)"> Something&nbsp;</label>
+    <label><input type="checkbox" [checked]="checkboxes.get(2)" (change)="checkboxChanged(2)"> Something&nbsp;</label>
+    <label><input type="checkbox" [checked]="checkboxes.get(3)" (change)="checkboxChanged(3)"> Something&nbsp;</label>
+    <label><input type="checkbox" [checked]="checkboxes.get(4)" (change)="checkboxChanged(4)"> Something&nbsp;</label>
+    <label><input type="checkbox" [checked]="checkboxes.get(5)" (change)="checkboxChanged(5)"> Something&nbsp;</label>
   </div>
   <div class="card-title text-center"><input type="text"></div>
   <button class="btn btn-large mb-1" (click)="found()">Found</button>
-  <button class="btn btn-large" (click)="stopSearching()">Stop Search</button>
+  <button *ngIf="allCheckBoxes" class="btn btn-large" (click)="stopSearching()">Stop Search</button>
 </div>
 <div class="md-col-4">
 

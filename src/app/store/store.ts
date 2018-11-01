@@ -21,9 +21,27 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                     book.searchedPreviously = true;
                 }
             }
-            return {
-                ...state
-            };
+            return state;
+        }
+
+        case Actions.STOP_BOOK_SEARCH: {
+            for (const book of state.books) {
+                if (book.id === action.payload) {
+                    book.status = 'Began searching';
+                }
+            }
+
+            return state;
+        }
+
+        case Actions.FOUND_BOOK: {
+            for (const book of state.books) {
+                if (book.id === action.payload) {
+                    book.status = 'Found';
+                }
+            }
+
+            return state;
         }
 
         case Actions.ADD_BOOK: {

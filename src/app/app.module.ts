@@ -12,6 +12,7 @@ import { CardComponent } from './components/card/card.component';
 import { SearchViewComponent } from './components/search-view/search-view.component';
 import { SearchedBeforeComponent } from './components/searched-before/searched-before.component';
 import { NotSearchedBeforeComponent } from './components/not-searched-before/not-searched-before.component';
+import { ResolutionComponent } from './components/resolution/resolution.component';
 
 // ngrx/store
 import { StoreModule } from '@ngrx/store';
@@ -25,7 +26,8 @@ import { reducers } from './store';
     CardComponent,
     SearchViewComponent,
     SearchedBeforeComponent,
-    NotSearchedBeforeComponent
+    NotSearchedBeforeComponent,
+    ResolutionComponent
   ],
   imports: [
     BrowserModule,

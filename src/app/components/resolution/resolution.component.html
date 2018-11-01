@@ -5,11 +5,5 @@
       <h5 class="card-title">{{book.author}}</h5>
       <h5 class="card-title">{{book.id}}</h5>
     </span>
-    <div *ngIf="book.searchedPreviously">
-      <app-searched-before></app-searched-before>
-    </div>
-    <div *ngIf="!book.searchedPreviously">
-      <app-not-searched-before></app-not-searched-before>
-    </div>
   </div>
 </div>
