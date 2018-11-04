@@ -39,12 +39,12 @@ export class SearchedBeforeComponent implements OnInit {
   }
   stopSearching() {
     this.store.dispatch(new Actions.StopBookSearchAction(this.book.id));
-    this.router.navigateByUrl('/' + this.book.title + '/final-action');
+    this.router.navigateByUrl('/' + this.book.title + '/resolve');
   }
 
   found() {
     this.store.dispatch(new Actions.FoundBookAction(this.book.id));
-    this.router.navigateByUrl('/' + this.book.title + '/final-action');
+    this.router.navigateByUrl('/' + this.book.title + '/resolve');
   }
 
   checkboxChanged(numberCheckbox: number) {

@@ -5,6 +5,13 @@
 .cursor-pointer {
     cursor: pointer;
 }
+.cursor-pointer:hover {
+    background-color: #555;
+}
+.table-dark {
+    background-color: #777;
+    border-radius: 5px;
+}
 
 @media screen and (min-width: 600px) {
     button {

@@ -20,7 +20,9 @@ export class NotSearchedBeforeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.book$.subscribe(book => this.book = book);
+    this.book$.subscribe(book => {
+      this.book = book;
+    });
   }
 
   beginSearching() {

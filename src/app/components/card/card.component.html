@@ -8,11 +8,26 @@
 
     <div id="{{textName}}" class="collapse" [attr.aria-labelledby]="className" attr.data-parent="#{{className}}">
         <div class="card-body">
-            <div *ngFor="let book of books">
-                <span class="cursor-pointer" (click)="redirect(book)">
-                    {{book.id}} {{book.status}}
-                </span>
-            </div>
+            <span *ngIf="books.length > 0">
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let book of books" class="cursor-pointer" (click)="redirect(book)">
+                            <th scope="row">{{book.id}}</th>
+                            <td>{{book.author}}</td>
+                            <td>{{book.title}}</td>
+                            <td>{{book.status}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </span>
         </div>
     </div>
 </div>

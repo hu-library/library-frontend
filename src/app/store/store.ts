@@ -7,9 +7,18 @@ export interface State {
     selectedBook: Book;
 }
 
+function findBookById(id: string, books: Book[]): Book {
+    for (const book of books) {
+        if (book.id === id) {
+            return book;
+        }
+    }
+    return null;
+}
+
 export const initialState: State = {
     books: startBooks,
-    selectedBook: JSON.parse(localStorage.getItem('selectedBook'))
+    selectedBook: findBookById(JSON.parse(localStorage.getItem('selectedBook')).id, startBooks)
 };
 
 export function reducer(state = initialState, action: Actions.Actions): State {
@@ -19,6 +28,9 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                 if (book.id === action.payload) {
                     book.searchCount++;
                     book.searchedPreviously = true;
+                    if (state.selectedBook.id === action.payload) {
+                        state.selectedBook = book;
+                    }
                 }
             }
             return state;
@@ -28,6 +40,9 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             for (const book of state.books) {
                 if (book.id === action.payload) {
                     book.status = 'Began searching';
+                    if (state.selectedBook.id === action.payload) {
+                        state.selectedBook = book;
+                    }
                 }
             }
 
@@ -38,6 +53,9 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             for (const book of state.books) {
                 if (book.id === action.payload) {
                     book.status = 'Found';
+                    if (state.selectedBook.id === action.payload) {
+                        state.selectedBook = book;
+                    }
                 }
             }
 

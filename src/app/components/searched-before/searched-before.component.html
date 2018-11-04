@@ -12,7 +12,7 @@
     <label><input type="checkbox" [checked]="checkboxes.get(4)" (change)="checkboxChanged(4)"> Something&nbsp;</label>
     <label><input type="checkbox" [checked]="checkboxes.get(5)" (change)="checkboxChanged(5)"> Something&nbsp;</label>
   </div>
-  <div class="card-title text-center"><input type="text"></div>
+  <div class="card-title text-center"><input type="text" class="form-control" placeholder="Location found..."></div>
   <button class="btn btn-large mb-1" (click)="found()">Found</button>
   <button *ngIf="allCheckBoxes" class="btn btn-large" (click)="stopSearching()">Stop Search</button>
 </div>
