@@ -49,7 +49,6 @@ export class CardComponent implements OnInit {
   }
 
   private checkStatus(book: Book): boolean {
-    console.log(book.searchStatus, this.title);
     if (book.searchStatus === 'Began searching' && this.title === 'Ongoing') {
       return true;
     } else if (book.searchStatus === 'Found' && this.title === 'Follow Up') {
@@ -64,7 +63,6 @@ export class CardComponent implements OnInit {
   }
 
   redirect(book: Book) {
-    console.log(book);
     this.store.dispatch(new Actions.SelectBookAction(book));
     this.router.navigateByUrl('/' + book.title);
   }

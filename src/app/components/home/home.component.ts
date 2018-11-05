@@ -24,10 +24,7 @@ export class HomeComponent implements OnInit {
     private store: Store<fromRoot.State>) {}
 
   ngOnInit() {
-    console.log('hitting backend');
     this.httpService.getAllData().subscribe(res => {
-      console.log('response from backend', res);
-      console.log(res[0]);
       this.store.dispatch(new Actions.AddBookBulkAction(res));
     });
   }
