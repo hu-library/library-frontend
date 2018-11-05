@@ -12,7 +12,7 @@ import * as Actions from '../../store/actions';
 })
 export class HomeComponent implements OnInit {
 
-  private readonly buttonNames = [
+  private buttonNames = [
     'Requested By Patron',
     'Ongoing',
     'Pending Investigation',

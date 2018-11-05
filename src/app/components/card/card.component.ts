@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import * as fromRoot from '../../store';
 import { Book } from '../../models/book.model';
 import { ButtonNames } from '../../models/buttonName.type';
@@ -22,7 +22,7 @@ enum Colors {
 export class CardComponent implements OnInit {
 
   @Input()
-  title: ButtonNames;
+  title: string;
 
   private className: string;
 
@@ -33,33 +33,30 @@ export class CardComponent implements OnInit {
   private books$: Observable<Book[]>;
   private books: Book[] = [];
 
-  constructor(private store: Store<fromRoot.State>, private router: Router) {
-    this.books$ = store.select(fromRoot.getAllBooks);
-  }
+  constructor(private store: Store<fromRoot.State>, private router: Router) {}
 
   ngOnInit() {
     this.setUpCard();
-    this.books$.subscribe(books => {
-      for (const book of books) {
-        if (this.checkStatus(book)) {
-          this.books.push(book);
-        }
+    if (this.title) {
+      switch (this.title) {
+        case 'Follow Up':
+          this.books$ = this.store.select(fromRoot.getFollowUpBooks);
+          break;
+        case 'Inventory':
+          this.books$ = this.store.select(fromRoot.getInventoryBooks);
+          break;
+        case 'Ongoing':
+          this.books$ = this.store.select(fromRoot.getOngoingBooks);
+          break;
+        case 'Pending Investigation':
+          this.books$ = this.store.select(fromRoot.getPendingInvestigationBooks);
+          break;
+        case 'Requested By Patron':
+          this.books$ = this.store.select(fromRoot.getRequestedByPatronBooks);
+          break;
       }
-    });
-  }
-
-  private checkStatus(book: Book): boolean {
-    if (book.searchStatus === 'Began searching' && this.title === 'Ongoing') {
-      return true;
-    } else if (book.searchStatus === 'Found' && this.title === 'Follow Up') {
-      return true;
-    } else if (book.searchStatus === 'Began searching' && this.title === 'Pending Investigation') {
-      return true;
-    } else if (book.searchStatus === 'Not searched for yet' && this.title === 'Requested By Patron') {
-      return true;
-    } else {
-      return false;
     }
+    this.books$.subscribe(books => this.books = books);
   }
 
   redirect(book: Book) {
