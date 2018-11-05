@@ -2,9 +2,9 @@
 
 </div>
 <div class="md-col-4">
-  <div class="card-title text-center">Status: {{book.status}}</div>
+  <div class="card-title text-center">Status: {{book.searchStatus}}</div>
   <div class="card-title text-center">Search Count: {{book.searchCount}}</div>
-  <div class="card-title text-center">Priority: {{book.priority}}</div>
+  <div class="card-title text-center">Urgency: {{book.urgency}}</div>
   <div class="card-title text-center">
     <label><input type="checkbox" [checked]="checkboxes.get(1)" (change)="checkboxChanged(1)"> Something&nbsp;</label>
     <label><input type="checkbox" [checked]="checkboxes.get(2)" (change)="checkboxChanged(2)"> Something&nbsp;</label>

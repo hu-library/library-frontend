@@ -26,6 +26,6 @@ export class NotSearchedBeforeComponent implements OnInit {
   }
 
   beginSearching() {
-    this.store.dispatch(new Actions.StartBookSearchAction(this.book.id));
+    this.store.dispatch(new Actions.StartBookSearchAction(this.book.callNumber));
   }
 }

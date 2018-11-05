@@ -7,9 +7,9 @@ export interface State {
     selectedBook: Book;
 }
 
-function findBookById(id: string, books: Book[]): Book {
+function findBookById(callNumber: string, books: Book[]): Book {
     for (const book of books) {
-        if (book.id === id) {
+        if (book.callNumber === callNumber) {
             return book;
         }
     }
@@ -17,18 +17,18 @@ function findBookById(id: string, books: Book[]): Book {
 }
 
 export const initialState: State = {
-    books: startBooks,
-    selectedBook: findBookById(JSON.parse(localStorage.getItem('selectedBook')).id, startBooks)
+    books: [],
+    selectedBook: findBookById(JSON.parse(localStorage.getItem('selectedBook')).callNumber, startBooks)
 };
 
 export function reducer(state = initialState, action: Actions.Actions): State {
     switch (action.type) {
         case Actions.START_BOOK_SEARCH: {
             for (const book of state.books) {
-                if (book.id === action.payload) {
+                if (book.callNumber === action.payload) {
                     book.searchCount++;
                     book.searchedPreviously = true;
-                    if (state.selectedBook.id === action.payload) {
+                    if (state.selectedBook.callNumber === action.payload) {
                         state.selectedBook = book;
                     }
                 }
@@ -38,9 +38,9 @@ export function reducer(state = initialState, action: Actions.Actions): State {
 
         case Actions.STOP_BOOK_SEARCH: {
             for (const book of state.books) {
-                if (book.id === action.payload) {
-                    book.status = 'Began searching';
-                    if (state.selectedBook.id === action.payload) {
+                if (book.callNumber === action.payload) {
+                    book.searchStatus = 'Began searching';
+                    if (state.selectedBook.callNumber === action.payload) {
                         state.selectedBook = book;
                     }
                 }
@@ -51,9 +51,9 @@ export function reducer(state = initialState, action: Actions.Actions): State {
 
         case Actions.FOUND_BOOK: {
             for (const book of state.books) {
-                if (book.id === action.payload) {
-                    book.status = 'Found';
-                    if (state.selectedBook.id === action.payload) {
+                if (book.callNumber === action.payload) {
+                    book.searchStatus = 'Found';
+                    if (state.selectedBook.callNumber === action.payload) {
                         state.selectedBook = book;
                     }
                 }

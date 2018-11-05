@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpService } from '../../services/http.service';
+import { Store } from '@ngrx/store';
+import * as fromRoot from '../../store';
+import * as Actions from '../../store/actions';
 
 @Component({
   selector: 'app-home',
@@ -16,8 +20,15 @@ export class HomeComponent implements OnInit {
     'Follow Up'
   ];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private httpService: HttpService,
+    private store: Store<fromRoot.State>) {}
 
   ngOnInit() {
+    console.log('hitting backend');
+    this.httpService.getAllData().subscribe(res => {
+      console.log('response from backend', res);
+      console.log(res[0]);
+      this.store.dispatch(new Actions.AddBookBulkAction(res));
+    });
   }
 }

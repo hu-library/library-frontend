@@ -38,12 +38,12 @@ export class SearchedBeforeComponent implements OnInit {
     return result;
   }
   stopSearching() {
-    this.store.dispatch(new Actions.StopBookSearchAction(this.book.id));
+    this.store.dispatch(new Actions.StopBookSearchAction(this.book.callNumber));
     this.router.navigateByUrl('/' + this.book.title + '/resolve');
   }
 
   found() {
-    this.store.dispatch(new Actions.FoundBookAction(this.book.id));
+    this.store.dispatch(new Actions.FoundBookAction(this.book.callNumber));
     this.router.navigateByUrl('/' + this.book.title + '/resolve');
   }
 

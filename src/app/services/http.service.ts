@@ -10,6 +10,6 @@ export class HttpService {
   constructor(private http: HttpClient) { }
 
   getAllData() {
-    return this.http.get<Book[]>('localhost:8000/');
+    return this.http.get<Book[]>('http://localhost:8000/');
   }
 }

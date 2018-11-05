@@ -1,12 +1,25 @@
 import { Status } from './searchStatus.type';
+import { Patron } from './patron.model';
 
 export interface Book {
-    id: string;
     author: string;
-    priority: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-    searchCount: number;
-    status: Status;
-    searchedPreviously: boolean;
+    callNumber: string;
+    dateNoLongerNeeded: Date;
+    electronicCopy: 'Yes' | 'No' | 'Not applicable';
+    listedOnReserve: boolean;
+    markedLostBelievedReturned: boolean;
+    patron: Patron;
+    placeHold: boolean;
+    recommendReplacement: boolean;
+    recommendedByProfessor: boolean;
+    requestedButNotRequired: boolean;
+    requiredForClass: boolean;
+    requiredForSeminar: boolean;
+    timeStamp: Date;
     title: string;
+    urgency: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+    searchCount: number;
+    searchStatus: Status;
+    searchedPreviously: boolean;
     urlID?: string;
 }

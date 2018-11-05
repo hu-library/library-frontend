@@ -38,6 +38,7 @@ export class CardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.setUpCard();
     this.books$.subscribe(books => {
       for (const book of books) {
         if (this.checkStatus(book)) {
@@ -45,17 +46,17 @@ export class CardComponent implements OnInit {
         }
       }
     });
-    this.setUpCard();
   }
 
   private checkStatus(book: Book): boolean {
-    if (book.status === 'Began searching' && this.title === 'Ongoing') {
+    console.log(book.searchStatus, this.title);
+    if (book.searchStatus === 'Began searching' && this.title === 'Ongoing') {
       return true;
-    } else if (book.status === 'Found' && this.title === 'Follow Up') {
+    } else if (book.searchStatus === 'Found' && this.title === 'Follow Up') {
       return true;
-    } else if (book.status === 'Began searching' && this.title === 'Pending Investigation') {
+    } else if (book.searchStatus === 'Began searching' && this.title === 'Pending Investigation') {
       return true;
-    } else if (book.status === 'Not searched for yet' && this.title === 'Requested By Patron') {
+    } else if (book.searchStatus === 'Not searched for yet' && this.title === 'Requested By Patron') {
       return true;
     } else {
       return false;
