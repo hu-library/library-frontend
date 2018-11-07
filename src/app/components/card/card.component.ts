@@ -61,7 +61,7 @@ export class CardComponent implements OnInit {
 
   redirect(book: Book) {
     this.store.dispatch(new Actions.SelectBookAction(book));
-    this.router.navigateByUrl('/' + book.title);
+    this.router.navigateByUrl('/' + book.urlID);
   }
 
   // #region setUp

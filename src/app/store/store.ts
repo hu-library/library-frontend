@@ -1,6 +1,5 @@
 import * as Actions from './actions';
 import { Book } from '../models/book.model';
-import { startBooks } from '../models/initialStateBooks.temp';
 
 export interface State {
     books: Book[];
@@ -12,18 +11,9 @@ export interface State {
     followUpBooks: Book[];
 }
 
-function findBookById(callNumber: string, books: Book[]): Book {
-    for (const book of books) {
-        if (book.callNumber === callNumber) {
-            return book;
-        }
-    }
-    return null;
-}
-
 export const initialState: State = {
     books: [],
-    selectedBook: findBookById(JSON.parse(localStorage.getItem('selectedBook')).callNumber, startBooks),
+    selectedBook: null,
     requestedByPatronBooks: [],
     ongoingBooks: [],
     pendingInvestigationBooks: [],
@@ -83,6 +73,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             const books = state.books;
             for (const book of action.payload) {
                 books.push(book);
+                book.urlID = book.title.replace(/(\s|:\s)+/g, '-').toLowerCase();
                 switch (book.searchStatus) {
                     case 'Not searched for yet':
                         state.requestedByPatronBooks.push(book);

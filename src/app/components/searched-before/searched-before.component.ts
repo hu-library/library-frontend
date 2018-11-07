@@ -37,14 +37,15 @@ export class SearchedBeforeComponent implements OnInit {
     });
     return result;
   }
+
   stopSearching() {
     this.store.dispatch(new Actions.StopBookSearchAction(this.book.callNumber));
-    this.router.navigateByUrl('/' + this.book.title + '/resolve');
+    this.router.navigateByUrl('/' + this.book.urlID + '/resolve');
   }
 
   found() {
     this.store.dispatch(new Actions.FoundBookAction(this.book.callNumber));
-    this.router.navigateByUrl('/' + this.book.title + '/resolve');
+    this.router.navigateByUrl('/' + this.book.urlID + '/resolve');
   }
 
   checkboxChanged(numberCheckbox: number) {

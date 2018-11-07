@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpService } from '../../services/http.service';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { HttpService } from '../../services/http.service';
 import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
+import { Book } from '../../models/book.model';
 
 @Component({
   selector: 'app-home',
@@ -19,13 +20,19 @@ export class HomeComponent implements OnInit {
     'Inventory',
     'Follow Up'
   ];
+  private allBooks$: Observable<Book[]>;
 
-  constructor(private router: Router, private httpService: HttpService,
-    private store: Store<fromRoot.State>) {}
+  constructor(private httpService: HttpService, private store: Store<fromRoot.State>) {
+    this.allBooks$ = store.select(fromRoot.getAllBooks);
+  }
 
   ngOnInit() {
-    this.httpService.getAllData().subscribe(res => {
-      this.store.dispatch(new Actions.AddBookBulkAction(res));
+    this.allBooks$.subscribe(books => {
+      if (books.length === 0) {
+        this.httpService.getAllData().subscribe(res => {
+          this.store.dispatch(new Actions.AddBookBulkAction(res));
+        });
+      }
     });
   }
 }
