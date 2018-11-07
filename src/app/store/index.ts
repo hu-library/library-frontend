@@ -16,6 +16,5 @@ export const getAllBooks = createSelector(getStoreState, Store.getAllBooks);
 export const getSelectedBook = createSelector(getStoreState, Store.getSelectedBook);
 export const getRequestedByPatronBooks = createSelector(getStoreState, Store.getRequestedByPatronBooks);
 export const getOngoingBooks = createSelector(getStoreState, Store.getOngoingBooks);
-export const getPendingInvestigationBooks = createSelector(getStoreState, Store.getPendingInvestigationBooks);
 export const getInventoryBooks = createSelector(getStoreState, Store.getInventoryBooks);
 export const getFollowUpBooks = createSelector(getStoreState, Store.getFollowUpBooks);

@@ -6,7 +6,6 @@ export interface State {
     selectedBook: Book;
     requestedByPatronBooks: Book[];
     ongoingBooks: Book[];
-    pendingInvestigationBooks: Book[];
     inventoryBooks: Book[];
     followUpBooks: Book[];
 }
@@ -16,7 +15,6 @@ export const initialState: State = {
     selectedBook: null,
     requestedByPatronBooks: [],
     ongoingBooks: [],
-    pendingInvestigationBooks: [],
     inventoryBooks: [],
     followUpBooks: []
 };
@@ -80,7 +78,6 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                         break;
                     case 'Began searching':
                         state.ongoingBooks.push(book);
-                        state.pendingInvestigationBooks.push(book);
                         break;
                     case 'Found':
                         state.followUpBooks.push(book);
@@ -109,6 +106,5 @@ export const getAllBooks = (state: State) => state.books;
 export const getSelectedBook = (state: State) => state.selectedBook;
 export const getRequestedByPatronBooks = (state: State) => state.requestedByPatronBooks;
 export const getOngoingBooks = (state: State) => state.ongoingBooks;
-export const getPendingInvestigationBooks = (state: State) => state.pendingInvestigationBooks;
 export const getInventoryBooks = (state: State) => state.inventoryBooks;
 export const getFollowUpBooks = (state: State) => state.followUpBooks;

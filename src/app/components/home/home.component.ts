@@ -16,7 +16,6 @@ export class HomeComponent implements OnInit {
   private buttonNames = [
     'Requested By Patron',
     'Ongoing',
-    'Pending Investigation',
     'Inventory',
     'Follow Up'
   ];
