@@ -1,6 +1,12 @@
 .homepage {
-    height: 100%;
-    padding-top: 10%;
+  height: 100%;
+  @media screen and (min-width: 600px) {
+    padding-top: 7.5%;
+  }
+  
+  @media not screen and (min-width: 600px) {
+    padding-top: 20%;
+  }
 }
 
 button {

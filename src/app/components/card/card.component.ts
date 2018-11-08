@@ -39,17 +39,25 @@ export class CardComponent implements OnInit {
     this.setUpCard();
     if (this.title) {
       switch (this.title) {
-        case 'Follow Up':
-          this.books$ = this.store.select(fromRoot.getFollowUpBooks);
-          break;
-        case 'Inventory':
-          this.books$ = this.store.select(fromRoot.getInventoryBooks);
+        case 'Requested By Patron':
+          this.books$ = this.store.select(fromRoot.getRequestedByPatronBooks);
+          this.buttonColor = 'btn-info';
+          this.badgeColor = 'badge-primary';
           break;
         case 'Ongoing':
           this.books$ = this.store.select(fromRoot.getOngoingBooks);
+          this.buttonColor = 'btn-primary';
+          this.badgeColor = 'badge-success';
           break;
-        case 'Requested By Patron':
-          this.books$ = this.store.select(fromRoot.getRequestedByPatronBooks);
+        case 'Inventory':
+          this.books$ = this.store.select(fromRoot.getInventoryBooks);
+          this.buttonColor = 'btn-info';
+          this.badgeColor = 'badge-primary';
+          break;
+        case 'Follow Up':
+          this.books$ = this.store.select(fromRoot.getFollowUpBooks);
+          this.buttonColor = 'btn-primary';
+          this.badgeColor = 'badge-success';
           break;
       }
     }
@@ -61,37 +69,9 @@ export class CardComponent implements OnInit {
     this.router.navigateByUrl('/' + book.urlID);
   }
 
-  // #region setUp
   private setUpCard() {
-    this.className = this.title;
-    while (this.className.includes(' ')) {
-      this.className = this.className.replace(' ', '');
-    }
+    const title = this.title;
+    this.className = title.replace(/\s+/g, '');
     this.textName = this.className + 'Text';
-    const color = this.randomColor(Math.floor(Math.random() * Math.floor(3)));
-    this.buttonColor = 'btn-' + Colors[color];
-    this.badgeColor = 'badge-';
-    if (color === Colors.info) {
-      this.badgeColor += Colors[Colors.primary];
-    } else if (color === Colors.primary) {
-      this.badgeColor += Colors[Colors.info];
-    } else if (color === Colors.success) {
-      this.badgeColor += Colors[Colors.warning];
-    } else if (color === Colors.warning) {
-      this.badgeColor += Colors[Colors.success];
-    }
   }
-
-  randomColor(number: number): Colors {
-    if (number === 0) {
-      return Colors.primary;
-    } else if (number === 1) {
-      return Colors.info;
-    } else if (number === 2) {
-      return Colors.success;
-    } else if (number === 3) {
-      return Colors.warning;
-    }
-  }
-  // #endregion
 }

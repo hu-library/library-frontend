@@ -4,12 +4,12 @@
       <h5 class="card-title">{{book.title}}</h5>
       <h5 class="card-title">{{book.author}}</h5>
       <h5 class="card-title">{{book.callNumber}}</h5>
+      <div *ngIf="book.searchCount > 0">
+        <app-searched-before></app-searched-before>
+      </div>
+      <div *ngIf="book.searchCount == 0">
+        <app-not-searched-before></app-not-searched-before>
+      </div>
     </span>
-    <div *ngIf="book.searchedPreviously">
-      <app-searched-before></app-searched-before>
-    </div>
-    <div *ngIf="!book.searchedPreviously">
-      <app-not-searched-before></app-not-searched-before>
-    </div>
   </div>
 </div>

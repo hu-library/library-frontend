@@ -26,9 +26,8 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                 if (book.callNumber === action.payload) {
                     book.searchCount++;
                     book.searchedPreviously = true;
-                    if (state.selectedBook.callNumber === action.payload) {
-                        state.selectedBook = book;
-                    }
+                    book.searchStatus = 'Began searching';
+                    state.selectedBook = book;
                 }
             }
             return state;
