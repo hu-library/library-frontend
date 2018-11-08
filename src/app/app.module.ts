@@ -20,6 +20,7 @@ import { ResolutionComponent } from './components/resolution/resolution.componen
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { reducers } from './store';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { reducers } from './store';
     SearchViewComponent,
     SearchedBeforeComponent,
     NotSearchedBeforeComponent,
-    ResolutionComponent
+    ResolutionComponent,
+    NavbarComponent
   ],
   imports: [
     AppRoutingModule,

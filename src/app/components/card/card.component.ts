@@ -48,9 +48,6 @@ export class CardComponent implements OnInit {
         case 'Ongoing':
           this.books$ = this.store.select(fromRoot.getOngoingBooks);
           break;
-        case 'Pending Investigation':
-          this.books$ = this.store.select(fromRoot.getPendingInvestigationBooks);
-          break;
         case 'Requested By Patron':
           this.books$ = this.store.select(fromRoot.getRequestedByPatronBooks);
           break;
