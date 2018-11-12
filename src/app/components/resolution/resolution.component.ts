@@ -22,4 +22,17 @@ export class ResolutionComponent implements OnInit {
     this.selectedBook$.subscribe(book => this.book = book);
   }
 
+  checkPatronInfo(id: string): boolean {
+    if (id === 'name') {
+      const name = this.book.patron.name;
+      return name !== 'UNKNOWN' && name !== '' && name !== 'N/A';
+    } else if (id === 'hNumber') {
+      const num = this.book.patron.hNumber;
+      return num !== 'UNKNOWN' && num !== '' && num !== 'N/A';
+    } else if (id === 'email') {
+      const email = this.book.patron.email;
+      return email !== 'UNKNOWN' && email !== '' && email !== 'N/A';
+    }
+  }
+
 }

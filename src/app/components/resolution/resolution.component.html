@@ -15,10 +15,12 @@
       <label>Location found: <br><input type="text" class="form-control"></label>
     </div>
 
-    <div class="card wanted-by">
+    <div *ngIf="book.patron" class="card wanted-by">
       <div class="card-body">
         <h6 class="card-title text-center">Wanted by Patron:</h6>
-        <h6 class="card-title text-center">Firstname Lastname</h6>
+        <h6 *ngIf="checkPatronInfo('name')" class="card-title text-center">{{book.patron.name}}</h6>
+        <h6 *ngIf="checkPatronInfo('hNumber')" class="card-title text-center">{{book.patron.hNumber}}</h6>
+        <h6 *ngIf="checkPatronInfo('email')" class="card-title text-center">{{book.patron.email}}</h6>
       </div>
     </div>
 
