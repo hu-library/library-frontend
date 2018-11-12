@@ -12,4 +12,8 @@ export class HttpService {
   getAllData() {
     return this.http.get<Book[]>('http://localhost:8000/');
   }
+
+  postData(body) {
+    return this.http.post('http://localhost:8000/w', body);
+  }
 }
