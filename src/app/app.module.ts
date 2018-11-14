@@ -15,13 +15,15 @@ import { SearchViewComponent } from './components/search-view/search-view.compon
 import { SearchedBeforeComponent } from './components/searched-before/searched-before.component';
 import { NotSearchedBeforeComponent } from './components/not-searched-before/not-searched-before.component';
 import { ResolutionComponent } from './components/resolution/resolution.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { CheckboxComponent } from './components/searched-before/checkbox/checkbox.component';
 
 // ngrx/store
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 import { reducers } from './store';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { CheckboxComponent } from './components/searched-before/checkbox/checkbox.component';
+import { AuthEffects } from './store/effects';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,8 @@ import { CheckboxComponent } from './components/searched-before/checkbox/checkbo
     FormsModule,
     HttpClientModule,
     StoreModule.forRoot(reducers),
-    StoreDevtoolsModule.instrument({ maxAge: 50 })
+    StoreDevtoolsModule.instrument({ maxAge: 50 }),
+    EffectsModule.forRoot([AuthEffects])
   ],
   providers: [HttpClient],
   bootstrap: [AppComponent]

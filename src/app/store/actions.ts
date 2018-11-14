@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Book } from '../models/book.model';
+import { PostRequest } from '../models/postRequest.model';
 
 export const START_BOOK_SEARCH = 'START_BOOK_SEARCH';
 export const ADD_BOOK = 'ADD_BOOK';
@@ -8,6 +9,7 @@ export const SELECT_BOOK = 'SELECT_BOOK';
 export const STOP_BOOK_SEARCH = 'STOP_BOOK_SEARCH';
 export const FOUND_BOOK = 'FOUND_BOOK';
 export const SEARCHED_LOCATION = 'SEARCHED_LOCATION';
+export const SAVE_SEARCHED_LOCATION = 'SAVE_SEARCHED_LOCATION';
 
 export class StartBookSearchAction implements Action {
     readonly type = START_BOOK_SEARCH;
@@ -51,6 +53,12 @@ export class SearchedLocationAction implements Action {
     constructor(public payload: number) { }
 }
 
+export class SaveSearchedLocationsAction implements Action {
+    readonly type = SAVE_SEARCHED_LOCATION;
+
+    constructor(public payload: PostRequest) { }
+}
+
 export type Actions =
     StartBookSearchAction |
     StopBookSearchAction |
@@ -58,4 +66,5 @@ export type Actions =
     AddBookAction |
     AddBookBulkAction |
     SelectBookAction |
-    SearchedLocationAction;
+    SearchedLocationAction |
+    SaveSearchedLocationsAction;
