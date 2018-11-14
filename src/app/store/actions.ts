@@ -7,6 +7,7 @@ export const ADD_BOOK_BULK = 'ADD_BOOK_BULK';
 export const SELECT_BOOK = 'SELECT_BOOK';
 export const STOP_BOOK_SEARCH = 'STOP_BOOK_SEARCH';
 export const FOUND_BOOK = 'FOUND_BOOK';
+export const SEARCHED_LOCATION = 'SEARCHED_LOCATION';
 
 export class StartBookSearchAction implements Action {
     readonly type = START_BOOK_SEARCH;
@@ -44,10 +45,17 @@ export class SelectBookAction implements Action {
     constructor(public payload: Book) { }
 }
 
+export class SearchedLocationAction implements Action {
+    readonly type = SEARCHED_LOCATION;
+
+    constructor(public payload: number) { }
+}
+
 export type Actions =
     StartBookSearchAction |
     StopBookSearchAction |
     FoundBookAction |
     AddBookAction |
     AddBookBulkAction |
-    SelectBookAction;
+    SelectBookAction |
+    SearchedLocationAction;

@@ -6,20 +6,12 @@
   <div class="card-title text-center">Search Count: {{book.searchCount}}</div>
   <div class="card-title text-center">Urgency: {{book.urgency}}</div>
   <div class="card-title text-center">
-    <label><input type="checkbox" [checked]="checkboxes.get(1)" (change)="checkboxChanged(1)">&nbsp;Home&nbsp;</label>
-    <label><input type="checkbox" [checked]="checkboxes.get(2)" (change)="checkboxChanged(2)">&nbsp;Reshelving Carts&nbsp;</label>
-    <label><input type="checkbox" [checked]="checkboxes.get(3)" (change)="checkboxChanged(3)">&nbsp;Surrounding Area&nbsp;</label>
-    <label><input type="checkbox" [checked]="checkboxes.get(4)" (change)="checkboxChanged(4)">&nbsp;Circulation Desk&nbsp;</label>
-    <label><input type="checkbox" [checked]="checkboxes.get(5)" (change)="checkboxChanged(5)">&nbsp;Other Collections&nbsp;</label>
-    <label><input type="checkbox" [checked]="checkboxes.get(6)" (change)="checkboxChanged(6)">&nbsp;Entire Section&nbsp;</label>
-    <label><input type="checkbox" [checked]="checkboxes.get(7)" (change)="checkboxChanged(7)">&nbsp;Switched Letters&nbsp;</label>
-    <label><input type="checkbox" [checked]="checkboxes.get(8)" (change)="checkboxChanged(8)">&nbsp;Number Mistakes&nbsp;</label>
-    <label><input type="checkbox" [checked]="checkboxes.get(9)" (change)="checkboxChanged(9)">&nbsp;Brewer Collection&nbsp;</label>
-
+  <div *ngFor="let name of names" class="card-title">
+    <app-checkbox [name]="name" [index]="names.indexOf(name)"></app-checkbox>
   </div>
   <div class="card-title text-center"><input type="text" class="form-control" placeholder="Location found..."></div>
   <button class="btn btn-large mb-1" (click)="found()">Found</button>
-  <button *ngIf="allCheckBoxes" class="btn btn-large" (click)="stopSearching()">Stop Search</button>
+  <button *ngIf="allChecked" class="btn btn-large" (click)="stopSearching()">Stop Search</button>
 </div>
 <div class="md-col-4">
 

@@ -8,6 +8,7 @@ export interface State {
     ongoingBooks: Book[];
     inventoryBooks: Book[];
     followUpBooks: Book[];
+    searchedLocations: Map<number, boolean>;
 }
 
 export const initialState: State = {
@@ -16,8 +17,24 @@ export const initialState: State = {
     requestedByPatronBooks: [],
     ongoingBooks: [],
     inventoryBooks: [],
-    followUpBooks: []
+    followUpBooks: [],
+    searchedLocations: generateMap(),
 };
+
+function generateMap(): Map<number, boolean> {
+    const map = new Map<number, boolean>();
+    for (let i = 0; i < 9; i++) {
+        map.set(i, false);
+    }
+    return map;
+}
+
+function lookedEverywhere(state: State) {
+    state.searchedLocations.forEach((value) => {
+        if (value === false) { return false; }
+    });
+    return true;
+}
 
 export function reducer(state = initialState, action: Actions.Actions): State {
     switch (action.type) {
@@ -97,6 +114,11 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             };
         }
 
+        case Actions.SEARCHED_LOCATION: {
+            state.searchedLocations.set(action.payload, !state.searchedLocations.get(action.payload));
+            return state;
+        }
+
         default: return state;
     }
 }
@@ -107,3 +129,5 @@ export const getRequestedByPatronBooks = (state: State) => state.requestedByPatr
 export const getOngoingBooks = (state: State) => state.ongoingBooks;
 export const getInventoryBooks = (state: State) => state.inventoryBooks;
 export const getFollowUpBooks = (state: State) => state.followUpBooks;
+export const getSearchedLocations = (state: State) => state.searchedLocations;
+export const searchedEverywhere = (state: State) => lookedEverywhere(state);

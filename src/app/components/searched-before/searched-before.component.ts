@@ -14,28 +14,30 @@ import { Router } from '@angular/router';
 export class SearchedBeforeComponent implements OnInit {
 
   private book$: Observable<Book>;
+  private allChecked$: Observable<boolean>;
   private book: Book;
+  private allChecked: boolean;
 
-  private checkboxes: Map<number, boolean> = new Map<number, boolean>();
-  private allCheckBoxes: boolean;
+  private readonly names = [
+    'Home',
+    'Reshelving Carts',
+    'Surrounding Area',
+    'Circulation Desk',
+    'Other Collections',
+    'Entire Section',
+    'Switched Letters',
+    'Number Mistakes',
+    'Brewer Collection'
+  ];
 
   constructor(private store: Store<fromRoot.State>, private router: Router) {
     this.book$ = store.select(fromRoot.getSelectedBook);
+    this.allChecked$ = store.select(fromRoot.lookedEverywhere);
   }
 
   ngOnInit() {
     this.book$.subscribe(book => this.book = book);
-    for (let i = 1; i <= 5; i++) {
-      this.checkboxes.set(i, false);
-    }
-  }
-
-  private allBoxesChecked(): boolean {
-    let result = true;
-    this.checkboxes.forEach((value: boolean, key: number) => {
-      if (value === false) { result = false; }
-    });
-    return result;
+    this.allChecked$.subscribe(checked => this.allChecked = checked);
   }
 
   stopSearching() {
@@ -47,10 +49,4 @@ export class SearchedBeforeComponent implements OnInit {
     this.store.dispatch(new Actions.FoundBookAction(this.book.callNumber));
     this.router.navigateByUrl('/' + this.book.urlID + '/resolve');
   }
-
-  checkboxChanged(numberCheckbox: number) {
-    this.checkboxes.set(numberCheckbox, !this.checkboxes.get(numberCheckbox));
-    this.allCheckBoxes = this.allBoxesChecked();
-  }
-
 }

@@ -1,7 +1,13 @@
 .card {
     background-color: #555;
-    width: 50%;
-    margin-left: 25%;
+    @media screen and (min-width: 600px) {
+        width: 50%;
+        margin-left: 25%;
+    }
+    @media not screen and (min-width: 600px) {
+        width: 75%;
+        margin-left: 12.5%;
+    }
     margin-top: 10%;
     border-radius: 35px;
 }

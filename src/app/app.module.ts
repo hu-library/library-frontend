@@ -21,6 +21,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { reducers } from './store';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { CheckboxComponent } from './components/searched-before/checkbox/checkbox.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     SearchedBeforeComponent,
     NotSearchedBeforeComponent,
     ResolutionComponent,
-    NavbarComponent
+    NavbarComponent,
+    CheckboxComponent
   ],
   imports: [
     AppRoutingModule,
