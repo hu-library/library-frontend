@@ -5,6 +5,7 @@ import { Book } from '../../models/book.model';
 import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
 import { Router } from '@angular/router';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-searched-before',
@@ -30,14 +31,19 @@ export class SearchedBeforeComponent implements OnInit {
     'Brewer Collection'
   ];
 
-  constructor(private store: Store<fromRoot.State>, private router: Router) {
+  constructor(private store: Store<fromRoot.State>, private router: Router,
+              private config: ConfigService) {
     this.book$ = store.select(fromRoot.getSelectedBook);
     this.allChecked$ = store.select(fromRoot.lookedEverywhere);
   }
 
   ngOnInit() {
-    this.book$.subscribe(book => this.book = book);
-    this.allChecked$.subscribe(checked => this.allChecked = checked);
+    this.book$.subscribe(book => {
+      this.book = book;
+      if (book && book.searchedLocations) {
+        this.allChecked = this.config.checkMapForAllTrue(book.searchedLocations);
+      }
+    });
   }
 
   stopSearching() {

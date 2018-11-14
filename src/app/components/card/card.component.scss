@@ -9,7 +9,6 @@
     background-color: #555;
 }
 .table-dark {
-    background-color: #777;
     border-radius: 5px;
 }
 
@@ -19,6 +18,12 @@
         display: block;
         width: 100%;
         margin-left: 25%;
+    }
+}
+
+.author {
+    @media not screen and (min-width: 600px) {
+        display: none;
     }
 }
 

@@ -8,7 +8,6 @@ export interface State {
     ongoingBooks: Book[];
     inventoryBooks: Book[];
     followUpBooks: Book[];
-    searchedLocations: Map<number, boolean>;
 }
 
 export const initialState: State = {
@@ -18,7 +17,6 @@ export const initialState: State = {
     ongoingBooks: [],
     inventoryBooks: [],
     followUpBooks: [],
-    searchedLocations: generateMap(),
 };
 
 function generateMap(): Map<number, boolean> {
@@ -30,10 +28,13 @@ function generateMap(): Map<number, boolean> {
 }
 
 function lookedEverywhere(state: State) {
-    state.searchedLocations.forEach((value) => {
-        if (value === false) { return false; }
-    });
-    return true;
+    if (state && state.selectedBook && state.selectedBook.searchedLocations) {
+        state.selectedBook.searchedLocations.forEach((value) => {
+            if (value === false) { return false; }
+        });
+        return true;
+    }
+    return false;
 }
 
 export function reducer(state = initialState, action: Actions.Actions): State {
@@ -77,6 +78,8 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         }
 
         case Actions.ADD_BOOK: {
+            const book = action.payload;
+            book.searchedLocations = generateMap();
             return {
                 ...state,
                 books: [...state.books, action.payload ]
@@ -86,6 +89,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         case Actions.ADD_BOOK_BULK: {
             const books = state.books;
             for (const book of action.payload) {
+                book.searchedLocations = generateMap();
                 books.push(book);
                 book.urlID = book.title.replace(/(\s|:\s)+/g, '-').toLowerCase();
                 switch (book.searchStatus) {
@@ -115,8 +119,15 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         }
 
         case Actions.SEARCHED_LOCATION: {
-            state.searchedLocations.set(action.payload, !state.searchedLocations.get(action.payload));
-            return state;
+            const newMap = state.selectedBook.searchedLocations;
+            newMap.set(action.payload, !newMap.get(action.payload));
+            return {
+                ...state,
+                selectedBook: {
+                    ...state.selectedBook,
+                    searchedLocations: newMap
+                }
+            };
         }
 
         default: return state;
@@ -129,5 +140,5 @@ export const getRequestedByPatronBooks = (state: State) => state.requestedByPatr
 export const getOngoingBooks = (state: State) => state.ongoingBooks;
 export const getInventoryBooks = (state: State) => state.inventoryBooks;
 export const getFollowUpBooks = (state: State) => state.followUpBooks;
-export const getSearchedLocations = (state: State) => state.searchedLocations;
+export const getSearchedLocations = (state: State) => state.selectedBook.searchedLocations;
 export const searchedEverywhere = (state: State) => lookedEverywhere(state);

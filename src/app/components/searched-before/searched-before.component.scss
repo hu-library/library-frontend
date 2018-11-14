@@ -12,10 +12,12 @@ label {
     user-select: none;
 }
 
-div {
-    input[type=text] {
-        width: 50%;
-        margin-left: 25%;
+@media screen and (min-width: 600px) {
+    div {
+        input[type=text] {
+            width: 50%;
+            margin-left: 25%;
+        }
     }
 }
 

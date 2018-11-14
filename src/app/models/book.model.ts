@@ -22,4 +22,5 @@ export interface Book {
     searchStatus: Status;
     searchedPreviously: boolean;
     urlID?: string;
+    searchedLocations: Map<number, boolean>;
 }
