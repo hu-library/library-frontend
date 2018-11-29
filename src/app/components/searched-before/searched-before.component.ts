@@ -26,6 +26,7 @@ export class SearchedBeforeComponent implements OnInit {
     'Circulation Desk',
     'Bestsellers',
     'Christian Fiction',
+    'Juvenile / EZ JUV',
     'Entire Section',
     'Switched Letters',
     'Number Mistakes',
