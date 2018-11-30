@@ -3,9 +3,9 @@
   <div class="card-title text-center">Search Count: {{book.searchCount}}</div>
   <div class="card-title text-center">Urgency: {{book.urgency}}</div>
   <div>
-    <table style="margin-left: 50%">
+    <table>
       <tr *ngFor="let name of names">
-        <app-checkbox [name]="name" [index]="names.indexOf(name)"></app-checkbox>
+        <app-checkbox [name]="name"></app-checkbox>
       </tr>
     </table>
     <div class="card-title text-center"><input type="text" class="form-control" placeholder="Location found..."></div>

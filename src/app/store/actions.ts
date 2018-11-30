@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { Book } from '../models/book.model';
 import { PostRequest } from '../models/postRequest.model';
+import { SearchLocation } from '../models/searchLocation.type';
 
 export const START_BOOK_SEARCH = 'START_BOOK_SEARCH';
 export const ADD_BOOK = 'ADD_BOOK';
@@ -50,7 +51,7 @@ export class SelectBookAction implements Action {
 export class SearchedLocationAction implements Action {
     readonly type = SEARCHED_LOCATION;
 
-    constructor(public payload: number) { }
+    constructor(public payload: SearchLocation) { }
 }
 
 export class SaveSearchedLocationsAction implements Action {

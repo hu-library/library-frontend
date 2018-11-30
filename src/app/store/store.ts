@@ -1,5 +1,7 @@
 import * as Actions from './actions';
 import { Book } from '../models/book.model';
+import locationsToSearch from '../config';
+import { SearchLocation } from '../models/searchLocation.type';
 
 export interface State {
     books: Book[];
@@ -19,10 +21,10 @@ export const initialState: State = {
     followUpBooks: [],
 };
 
-function generateMap(): Map<number, boolean> {
-    const map = new Map<number, boolean>();
-    for (let i = 0; i < 9; i++) {
-        map.set(i, false);
+function generateMap(): Map<SearchLocation, boolean> {
+    const map = new Map<SearchLocation, boolean>();
+    for (const location of locationsToSearch) {
+        map.set(location, false);
     }
     return map;
 }

@@ -5,7 +5,8 @@ import { Book } from '../../models/book.model';
 import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
 import { Router } from '@angular/router';
-import { ConfigService } from 'src/app/services/config.service';
+import { ConfigService } from '../../services/config.service';
+import searchLocations from '../../config';
 
 @Component({
   selector: 'app-searched-before',
@@ -18,20 +19,7 @@ export class SearchedBeforeComponent implements OnInit {
   private allChecked$: Observable<boolean>;
   private book: Book;
   private allChecked: boolean;
-
-  private readonly names = [
-    'Home',
-    'Reshelving Carts',
-    'Surrounding Area',
-    'Circulation Desk',
-    'Bestsellers',
-    'Christian Fiction',
-    'Juvenile / EZ JUV',
-    'Entire Section',
-    'Switched Letters',
-    'Number Mistakes',
-    'Brewer Collection'
-  ];
+  private names = searchLocations;
 
   constructor(private store: Store<fromRoot.State>, private router: Router,
               private config: ConfigService) {

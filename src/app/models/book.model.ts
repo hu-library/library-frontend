@@ -1,5 +1,6 @@
 import { Status } from './searchStatus.type';
 import { Patron } from './patron.model';
+import { SearchLocation } from './searchLocation.type';
 
 export interface Book {
     author: string;
@@ -22,5 +23,5 @@ export interface Book {
     searchStatus: Status;
     searchedPreviously: boolean;
     urlID?: string;
-    searchedLocations: Map<number, boolean>;
+    searchedLocations: Map<SearchLocation, boolean>;
 }

@@ -1,5 +1,5 @@
 <td>
-  <input type="checkbox" [checked]="searchedLocations.get(index)" (change)="checkboxChanged(index)">
+  <input type="checkbox" style="text-align: center" id="{{name}}" [checked]="searchedLocations.get(index)" (change)="checkboxChanged()">
 </td>
-<td>{{name}}</td>
+<td><label for="{{name}}">{{name}}</label></td>
 <!-- &nbsp;{{name}}&nbsp; -->
