@@ -1,6 +1,5 @@
 import * as Actions from './actions';
-import { Book } from '../models/book.model';
-import locationsToSearch from '../config';
+import { Book, generateMap } from '../models/book.model';
 import { SearchLocation } from '../models/searchLocation.type';
 
 export interface State {
@@ -21,13 +20,6 @@ export const initialState: State = {
     followUpBooks: [],
 };
 
-function generateMap(): Map<SearchLocation, boolean> {
-    const map = new Map<SearchLocation, boolean>();
-    for (const location of locationsToSearch) {
-        map.set(location, false);
-    }
-    return map;
-}
 
 function lookedEverywhere(state: State) {
     if (state && state.selectedBook && state.selectedBook.searchedLocations) {
@@ -81,7 +73,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
 
         case Actions.ADD_BOOK: {
             const book = action.payload;
-            book.searchedLocations = generateMap();
+            generateMap(book);
             return {
                 ...state,
                 books: [...state.books, action.payload ]
@@ -91,7 +83,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         case Actions.ADD_BOOK_BULK: {
             const books = state.books;
             for (const book of action.payload) {
-                book.searchedLocations = generateMap();
+                generateMap(book);
                 books.push(book);
                 book.urlID = book.title.replace(/(\s|:\s)+/g, '-').toLowerCase();
                 switch (book.searchStatus) {
