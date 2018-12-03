@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as fromRoot from '../../store';
 import { Observable } from 'rxjs';
-import { Book } from 'src/app/models/book.model';
-import { ConfigService } from 'src/app/services/config.service';
+import * as fromRoot from '../../store';
+import { Book } from '../../models/book.model';
+import { ConfigService } from '../../services/config.service';
+import { HttpService } from '../../services/http.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,7 +17,8 @@ export class NavbarComponent implements OnInit {
   private selectedBook: Book;
   private showSave: boolean;
 
-  constructor(private store: Store<fromRoot.State>, private config: ConfigService) {
+  constructor(private store: Store<fromRoot.State>, private config: ConfigService,
+    private httpService: HttpService) {
     this.selectedBook$ = store.select(fromRoot.getSelectedBook);
   }
 
@@ -26,6 +28,16 @@ export class NavbarComponent implements OnInit {
       if (book && book.searchedLocations) {
         this.showSave = this.config.checkMapForAnyTrue(book.searchedLocations);
       }
+    });
+  }
+
+  save() {
+    const book = {
+      ...this.selectedBook,
+      callNumber: this.selectedBook.callNumber.replace(/ /g, '-')
+    };
+    this.httpService.saveSearchedLocations(book).subscribe(res => {
+      console.log(res);
     });
   }
 

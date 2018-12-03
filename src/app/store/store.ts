@@ -1,6 +1,6 @@
 import * as Actions from './actions';
 import { Book, generateMap } from '../models/book.model';
-import { SearchLocation } from '../models/searchLocation.type';
+import { sortStateBooks } from '../config/sort';
 
 export interface State {
     books: Book[];
@@ -19,7 +19,6 @@ export const initialState: State = {
     inventoryBooks: [],
     followUpBooks: [],
 };
-
 
 function lookedEverywhere(state: State) {
     if (state && state.selectedBook && state.selectedBook.searchedLocations) {
@@ -74,6 +73,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         case Actions.ADD_BOOK: {
             const book = action.payload;
             generateMap(book);
+            sortStateBooks(state);
             return {
                 ...state,
                 books: [...state.books, action.payload ]
@@ -98,6 +98,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                         break;
                 }
             }
+            sortStateBooks(state);
             return {
                 ...state,
                 books
