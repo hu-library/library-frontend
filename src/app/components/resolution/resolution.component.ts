@@ -3,6 +3,9 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Book } from '../../models/book.model';
 import * as fromRoot from '../../store';
+import * as Actions from '../../store/actions';
+import { HttpService } from '../../services/http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-resolution',
@@ -14,7 +17,7 @@ export class ResolutionComponent implements OnInit {
   private selectedBook$: Observable<Book>;
   private book: Book;
 
-  constructor(private store: Store<fromRoot.State>) {
+  constructor(private store: Store<fromRoot.State>, private http: HttpService, private router: Router) {
     this.selectedBook$ = store.select(fromRoot.getSelectedBook);
   }
 
@@ -35,4 +38,14 @@ export class ResolutionComponent implements OnInit {
     }
   }
 
+  updateStatus() {
+    const book = {
+      ...this.book,
+      callNumber: this.book.callNumber.replace(/ /g, '-')
+    };
+    this.http.updateStatus(book).subscribe(res => {
+      console.log(res);
+      this.router.navigateByUrl('/');
+    });
+  }
 }

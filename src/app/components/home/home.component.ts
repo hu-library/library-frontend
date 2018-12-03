@@ -23,15 +23,8 @@ export class HomeComponent implements OnInit {
 
   constructor(private httpService: HttpService, private store: Store<fromRoot.State>) {
     this.allBooks$ = store.select(fromRoot.getAllBooks);
+    store.dispatch(new Actions.ReloadBooksAction());
   }
 
-  ngOnInit() {
-    this.allBooks$.subscribe(books => {
-      if (books.length === 0) {
-        this.httpService.getAllData().subscribe(res => {
-          this.store.dispatch(new Actions.AddBookBulkAction(res));
-        });
-      }
-    });
-  }
+  ngOnInit() { }
 }

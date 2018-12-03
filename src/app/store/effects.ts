@@ -4,18 +4,19 @@ import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { SAVE_SEARCHED_LOCATION, SaveSearchedLocationsAction } from './actions';
+import { ReloadBooksAction, RELOAD_BOOKS, ADD_BOOK_BULK } from './actions';
+import { Book } from '../models/book.model';
 
 @Injectable()
 export class AuthEffects {
     // Listen for the 'LOGIN' action
     @Effect()
     login$: Observable<Action> = this.actions$.pipe(
-        ofType<SaveSearchedLocationsAction>(SAVE_SEARCHED_LOCATION),
+            ofType<ReloadBooksAction>(RELOAD_BOOKS),
         mergeMap(action =>
-            this.http.post('/auth', action.payload).pipe(
+            this.http.get<Book[]>('http://localhost:8000/').pipe(
                 // If successful, dispatch success action with result
-                map(data => ({ type: 'LOGIN_SUCCESS', payload: data })),
+                map(data => ({ type: ADD_BOOK_BULK, payload: data })),
                 // If request fails, dispatch failed action
                 catchError(() => of({ type: 'LOGIN_FAILED' }))
             )

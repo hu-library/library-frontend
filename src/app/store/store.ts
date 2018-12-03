@@ -81,27 +81,30 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         }
 
         case Actions.ADD_BOOK_BULK: {
-            const books = state.books;
+            const books = [], requestedByPatronBooks = [], ongoingBooks = [], followUpBooks = [];
             for (const book of action.payload) {
                 generateMap(book);
                 books.push(book);
                 book.urlID = book.title.replace(/(\s|:\s)+/g, '-').toLowerCase();
                 switch (book.searchStatus) {
                     case 'Not searched for yet':
-                        state.requestedByPatronBooks.push(book);
+                        requestedByPatronBooks.push(book);
                         break;
                     case 'Began searching':
-                        state.ongoingBooks.push(book);
+                        ongoingBooks.push(book);
                         break;
                     case 'Found':
-                        state.followUpBooks.push(book);
+                        followUpBooks.push(book);
                         break;
                 }
             }
             sortStateBooks(state);
             return {
                 ...state,
-                books
+                books,
+                requestedByPatronBooks,
+                ongoingBooks,
+                followUpBooks
             };
         }
 
@@ -123,6 +126,11 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                     searchedLocations: newMap
                 }
             };
+        }
+
+        case Actions.RELOAD_BOOKS_ERROR: {
+            alert('error');
+            return state;
         }
 
         default: return state;

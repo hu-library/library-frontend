@@ -11,6 +11,9 @@ export const STOP_BOOK_SEARCH = 'STOP_BOOK_SEARCH';
 export const FOUND_BOOK = 'FOUND_BOOK';
 export const SEARCHED_LOCATION = 'SEARCHED_LOCATION';
 export const SAVE_SEARCHED_LOCATION = 'SAVE_SEARCHED_LOCATION';
+export const RELOAD_BOOKS = 'RELOAD_BOOKS';
+export const RELOAD_BOOKS_ERROR = 'RELOAD_BOOKS_ERROR';
+
 
 export class StartBookSearchAction implements Action {
     readonly type = START_BOOK_SEARCH;
@@ -60,6 +63,18 @@ export class SaveSearchedLocationsAction implements Action {
     constructor(public payload: PostRequest) { }
 }
 
+export class ReloadBooksAction implements Action {
+    readonly type = RELOAD_BOOKS;
+
+    constructor() { }
+}
+
+export class ReloadBooksErrorAction implements Action {
+    readonly type = RELOAD_BOOKS_ERROR;
+
+    constructor() { }
+}
+
 export type Actions =
     StartBookSearchAction |
     StopBookSearchAction |
@@ -68,4 +83,6 @@ export type Actions =
     AddBookBulkAction |
     SelectBookAction |
     SearchedLocationAction |
-    SaveSearchedLocationsAction;
+    SaveSearchedLocationsAction |
+    ReloadBooksAction |
+    ReloadBooksErrorAction;

@@ -23,6 +23,11 @@ export class HttpService {
       { locations: this.getSearchedLocations(book) });
   }
 
+  updateStatus(book: Book) {
+    return this.http.post(`http://localhost:8000/status/${book.callNumber}`,
+    { status: book.searchStatus });
+  }
+
   private getSearchedLocations(book: Book) {
     const result = [];
     book.searchedLocations.forEach((value: boolean, key: SearchLocation) => {
