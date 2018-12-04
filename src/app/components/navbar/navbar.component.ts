@@ -32,11 +32,7 @@ export class NavbarComponent implements OnInit {
   }
 
   save() {
-    const book = {
-      ...this.selectedBook,
-      callNumber: this.selectedBook.callNumber.replace(/ /g, '-')
-    };
-    this.httpService.saveSearchedLocations(book).subscribe(res => {
+    this.httpService.saveSearchedLocations(this.selectedBook).subscribe(res => {
       console.log(res);
     });
   }

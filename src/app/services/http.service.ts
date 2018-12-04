@@ -14,16 +14,14 @@ export class HttpService {
     return this.http.get<Book[]>('http://localhost:8000/');
   }
 
-  postData(body) {
-    return this.http.post('http://localhost:8000/w', body);
-  }
-
   saveSearchedLocations(book: Book) {
+    book.callNumber = book.callNumber.replace(/ /g, '-');
     return this.http.post(`http://localhost:8000/searched/${book.callNumber}`,
       { locations: this.getSearchedLocations(book) });
   }
 
   updateStatus(book: Book) {
+    book.callNumber = book.callNumber.replace(/ /g, '-');
     return this.http.post(`http://localhost:8000/status/${book.callNumber}`,
     { status: book.searchStatus });
   }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
 import { Book } from '../../models/book.model';
+import { HttpService } from '../../services/http.service';
 
 @Component({
   selector: 'app-not-searched-before',
@@ -15,7 +16,7 @@ export class NotSearchedBeforeComponent implements OnInit {
   private book$: Observable<Book>;
   private book: Book;
 
-  constructor(private store: Store<fromRoot.State>) {
+  constructor(private store: Store<fromRoot.State>, private httpService: HttpService) {
     this.book$ = store.select(fromRoot.getSelectedBook);
   }
 
@@ -27,5 +28,6 @@ export class NotSearchedBeforeComponent implements OnInit {
 
   beginSearching() {
     this.store.dispatch(new Actions.StartBookSearchAction(this.book.callNumber));
+    this.httpService.updateStatus(this.book);
   }
 }

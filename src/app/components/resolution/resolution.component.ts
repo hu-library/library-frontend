@@ -42,11 +42,7 @@ export class ResolutionComponent implements OnInit {
   }
 
   updateStatus() {
-    const book = {
-      ...this.book,
-      callNumber: this.book.callNumber.replace(/ /g, '-')
-    };
-    this.http.updateStatus(book).subscribe(res => {
+    this.http.updateStatus(this.book).subscribe(res => {
       console.log(res);
       this.router.navigateByUrl('/');
     });
