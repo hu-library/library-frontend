@@ -1,27 +1,26 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { ReloadBooksAction, RELOAD_BOOKS, ADD_BOOK_BULK } from './actions';
-import { Book } from '../models/book.model';
+import { ReloadBooksAction, RELOAD_BOOKS, ADD_BOOK_BULK, RELOAD_BOOKS_ERROR } from './actions';
+import { HttpService } from '../services/http.service';
 
 @Injectable()
 export class AuthEffects {
-    // Listen for the 'LOGIN' action
+
     @Effect()
-    login$: Observable<Action> = this.actions$.pipe(
+    reloadBooks$: Observable<Action> = this.actions$.pipe(
             ofType<ReloadBooksAction>(RELOAD_BOOKS),
-        mergeMap(action =>
-            this.http.get<Book[]>('http://localhost:8000/').pipe(
+        mergeMap(() =>
+            this.http.getAllData().pipe(
                 // If successful, dispatch success action with result
                 map(data => ({ type: ADD_BOOK_BULK, payload: data })),
                 // If request fails, dispatch failed action
-                catchError(() => of({ type: 'LOGIN_FAILED' }))
+                catchError(() => of({ type: RELOAD_BOOKS_ERROR }))
             )
         )
     );
 
-    constructor(private http: HttpClient, private actions$: Actions) { }
+    constructor(private http: HttpService, private actions$: Actions) { }
 }

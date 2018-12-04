@@ -22,7 +22,10 @@ export class ResolutionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.selectedBook$.subscribe(book => this.book = book);
+    this.selectedBook$.subscribe(book => {
+      console.log('change');
+      this.book = book;
+    });
   }
 
   checkPatronInfo(id: string): boolean {

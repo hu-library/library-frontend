@@ -41,7 +41,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                     state.selectedBook = book;
                 }
             }
-            return state;
+            return { ...state };
         }
 
         case Actions.STOP_BOOK_SEARCH: {
@@ -54,7 +54,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                 }
             }
 
-            return state;
+            return { ...state };
         }
 
         case Actions.FOUND_BOOK: {
@@ -66,8 +66,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                     }
                 }
             }
-
-            return state;
+            return { ...state };
         }
 
         case Actions.ADD_BOOK: {
@@ -109,7 +108,6 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         }
 
         case Actions.SELECT_BOOK: {
-            localStorage.setItem('selectedBook', JSON.stringify(action.payload));
             return {
                 ...state,
                 selectedBook: action.payload
