@@ -23,7 +23,9 @@ export class ResolutionComponent implements OnInit {
 
   ngOnInit() {
     this.selectedBook$.subscribe(book => {
-      console.log('change');
+      if (!book) {
+        this.router.navigateByUrl('/');
+      }
       this.book = book;
     });
   }
@@ -43,7 +45,6 @@ export class ResolutionComponent implements OnInit {
 
   updateStatus() {
     this.http.updateStatus(this.book).subscribe(res => {
-      console.log(res);
       this.router.navigateByUrl('/');
     });
   }
