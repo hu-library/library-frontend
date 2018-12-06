@@ -29,14 +29,20 @@ export class HttpService {
   librarianDecision(book: Book) {
     book.callNumber = book.callNumber.replace(/ /g, '-');
     return this.http.post(`http://localhost:8000/decision/`, {
-      book
+      title: book.title,
+      callNumber: book.callNumber,
+      author: book.author,
+      patron: book.patron
     });
   }
 
   lookAgain(book: Book) {
     book.callNumber = book.callNumber.replace(/ /g, '-');
     return this.http.post(`http://localhost:8000/look-again/`, {
-      book
+      title: book.title,
+      callNumber: book.callNumber,
+      author: book.author,
+      patron: book.patron
     });
   }
 
