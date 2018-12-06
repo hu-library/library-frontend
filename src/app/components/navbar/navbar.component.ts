@@ -32,9 +32,7 @@ export class NavbarComponent implements OnInit {
   }
 
   save() {
-    this.httpService.saveSearchedLocations(this.selectedBook).subscribe(res => {
-      console.log(res);
-    });
+    this.httpService.saveSearchedLocations(this.selectedBook).subscribe();
   }
 
 }
