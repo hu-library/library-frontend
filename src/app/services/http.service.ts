@@ -26,6 +26,20 @@ export class HttpService {
     { status: book.searchStatus });
   }
 
+  librarianDecision(book: Book) {
+    book.callNumber = book.callNumber.replace(/ /g, '-');
+    return this.http.post(`http://localhost:8000/decision/`, {
+      book
+    });
+  }
+
+  lookAgain(book: Book) {
+    book.callNumber = book.callNumber.replace(/ /g, '-');
+    return this.http.post(`http://localhost:8000/look-again/`, {
+      book
+    });
+  }
+
   private getSearchedLocations(book: Book) {
     const result = [];
     book.searchedLocations.forEach((value: boolean, key: SearchLocation) => {

@@ -1,14 +1,13 @@
 <div class="card">
-  <div class="card-body">
+  <div class="card-body" *ngIf="book">
     <h5 class="card-title">{{book.title}}</h5>
     <h5 class="card-title">{{book.author}}</h5>
     <h5 class="card-title">{{book.callNumber}}</h5>
 
-    <div class="card-title buttons">
-      <label><input type="radio" name="action"> Mark as pending decision & email librarian</label><br>
-      <label><input type="radio" name="action"> Put back in queue & email librarian</label><br>
-      <label><input type="radio" name="action"> Complete search, revisit next month, & email librarian</label><br>
-      <label><input type="radio" name="action"> Complete search & revisit next month</label><br>
+    <div [ngClass]="[buttonCSS]">
+      <div *ngFor="let button of buttons">
+        <label><input type="radio" name="action" [value]="button.action" [(ngModel)]="buttonValue"> {{button.name}}</label>
+      </div>
     </div>
 
     <div class="card-title text-center">

@@ -16,6 +16,22 @@ export class ResolutionComponent implements OnInit {
 
   private selectedBook$: Observable<Book>;
   private book: Book;
+  private buttonValue: 'Librarian decision' | 'Look again' | 'Found' | '';
+  private buttonCSS: string;
+  private readonly buttons = [
+    {
+      name: 'Mark as pending decision & email librarian',
+      action: 'Librarian decision'
+    },
+    {
+      name: 'Book not found, revisit next month, & email librarian',
+      action: 'Look again'
+    },
+    {
+      name: 'Book found!',
+      action: 'Found'
+    }
+  ];
 
   constructor(private store: Store<fromRoot.State>, private http: HttpService, private router: Router) {
     this.selectedBook$ = store.select(fromRoot.getSelectedBook);
@@ -28,6 +44,7 @@ export class ResolutionComponent implements OnInit {
       }
       this.book = book;
     });
+    this.buttonCSS = 'card-title buttons';
   }
 
   checkPatronInfo(id: string): boolean {
@@ -44,8 +61,23 @@ export class ResolutionComponent implements OnInit {
   }
 
   updateStatus() {
-    this.http.updateStatus(this.book).subscribe(res => {
-      this.router.navigateByUrl('/');
-    });
+    console.log('updating status', this.buttonValue);
+    if (this.buttonValue) {
+      if (this.buttonValue === 'Librarian decision') {
+        this.http.librarianDecision(this.book).subscribe();
+      } else if (this.buttonValue === 'Look again') {
+        this.http.lookAgain(this.book).subscribe();
+      } else if (this.buttonValue === 'Found') {
+        // maybe do something ¯\_(ツ)_/¯
+      }
+      this.http.updateStatus(this.book).subscribe(res => {
+        this.router.navigateByUrl('/');
+      });
+    } else {
+      this.buttonCSS += ' invalid-buttons';
+      setTimeout(() => {
+        this.buttonCSS = 'card-title buttons';
+      }, 500);
+    }
   }
 }
