@@ -8,7 +8,6 @@
         <app-checkbox [name]="name"></app-checkbox>
       </tr>
     </table>
-    <div class="card-title text-center"><input type="text" class="form-control" placeholder="Location found..."></div>
     <button class="btn btn-large mb-1" (click)="found()">Found</button>
     <button *ngIf="allChecked" class="btn btn-large" (click)="stopSearching()">Stop Search</button>
   </div>

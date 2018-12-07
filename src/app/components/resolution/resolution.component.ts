@@ -6,6 +6,7 @@ import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
 import { HttpService } from '../../services/http.service';
 import { Router } from '@angular/router';
+import { buttons } from '../../config';
 
 @Component({
   selector: 'app-resolution',
@@ -18,20 +19,7 @@ export class ResolutionComponent implements OnInit {
   private book: Book;
   private buttonValue: 'Librarian decision' | 'Look again' | 'Found' | '';
   private buttonCSS: string;
-  private readonly buttons = [
-    {
-      name: 'Mark as pending decision & email librarian',
-      action: 'Librarian decision'
-    },
-    {
-      name: 'Book not found, revisit next month, & email librarian',
-      action: 'Look again'
-    },
-    {
-      name: 'Book found!',
-      action: 'Found'
-    }
-  ];
+  private buttons = buttons;
 
   constructor(private store: Store<fromRoot.State>, private http: HttpService, private router: Router) {
     this.selectedBook$ = store.select(fromRoot.getSelectedBook);
@@ -61,18 +49,17 @@ export class ResolutionComponent implements OnInit {
   }
 
   updateStatus() {
-    console.log('updating status', this.buttonValue);
     if (this.buttonValue) {
       if (this.buttonValue === 'Librarian decision') {
-        this.http.librarianDecision(this.book).subscribe();
+        this.http.librarianDecision(this.book);
+        this.book.searchStatus = 'Stop searching';
       } else if (this.buttonValue === 'Look again') {
-        this.http.lookAgain(this.book).subscribe();
-      } else if (this.buttonValue === 'Found') {
-        // maybe do something ¯\_(ツ)_/¯
+        this.http.lookAgain(this.book);
+        this.book.searchStatus = 'Delay searching';
       }
-      this.http.updateStatus(this.book).subscribe(res => {
-        this.router.navigateByUrl('/');
-      });
+      this.http.updateStatus(this.book);
+    } else if (this.book.searchStatus === 'Found') {
+      this.http.updateStatus(this.book);
     } else {
       this.buttonCSS += ' invalid-buttons';
       setTimeout(() => {

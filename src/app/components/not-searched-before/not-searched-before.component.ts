@@ -21,14 +21,11 @@ export class NotSearchedBeforeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.book$.subscribe(book => {
-      this.book = book;
-    });
+    this.book$.subscribe(book => this.book = book);
   }
 
   beginSearching() {
-    console.log(this.book);
     this.store.dispatch(new Actions.StartBookSearchAction(this.book.callNumber));
-    this.httpService.updateStatus(this.book).subscribe();
+    this.httpService.updateStatus(this.book, false);
   }
 }
