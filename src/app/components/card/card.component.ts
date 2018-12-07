@@ -3,16 +3,9 @@ import { Store } from '@ngrx/store';
 import { Observable, from } from 'rxjs';
 import * as fromRoot from '../../store';
 import { Book } from '../../models/book.model';
-import { ButtonNames } from '../../models/buttonName.type';
 import { Router } from '@angular/router';
+import { ButtonNames } from '../../models/buttonName.type';
 import * as Actions from '../../store/actions';
-
-enum Colors {
-  'primary', // dark blue
-  'info', // light blue
-  'success', // green
-  'warning' // yellow
-}
 
 @Component({
   selector: 'app-card',
@@ -22,7 +15,7 @@ enum Colors {
 export class CardComponent implements OnInit {
 
   @Input()
-  title: string;
+  title: ButtonNames;
 
   private className: string;
 
@@ -33,7 +26,7 @@ export class CardComponent implements OnInit {
   private books$: Observable<Book[]>;
   private books: Book[] = [];
 
-  constructor(private store: Store<fromRoot.State>, private router: Router) {}
+  constructor(private store: Store<fromRoot.State>, private router: Router) { }
 
   ngOnInit() {
     this.setUpCard();
@@ -41,24 +34,32 @@ export class CardComponent implements OnInit {
       switch (this.title) {
         case 'Requested By Patron':
           this.books$ = this.store.select(fromRoot.getRequestedByPatronBooks);
-          this.buttonColor = 'btn-info';
-          this.badgeColor = 'badge-primary';
           break;
         case 'Ongoing':
           this.books$ = this.store.select(fromRoot.getOngoingBooks);
-          this.buttonColor = 'btn-primary';
-          this.badgeColor = 'badge-success';
           break;
         case 'Inventory':
           this.books$ = this.store.select(fromRoot.getInventoryBooks);
-          this.buttonColor = 'btn-info';
-          this.badgeColor = 'badge-primary';
           break;
         case 'Follow Up':
           this.books$ = this.store.select(fromRoot.getFollowUpBooks);
-          this.buttonColor = 'btn-primary';
-          this.badgeColor = 'badge-success';
           break;
+        case 'Awaiting Librarian Decision':
+          this.books$ = this.store.select(fromRoot.getAwaitingDecisionBooks);
+          break;
+        case 'Searched But Not Found':
+          this.books$ = this.store.select(fromRoot.getMissingBooks);
+          break;
+      }
+      if (this.title === 'Requested By Patron' ||
+        this.title === 'Inventory' ||
+        this.title === 'Awaiting Librarian Decision') {
+        this.buttonColor = 'btn-info';
+        this.badgeColor = 'badge-primary';
+      } else if (this.title === 'Ongoing' ||
+        this.title === 'Follow Up' || this.title === 'Searched But Not Found') {
+        this.buttonColor = 'btn-primary';
+        this.badgeColor = 'badge-success';
       }
     }
     this.books$.subscribe(books => this.books = books);

@@ -9,6 +9,8 @@ export interface State {
     ongoingBooks: Book[];
     inventoryBooks: Book[];
     followUpBooks: Book[];
+    awaitingDecisionBooks: Book[];
+    missingBooks: Book[];
 }
 
 export const initialState: State = {
@@ -18,6 +20,8 @@ export const initialState: State = {
     ongoingBooks: [],
     inventoryBooks: [],
     followUpBooks: [],
+    awaitingDecisionBooks: [],
+    missingBooks: [],
 };
 
 function lookedEverywhere(state: State) {
@@ -80,7 +84,8 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         }
 
         case Actions.ADD_BOOK_BULK: {
-            const books = [], requestedByPatronBooks = [], ongoingBooks = [], followUpBooks = [];
+            const books = [], requestedByPatronBooks = [], ongoingBooks = [], followUpBooks = [],
+                missingBooks = [], awaitingDecisionBooks = [];
             for (const book of action.payload) {
                 generateMap(book);
                 books.push(book);
@@ -95,6 +100,12 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                     case 'Found':
                         followUpBooks.push(book);
                         break;
+                    case 'Delay searching':
+                        missingBooks.push(book);
+                        break;
+                    case 'Stop searching':
+                        awaitingDecisionBooks.push(book);
+                        break;
                 }
             }
             sortStateBooks(state);
@@ -103,7 +114,9 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                 books,
                 requestedByPatronBooks,
                 ongoingBooks,
-                followUpBooks
+                followUpBooks,
+                missingBooks,
+                awaitingDecisionBooks
             };
         }
 
@@ -142,4 +155,6 @@ export const getOngoingBooks = (state: State) => state.ongoingBooks;
 export const getInventoryBooks = (state: State) => state.inventoryBooks;
 export const getFollowUpBooks = (state: State) => state.followUpBooks;
 export const getSearchedLocations = (state: State) => state.selectedBook.searchedLocations;
+export const getMissingBooks = (state: State) => state.missingBooks;
+export const getAwaitingDecisionBooks = (state: State) => state.awaitingDecisionBooks;
 export const searchedEverywhere = (state: State) => lookedEverywhere(state);

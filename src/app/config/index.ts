@@ -19,10 +19,12 @@ export const searchLocations: SearchLocation[] = [
 export default searchLocations;
 
 export const buttonNames = [
-    'Requested By Patron',
-    'Ongoing',
-    'Inventory',
-    'Follow Up'
+    'Requested By Patron',          // info
+    'Ongoing',                      // primary
+    'Inventory',                    // info
+    'Follow Up',                    // primary
+    'Awaiting Librarian Decision',  // info
+    'Searched But Not Found'        // primary
 ];
 
 export const buttons = [
