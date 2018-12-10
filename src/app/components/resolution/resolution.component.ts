@@ -57,7 +57,6 @@ export class ResolutionComponent implements OnInit {
         this.http.lookAgain(this.book);
         this.book.searchStatus = 'Delay searching';
       }
-      this.http.updateStatus(this.book);
     } else if (this.book.searchStatus === 'Found') {
       this.http.updateStatus(this.book);
     } else {

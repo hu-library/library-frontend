@@ -36,7 +36,7 @@ export class HttpService {
       author: book.author,
       patron: book.patron
     }).subscribe(() => {
-      this.router.navigateByUrl('/');
+      this.updateStatus(book);
     });
   }
 
@@ -47,7 +47,7 @@ export class HttpService {
       author: book.author,
       patron: book.patron
     }).subscribe(() => {
-      this.router.navigateByUrl('/');
+      this.updateStatus(book);
     });
   }
 
