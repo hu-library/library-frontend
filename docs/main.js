@@ -273,13 +273,6 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-var Colors;
-(function (Colors) {
-    Colors[Colors["primary"] = 0] = "primary";
-    Colors[Colors["info"] = 1] = "info";
-    Colors[Colors["success"] = 2] = "success";
-    Colors[Colors["warning"] = 3] = "warning"; // yellow
-})(Colors || (Colors = {}));
 var CardComponent = /** @class */ (function () {
     function CardComponent(store, router) {
         this.store = store;
@@ -293,24 +286,33 @@ var CardComponent = /** @class */ (function () {
             switch (this.title) {
                 case 'Requested By Patron':
                     this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getRequestedByPatronBooks"]);
-                    this.buttonColor = 'btn-info';
-                    this.badgeColor = 'badge-primary';
                     break;
                 case 'Ongoing':
                     this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getOngoingBooks"]);
-                    this.buttonColor = 'btn-primary';
-                    this.badgeColor = 'badge-success';
                     break;
                 case 'Inventory':
                     this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getInventoryBooks"]);
-                    this.buttonColor = 'btn-info';
-                    this.badgeColor = 'badge-primary';
                     break;
                 case 'Follow Up':
                     this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getFollowUpBooks"]);
-                    this.buttonColor = 'btn-primary';
-                    this.badgeColor = 'badge-success';
                     break;
+                case 'Awaiting Librarian Decision':
+                    this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getAwaitingDecisionBooks"]);
+                    break;
+                case 'Searched But Not Found':
+                    this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getMissingBooks"]);
+                    break;
+            }
+            if (this.title === 'Requested By Patron' ||
+                this.title === 'Inventory' ||
+                this.title === 'Awaiting Librarian Decision') {
+                this.buttonColor = 'btn-info';
+                this.badgeColor = 'badge-primary';
+            }
+            else if (this.title === 'Ongoing' ||
+                this.title === 'Follow Up' || this.title === 'Searched But Not Found') {
+                this.buttonColor = 'btn-primary';
+                this.badgeColor = 'badge-success';
             }
         }
         this.books$.subscribe(function (books) { return _this.books = books; });
@@ -380,6 +382,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_http_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/http.service */ "./src/app/services/http.service.ts");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
 /* harmony import */ var _store_actions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../store/actions */ "./src/app/store/actions.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../config */ "./src/app/config/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -394,16 +397,12 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var HomeComponent = /** @class */ (function () {
     function HomeComponent(httpService, store) {
         this.httpService = httpService;
         this.store = store;
-        this.buttonNames = [
-            'Requested By Patron',
-            'Ongoing',
-            'Inventory',
-            'Follow Up'
-        ];
+        this.buttonNames = _config__WEBPACK_IMPORTED_MODULE_5__["buttonNames"];
         this.allBooks$ = store.select(_store__WEBPACK_IMPORTED_MODULE_3__["getAllBooks"]);
         store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["ReloadBooksAction"]());
     }
@@ -568,14 +567,11 @@ var NotSearchedBeforeComponent = /** @class */ (function () {
     }
     NotSearchedBeforeComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.book$.subscribe(function (book) {
-            _this.book = book;
-        });
+        this.book$.subscribe(function (book) { return _this.book = book; });
     };
     NotSearchedBeforeComponent.prototype.beginSearching = function () {
-        console.log(this.book);
         this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_3__["StartBookSearchAction"](this.book.callNumber));
-        this.httpService.updateStatus(this.book).subscribe();
+        this.httpService.updateStatus(this.book, false);
     };
     NotSearchedBeforeComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -599,7 +595,7 @@ var NotSearchedBeforeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"card\">\n  <div class=\"card-body\" *ngIf=\"book\">\n    <h5 class=\"card-title\">{{book.title}}</h5>\n    <h5 class=\"card-title\">{{book.author}}</h5>\n    <h5 class=\"card-title\">{{book.callNumber}}</h5>\n\n    <div [ngClass]=\"[buttonCSS]\">\n      <div *ngFor=\"let button of buttons\">\n        <label><input type=\"radio\" name=\"action\" [value]=\"button.action\" [(ngModel)]=\"buttonValue\"> {{button.name}}</label>\n      </div>\n    </div>\n\n    <div class=\"card-title text-center\">\n      <label>Location found: <br><input type=\"text\" class=\"form-control\"></label>\n    </div>\n\n    <div *ngIf=\"book.patron\" class=\"wanted-by\">\n      <div class=\"card-body\">\n        <h6 class=\"card-title text-center\">Wanted by Patron:</h6>\n        <h6 *ngIf=\"checkPatronInfo('name')\" class=\"card-title text-center\">{{book.patron.name}}</h6>\n        <h6 *ngIf=\"checkPatronInfo('hNumber')\" class=\"card-title text-center\">H-Number: {{book.patron.hNumber}}</h6>\n        <h6 *ngIf=\"checkPatronInfo('email')\" class=\"card-title text-center\">{{book.patron.email}}</h6>\n      </div>\n    </div>\n\n    <button class=\"btn btn-large\" (click)=\"updateStatus()\">Submit</button>\n\n  </div>\n</div>"
+module.exports = "<div class=\"card\">\n  <div class=\"card-body\" *ngIf=\"book\">\n    <h5 class=\"card-title\">{{book.title}}</h5>\n    <h5 class=\"card-title\">{{book.author}}</h5>\n    <h5 class=\"card-title\">{{book.callNumber}}</h5>\n    <span *ngIf=\"book.searchStatus !== 'Found'\">\n      <div [ngClass]=\"[buttonCSS]\">\n        <div *ngFor=\"let button of buttons\">\n          <label><input type=\"radio\" name=\"action\" [value]=\"button.action\" [(ngModel)]=\"buttonValue\"> {{button.name}}</label>\n        </div>\n      </div>\n    </span>\n\n    <div *ngIf=\"book.searchStatus === 'Found'\" class=\"card-title text-center\">\n      <label>Location found: <br><input type=\"text\" class=\"form-control\"></label>\n    </div>\n\n    <div *ngIf=\"book.patron\" class=\"wanted-by\">\n      <div class=\"card-body\">\n        <h6 class=\"card-title text-center\">Wanted by Patron:</h6>\n        <h6 *ngIf=\"checkPatronInfo('name')\" class=\"card-title text-center\">{{book.patron.name}}</h6>\n        <h6 *ngIf=\"checkPatronInfo('hNumber')\" class=\"card-title text-center\">H-Number: {{book.patron.hNumber}}</h6>\n        <h6 *ngIf=\"checkPatronInfo('email')\" class=\"card-title text-center\">{{book.patron.email}}</h6>\n      </div>\n    </div>\n\n    <button class=\"btn btn-large\" (click)=\"updateStatus()\">\n      {{book.searchStatus === 'Found' ? 'Home' : 'Submit'}}\n    </button>\n\n  </div>\n</div>"
 
 /***/ }),
 
@@ -610,7 +606,7 @@ module.exports = "<div class=\"card\">\n  <div class=\"card-body\" *ngIf=\"book\
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".card {\n  background-color: #555;\n  border-radius: 35px; }\n  @media screen and (min-width: 600px) {\n    .card {\n      width: 50%;\n      margin-left: 25%;\n      margin-top: 10%; } }\n  @media not screen and (min-width: 600px) {\n    .card {\n      width: 75%;\n      margin-left: 12.5%;\n      margin-top: 20%; } }\n  .buttons {\n  padding-left: 15%;\n  padding-top: 5%; }\n  .btn {\n  display: block;\n  margin: 0 auto; }\n  label {\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none; }\n  .wanted-by {\n  background-color: #888;\n  margin-top: 0;\n  margin-bottom: .75rem;\n  border-radius: 35px; }\n  .invalid-buttons {\n  color: indianred; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9yZXNvbHV0aW9uL0M6XFxVc2Vyc1xcbGlic3R1ZGVudDJcXERvY3VtZW50c1xcY29kZVxcZnJvbnRlbmQvc3JjXFxhcHBcXGNvbXBvbmVudHNcXHJlc29sdXRpb25cXHJlc29sdXRpb24uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSx1QkFBc0I7RUFXdEIsb0JBQW1CLEVBQ3RCO0VBWEc7SUFGSjtNQUdRLFdBQVU7TUFDVixpQkFBZ0I7TUFDaEIsZ0JBQWUsRUFRdEIsRUFBQTtFQU5HO0lBUEo7TUFRUSxXQUFVO01BQ1YsbUJBQWtCO01BQ2xCLGdCQUFlLEVBR3RCLEVBQUE7RUFDRDtFQUNJLGtCQUFpQjtFQUNqQixnQkFBZSxFQUNsQjtFQUNEO0VBQ0ksZUFBYztFQUNkLGVBQWMsRUFDakI7RUFFRDtFQUNJLDRCQUEyQjtFQUMzQiwwQkFBeUI7RUFFekIsdUJBQXNCO0VBQ3RCLHNCQUFxQjtFQUNyQixrQkFBaUIsRUFDcEI7RUFDRDtFQUNJLHVCQUFzQjtFQUN0QixjQUFhO0VBQ2Isc0JBQXFCO0VBQ3JCLG9CQUFtQixFQUN0QjtFQUVEO0VBQ0ksaUJBQWdCLEVBQ25CIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9yZXNvbHV0aW9uL3Jlc29sdXRpb24uY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY2FyZCB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbiAgICBAbWVkaWEgc2NyZWVuIGFuZCAobWluLXdpZHRoOiA2MDBweCkge1xuICAgICAgICB3aWR0aDogNTAlO1xuICAgICAgICBtYXJnaW4tbGVmdDogMjUlO1xuICAgICAgICBtYXJnaW4tdG9wOiAxMCU7XG4gICAgfVxuICAgIEBtZWRpYSBub3Qgc2NyZWVuIGFuZCAobWluLXdpZHRoOiA2MDBweCkge1xuICAgICAgICB3aWR0aDogNzUlO1xuICAgICAgICBtYXJnaW4tbGVmdDogMTIuNSU7XG4gICAgICAgIG1hcmdpbi10b3A6IDIwJTtcbiAgICB9XG4gICAgYm9yZGVyLXJhZGl1czogMzVweDtcbn1cbi5idXR0b25zIHtcbiAgICBwYWRkaW5nLWxlZnQ6IDE1JTtcbiAgICBwYWRkaW5nLXRvcDogNSU7XG59XG4uYnRuIHtcbiAgICBkaXNwbGF5OiBibG9jaztcbiAgICBtYXJnaW46IDAgYXV0bztcbn1cblxubGFiZWwge1xuICAgIC13ZWJraXQtdG91Y2gtY2FsbG91dDogbm9uZTtcbiAgICAtd2Via2l0LXVzZXItc2VsZWN0OiBub25lO1xuICAgIC1raHRtbC11c2VyLXNlbGVjdDogbm9uZTtcbiAgICAtbW96LXVzZXItc2VsZWN0OiBub25lO1xuICAgIC1tcy11c2VyLXNlbGVjdDogbm9uZTtcbiAgICB1c2VyLXNlbGVjdDogbm9uZTtcbn1cbi53YW50ZWQtYnkge1xuICAgIGJhY2tncm91bmQtY29sb3I6ICM4ODg7XG4gICAgbWFyZ2luLXRvcDogMDtcbiAgICBtYXJnaW4tYm90dG9tOiAuNzVyZW07XG4gICAgYm9yZGVyLXJhZGl1czogMzVweDtcbn1cblxuLmludmFsaWQtYnV0dG9ucyB7XG4gICAgY29sb3I6IGluZGlhbnJlZDtcbn0iXX0= */"
+module.exports = ".card {\n  background-color: #555;\n  border-radius: 35px; }\n  @media screen and (min-width: 600px) {\n    .card {\n      width: 50%;\n      margin-left: 25%;\n      margin-top: 10%; } }\n  @media not screen and (min-width: 600px) {\n    .card {\n      width: 75%;\n      margin-left: 12.5%;\n      margin-top: 20%; } }\n  .buttons {\n  padding-left: 15%;\n  padding-top: 5%; }\n  .btn {\n  display: block;\n  margin: 0 auto; }\n  label {\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none; }\n  .wanted-by {\n  background-color: #888;\n  margin-top: 0;\n  margin-bottom: .75rem;\n  border-radius: 35px; }\n  @media screen and (min-width: 600px) {\n    .wanted-by {\n      margin-right: 25%;\n      margin-left: 25%; } }\n  .invalid-buttons {\n  color: indianred; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9yZXNvbHV0aW9uL0M6XFxVc2Vyc1xcbGlic3R1ZGVudDJcXERvY3VtZW50c1xcY29kZVxcZnJvbnRlbmQvc3JjXFxhcHBcXGNvbXBvbmVudHNcXHJlc29sdXRpb25cXHJlc29sdXRpb24uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSx1QkFBc0I7RUFXdEIsb0JBQW1CLEVBQ3RCO0VBWEc7SUFGSjtNQUdRLFdBQVU7TUFDVixpQkFBZ0I7TUFDaEIsZ0JBQWUsRUFRdEIsRUFBQTtFQU5HO0lBUEo7TUFRUSxXQUFVO01BQ1YsbUJBQWtCO01BQ2xCLGdCQUFlLEVBR3RCLEVBQUE7RUFDRDtFQUNJLGtCQUFpQjtFQUNqQixnQkFBZSxFQUNsQjtFQUNEO0VBQ0ksZUFBYztFQUNkLGVBQWMsRUFDakI7RUFFRDtFQUNJLDRCQUEyQjtFQUMzQiwwQkFBeUI7RUFFekIsdUJBQXNCO0VBQ3RCLHNCQUFxQjtFQUNyQixrQkFBaUIsRUFDcEI7RUFDRDtFQUNJLHVCQUFzQjtFQUN0QixjQUFhO0VBQ2Isc0JBQXFCO0VBQ3JCLG9CQUFtQixFQUt0QjtFQUpHO0lBTEo7TUFNUSxrQkFBaUI7TUFDakIsaUJBQWdCLEVBRXZCLEVBQUE7RUFFRDtFQUNJLGlCQUFnQixFQUNuQiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvcmVzb2x1dGlvbi9yZXNvbHV0aW9uLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmNhcmQge1xuICAgIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XG4gICAgQG1lZGlhIHNjcmVlbiBhbmQgKG1pbi13aWR0aDogNjAwcHgpIHtcbiAgICAgICAgd2lkdGg6IDUwJTtcbiAgICAgICAgbWFyZ2luLWxlZnQ6IDI1JTtcbiAgICAgICAgbWFyZ2luLXRvcDogMTAlO1xuICAgIH1cbiAgICBAbWVkaWEgbm90IHNjcmVlbiBhbmQgKG1pbi13aWR0aDogNjAwcHgpIHtcbiAgICAgICAgd2lkdGg6IDc1JTtcbiAgICAgICAgbWFyZ2luLWxlZnQ6IDEyLjUlO1xuICAgICAgICBtYXJnaW4tdG9wOiAyMCU7XG4gICAgfVxuICAgIGJvcmRlci1yYWRpdXM6IDM1cHg7XG59XG4uYnV0dG9ucyB7XG4gICAgcGFkZGluZy1sZWZ0OiAxNSU7XG4gICAgcGFkZGluZy10b3A6IDUlO1xufVxuLmJ0biB7XG4gICAgZGlzcGxheTogYmxvY2s7XG4gICAgbWFyZ2luOiAwIGF1dG87XG59XG5cbmxhYmVsIHtcbiAgICAtd2Via2l0LXRvdWNoLWNhbGxvdXQ6IG5vbmU7XG4gICAgLXdlYmtpdC11c2VyLXNlbGVjdDogbm9uZTtcbiAgICAta2h0bWwtdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgLW1vei11c2VyLXNlbGVjdDogbm9uZTtcbiAgICAtbXMtdXNlci1zZWxlY3Q6IG5vbmU7XG4gICAgdXNlci1zZWxlY3Q6IG5vbmU7XG59XG4ud2FudGVkLWJ5IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjODg4O1xuICAgIG1hcmdpbi10b3A6IDA7XG4gICAgbWFyZ2luLWJvdHRvbTogLjc1cmVtO1xuICAgIGJvcmRlci1yYWRpdXM6IDM1cHg7XG4gICAgQG1lZGlhIHNjcmVlbiBhbmQgKG1pbi13aWR0aDogNjAwcHgpIHtcbiAgICAgICAgbWFyZ2luLXJpZ2h0OiAyNSU7XG4gICAgICAgIG1hcmdpbi1sZWZ0OiAyNSU7XG4gICAgfVxufVxuXG4uaW52YWxpZC1idXR0b25zIHtcbiAgICBjb2xvcjogaW5kaWFucmVkO1xufSJdfQ== */"
 
 /***/ }),
 
@@ -629,6 +625,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
 /* harmony import */ var _services_http_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/http.service */ "./src/app/services/http.service.ts");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../config */ "./src/app/config/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -643,25 +640,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var ResolutionComponent = /** @class */ (function () {
     function ResolutionComponent(store, http, router) {
         this.store = store;
         this.http = http;
         this.router = router;
-        this.buttons = [
-            {
-                name: 'Mark as pending decision & email librarian',
-                action: 'Librarian decision'
-            },
-            {
-                name: 'Book not found, revisit next month, & email librarian',
-                action: 'Look again'
-            },
-            {
-                name: 'Book found!',
-                action: 'Found'
-            }
-        ];
+        this.buttons = _config__WEBPACK_IMPORTED_MODULE_5__["buttons"];
         this.selectedBook$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSelectedBook"]);
     }
     ResolutionComponent.prototype.ngOnInit = function () {
@@ -690,20 +675,18 @@ var ResolutionComponent = /** @class */ (function () {
     };
     ResolutionComponent.prototype.updateStatus = function () {
         var _this = this;
-        console.log('updating status', this.buttonValue);
         if (this.buttonValue) {
             if (this.buttonValue === 'Librarian decision') {
-                this.http.librarianDecision(this.book).subscribe();
+                this.http.librarianDecision(this.book);
+                this.book.searchStatus = 'Stop searching';
             }
             else if (this.buttonValue === 'Look again') {
-                this.http.lookAgain(this.book).subscribe();
+                this.http.lookAgain(this.book);
+                this.book.searchStatus = 'Delay searching';
             }
-            else if (this.buttonValue === 'Found') {
-                // maybe do something ¯\_(ツ)_/¯
-            }
-            this.http.updateStatus(this.book).subscribe(function (res) {
-                _this.router.navigateByUrl('/');
-            });
+        }
+        else if (this.book.searchStatus === 'Found') {
+            this.http.updateStatus(this.book);
         }
         else {
             this.buttonCSS += ' invalid-buttons';
@@ -904,7 +887,7 @@ var CheckboxComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"md-col-4\" *ngIf=\"book\">\n  <div class=\"card-title text-center\">Status: {{book.searchStatus}}</div>\n  <div class=\"card-title text-center\">Search Count: {{book.searchCount}}</div>\n  <div class=\"card-title text-center\">Urgency: {{book.urgency}}</div>\n  <div>\n    <table>\n      <tr *ngFor=\"let name of names\">\n        <app-checkbox [name]=\"name\"></app-checkbox>\n      </tr>\n    </table>\n    <div class=\"card-title text-center\"><input type=\"text\" class=\"form-control\" placeholder=\"Location found...\"></div>\n    <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n    <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n  </div>"
+module.exports = "<div class=\"md-col-4\" *ngIf=\"book\">\n  <div class=\"card-title text-center\">Status: {{book.searchStatus}}</div>\n  <div class=\"card-title text-center\">Search Count: {{book.searchCount}}</div>\n  <div class=\"card-title text-center\">Urgency: {{book.urgency}}</div>\n  <div>\n    <table>\n      <tr *ngFor=\"let name of names\">\n        <app-checkbox [name]=\"name\"></app-checkbox>\n      </tr>\n    </table>\n    <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n    <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n  </div>"
 
 /***/ }),
 
@@ -935,7 +918,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store_actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../store/actions */ "./src/app/store/actions.ts");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _services_config_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../services/config.service */ "./src/app/services/config.service.ts");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../config */ "./src/app/config/index.ts");
+/* harmony import */ var _services_http_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../services/http.service */ "./src/app/services/http.service.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../config */ "./src/app/config/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -952,12 +936,14 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var SearchedBeforeComponent = /** @class */ (function () {
-    function SearchedBeforeComponent(store, router, config) {
+    function SearchedBeforeComponent(store, router, config, http) {
         this.store = store;
         this.router = router;
         this.config = config;
-        this.names = _config__WEBPACK_IMPORTED_MODULE_6__["default"];
+        this.http = http;
+        this.names = _config__WEBPACK_IMPORTED_MODULE_7__["default"];
         this.book$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSelectedBook"]);
         this.allChecked$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["lookedEverywhere"]);
     }
@@ -977,6 +963,7 @@ var SearchedBeforeComponent = /** @class */ (function () {
     SearchedBeforeComponent.prototype.found = function () {
         this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_3__["FoundBookAction"](this.book.callNumber));
         this.router.navigateByUrl('/' + this.book.urlID + '/resolve');
+        this.http.updateStatus(this.book, false);
     };
     SearchedBeforeComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -985,7 +972,7 @@ var SearchedBeforeComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./searched-before.component.scss */ "./src/app/components/searched-before/searched-before.component.scss")]
         }),
         __metadata("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_1__["Store"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"],
-            _services_config_service__WEBPACK_IMPORTED_MODULE_5__["ConfigService"]])
+            _services_config_service__WEBPACK_IMPORTED_MODULE_5__["ConfigService"], _services_http_service__WEBPACK_IMPORTED_MODULE_6__["HttpService"]])
     ], SearchedBeforeComponent);
     return SearchedBeforeComponent;
 }());
@@ -998,12 +985,14 @@ var SearchedBeforeComponent = /** @class */ (function () {
 /*!*********************************!*\
   !*** ./src/app/config/index.ts ***!
   \*********************************/
-/*! exports provided: searchLocations, default */
+/*! exports provided: searchLocations, default, buttonNames, buttons */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchLocations", function() { return searchLocations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonNames", function() { return buttonNames; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttons", function() { return buttons; });
 var searchLocations = [
     'Home',
     'Reshelving Carts',
@@ -1020,6 +1009,24 @@ var searchLocations = [
     'Brewer Collection'
 ];
 /* harmony default export */ __webpack_exports__["default"] = (searchLocations);
+var buttonNames = [
+    'Requested By Patron',
+    'Ongoing',
+    'Inventory',
+    'Follow Up',
+    'Awaiting Librarian Decision',
+    'Searched But Not Found' // primary
+];
+var buttons = [
+    {
+        name: 'Mark as pending decision & email librarian',
+        action: 'Librarian decision'
+    },
+    {
+        name: 'Book not found, revisit next month, & email librarian',
+        action: 'Look again'
+    }
+];
 
 
 /***/ }),
@@ -1050,6 +1057,8 @@ function sortStateBooks(state) {
     state.ongoingBooks.sort(sortBooks);
     state.inventoryBooks.sort(sortBooks);
     state.followUpBooks.sort(sortBooks);
+    state.missingBooks.sort(sortBooks);
+    state.awaitingDecisionBooks.sort(sortBooks);
 }
 
 
@@ -1161,6 +1170,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HttpService", function() { return HttpService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1172,37 +1182,47 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
 var HttpService = /** @class */ (function () {
-    function HttpService(http) {
+    function HttpService(http, router) {
         this.http = http;
+        this.router = router;
     }
     HttpService.prototype.getAllData = function () {
         return this.http.get('http://localhost:8000/');
     };
     HttpService.prototype.saveSearchedLocations = function (book) {
-        book.callNumber = book.callNumber.replace(/ /g, '-');
         return this.http.post("http://localhost:8000/searched/" + book.callNumber, { locations: this.getSearchedLocations(book) });
     };
-    HttpService.prototype.updateStatus = function (book) {
-        book.callNumber = book.callNumber.replace(/ /g, '-');
-        return this.http.post("http://localhost:8000/status/" + book.callNumber, { status: book.searchStatus });
+    HttpService.prototype.updateStatus = function (book, navigate) {
+        var _this = this;
+        if (navigate === void 0) { navigate = true; }
+        this.http.post("http://localhost:8000/status/" + book.callNumber, { status: book.searchStatus }).subscribe(function () {
+            if (navigate) {
+                _this.router.navigateByUrl('/');
+            }
+        });
     };
     HttpService.prototype.librarianDecision = function (book) {
-        book.callNumber = book.callNumber.replace(/ /g, '-');
-        return this.http.post("http://localhost:8000/decision/", {
+        var _this = this;
+        this.http.post("http://localhost:8000/decision/", {
             title: book.title,
             callNumber: book.callNumber,
             author: book.author,
             patron: book.patron
+        }).subscribe(function () {
+            _this.updateStatus(book);
         });
     };
     HttpService.prototype.lookAgain = function (book) {
-        book.callNumber = book.callNumber.replace(/ /g, '-');
-        return this.http.post("http://localhost:8000/look-again/", {
+        var _this = this;
+        this.http.post("http://localhost:8000/look-again/", {
             title: book.title,
             callNumber: book.callNumber,
             author: book.author,
             patron: book.patron
+        }).subscribe(function () {
+            _this.updateStatus(book);
         });
     };
     HttpService.prototype.getSearchedLocations = function (book) {
@@ -1218,7 +1238,7 @@ var HttpService = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: 'root'
         }),
-        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]])
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]])
     ], HttpService);
     return HttpService;
 }());
@@ -1411,7 +1431,7 @@ var AuthEffects = /** @class */ (function () {
 /*!********************************!*\
   !*** ./src/app/store/index.ts ***!
   \********************************/
-/*! exports provided: reducers, getStoreState, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getSearchedLocations, lookedEverywhere */
+/*! exports provided: reducers, getStoreState, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getAwaitingDecisionBooks, getMissingBooks, getSearchedLocations, lookedEverywhere */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1424,6 +1444,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getOngoingBooks", function() { return getOngoingBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInventoryBooks", function() { return getInventoryBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFollowUpBooks", function() { return getFollowUpBooks; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAwaitingDecisionBooks", function() { return getAwaitingDecisionBooks; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMissingBooks", function() { return getMissingBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSearchedLocations", function() { return getSearchedLocations; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookedEverywhere", function() { return lookedEverywhere; });
 /* harmony import */ var reselect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! reselect */ "./node_modules/reselect/es/index.js");
@@ -1440,6 +1462,8 @@ var getRequestedByPatronBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["cr
 var getOngoingBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getOngoingBooks"]);
 var getInventoryBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getInventoryBooks"]);
 var getFollowUpBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getFollowUpBooks"]);
+var getAwaitingDecisionBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getAwaitingDecisionBooks"]);
+var getMissingBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getMissingBooks"]);
 var getSearchedLocations = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getSearchedLocations"]);
 var lookedEverywhere = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["searchedEverywhere"]);
 
@@ -1450,7 +1474,7 @@ var lookedEverywhere = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelec
 /*!********************************!*\
   !*** ./src/app/store/store.ts ***!
   \********************************/
-/*! exports provided: initialState, reducer, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getSearchedLocations, searchedEverywhere */
+/*! exports provided: initialState, reducer, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getSearchedLocations, getMissingBooks, getAwaitingDecisionBooks, searchedEverywhere */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1464,6 +1488,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInventoryBooks", function() { return getInventoryBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFollowUpBooks", function() { return getFollowUpBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSearchedLocations", function() { return getSearchedLocations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMissingBooks", function() { return getMissingBooks; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAwaitingDecisionBooks", function() { return getAwaitingDecisionBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchedEverywhere", function() { return searchedEverywhere; });
 /* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./src/app/store/actions.ts");
 /* harmony import */ var _models_book_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/book.model */ "./src/app/models/book.model.ts");
@@ -1489,6 +1515,8 @@ var initialState = {
     ongoingBooks: [],
     inventoryBooks: [],
     followUpBooks: [],
+    awaitingDecisionBooks: [],
+    missingBooks: [],
 };
 function lookedEverywhere(state) {
     if (state && state.selectedBook && state.selectedBook.searchedLocations) {
@@ -1547,7 +1575,7 @@ function reducer(state, action) {
             return __assign({}, state, { books: state.books.concat([action.payload]) });
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["ADD_BOOK_BULK"]: {
-            var books = [], requestedByPatronBooks = [], ongoingBooks = [], followUpBooks = [];
+            var books = [], requestedByPatronBooks = [], ongoingBooks = [], followUpBooks = [], missingBooks = [], awaitingDecisionBooks = [];
             for (var _f = 0, _g = action.payload; _f < _g.length; _f++) {
                 var book = _g[_f];
                 Object(_models_book_model__WEBPACK_IMPORTED_MODULE_1__["generateMap"])(book);
@@ -1563,13 +1591,21 @@ function reducer(state, action) {
                     case 'Found':
                         followUpBooks.push(book);
                         break;
+                    case 'Delay searching':
+                        missingBooks.push(book);
+                        break;
+                    case 'Stop searching':
+                        awaitingDecisionBooks.push(book);
+                        break;
                 }
             }
             Object(_config_sort__WEBPACK_IMPORTED_MODULE_2__["sortStateBooks"])(state);
             return __assign({}, state, { books: books,
                 requestedByPatronBooks: requestedByPatronBooks,
                 ongoingBooks: ongoingBooks,
-                followUpBooks: followUpBooks });
+                followUpBooks: followUpBooks,
+                missingBooks: missingBooks,
+                awaitingDecisionBooks: awaitingDecisionBooks });
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["SELECT_BOOK"]: {
             return __assign({}, state, { selectedBook: action.payload });
@@ -1593,6 +1629,8 @@ var getOngoingBooks = function (state) { return state.ongoingBooks; };
 var getInventoryBooks = function (state) { return state.inventoryBooks; };
 var getFollowUpBooks = function (state) { return state.followUpBooks; };
 var getSearchedLocations = function (state) { return state.selectedBook.searchedLocations; };
+var getMissingBooks = function (state) { return state.missingBooks; };
+var getAwaitingDecisionBooks = function (state) { return state.awaitingDecisionBooks; };
 var searchedEverywhere = function (state) { return lookedEverywhere(state); };
 
 
