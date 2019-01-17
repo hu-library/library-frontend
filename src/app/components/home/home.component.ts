@@ -5,6 +5,7 @@ import { HttpService } from '../../services/http.service';
 import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
 import { Book } from '../../models/book.model';
+import { buttonNames } from '../../config';
 
 @Component({
   selector: 'app-home',
@@ -13,13 +14,8 @@ import { Book } from '../../models/book.model';
 })
 export class HomeComponent implements OnInit {
 
-  private buttonNames = [
-    'Requested By Patron',
-    'Ongoing',
-    'Inventory',
-    'Follow Up'
-  ];
   private allBooks$: Observable<Book[]>;
+  private buttonNames = buttonNames;
 
   constructor(private httpService: HttpService, private store: Store<fromRoot.State>) {
     this.allBooks$ = store.select(fromRoot.getAllBooks);

@@ -17,3 +17,23 @@ export const searchLocations: SearchLocation[] = [
 ];
 
 export default searchLocations;
+
+export const buttonNames = [
+    'Requested By Patron',          // info
+    'Ongoing',                      // primary
+    'Inventory',                    // info
+    'Follow Up',                    // primary
+    'Awaiting Librarian Decision',  // info
+    'Searched But Not Found'        // primary
+];
+
+export const buttons = [
+    {
+        name: 'Mark as pending decision & email librarian',
+        action: 'Librarian decision'
+    },
+    {
+        name: 'Book not found, revisit next month, & email librarian',
+        action: 'Look again'
+    }
+];

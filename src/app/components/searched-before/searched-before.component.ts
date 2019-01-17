@@ -6,6 +6,7 @@ import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
 import { Router } from '@angular/router';
 import { ConfigService } from '../../services/config.service';
+import { HttpService } from '../../services/http.service';
 import searchLocations from '../../config';
 
 @Component({
@@ -22,7 +23,7 @@ export class SearchedBeforeComponent implements OnInit {
   private names = searchLocations;
 
   constructor(private store: Store<fromRoot.State>, private router: Router,
-              private config: ConfigService) {
+              private config: ConfigService, private http: HttpService) {
     this.book$ = store.select(fromRoot.getSelectedBook);
     this.allChecked$ = store.select(fromRoot.lookedEverywhere);
   }
@@ -44,5 +45,6 @@ export class SearchedBeforeComponent implements OnInit {
   found() {
     this.store.dispatch(new Actions.FoundBookAction(this.book.callNumber));
     this.router.navigateByUrl('/' + this.book.urlID + '/resolve');
+    this.http.updateStatus(this.book, false);
   }
 }

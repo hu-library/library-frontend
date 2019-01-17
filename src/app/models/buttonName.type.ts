@@ -2,4 +2,6 @@ export type ButtonNames =
     'Requested By Patron' |
     'Ongoing' |
     'Inventory' |
-    'Follow Up';
+    'Follow Up' |
+    'Awaiting Librarian Decision' |
+    'Searched But Not Found';
