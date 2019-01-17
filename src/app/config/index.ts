@@ -37,3 +37,5 @@ export const buttons = [
         action: 'Look again'
     }
 ];
+
+export const backendLocation = 'https://book-searching-app.herokuapp.com/';

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Book } from '../models/book.model';
 import { SearchLocation } from '../models/searchLocation.type';
 import { Router } from '@angular/router';
+import { backendLocation } from '../config';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +13,16 @@ export class HttpService {
   constructor(private http: HttpClient, private router: Router) { }
 
   getAllData() {
-    return this.http.get<Book[]>('http://localhost:8000/');
+    return this.http.get<Book[]>(backendLocation);
   }
 
   saveSearchedLocations(book: Book) {
-    return this.http.post(`http://localhost:8000/searched/${book.callNumber}`,
+    return this.http.post(`${backendLocation}/searched/${book.callNumber}`,
       { locations: this.getSearchedLocations(book) });
   }
 
   updateStatus(book: Book, navigate = true) {
-    this.http.post(`http://localhost:8000/status/${book.callNumber}`,
+    this.http.post(`${backendLocation}/status/${book.callNumber}`,
       { status: book.searchStatus }).subscribe(() => {
         if (navigate) {
           this.router.navigateByUrl('/');
@@ -30,7 +31,7 @@ export class HttpService {
   }
 
   librarianDecision(book: Book) {
-    this.http.post(`http://localhost:8000/decision/`, {
+    this.http.post(`${backendLocation}/decision/`, {
       title: book.title,
       callNumber: book.callNumber,
       author: book.author,
@@ -41,7 +42,7 @@ export class HttpService {
   }
 
   lookAgain(book: Book) {
-    this.http.post(`http://localhost:8000/look-again/`, {
+    this.http.post(`${backendLocation}/look-again/`, {
       title: book.title,
       callNumber: book.callNumber,
       author: book.author,

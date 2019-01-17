@@ -985,7 +985,7 @@ var SearchedBeforeComponent = /** @class */ (function () {
 /*!*********************************!*\
   !*** ./src/app/config/index.ts ***!
   \*********************************/
-/*! exports provided: searchLocations, default, buttonNames, buttons */
+/*! exports provided: searchLocations, default, buttonNames, buttons, backendLocation */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -993,6 +993,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchLocations", function() { return searchLocations; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonNames", function() { return buttonNames; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttons", function() { return buttons; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "backendLocation", function() { return backendLocation; });
 var searchLocations = [
     'Home',
     'Reshelving Carts',
@@ -1027,6 +1028,7 @@ var buttons = [
         action: 'Look again'
     }
 ];
+var backendLocation = 'https://book-searching-app.herokuapp.com/';
 
 
 /***/ }),
@@ -1171,6 +1173,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../config */ "./src/app/config/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1183,21 +1186,22 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var HttpService = /** @class */ (function () {
     function HttpService(http, router) {
         this.http = http;
         this.router = router;
     }
     HttpService.prototype.getAllData = function () {
-        return this.http.get('http://localhost:8000/');
+        return this.http.get(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"]);
     };
     HttpService.prototype.saveSearchedLocations = function (book) {
-        return this.http.post("http://localhost:8000/searched/" + book.callNumber, { locations: this.getSearchedLocations(book) });
+        return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/searched/" + book.callNumber, { locations: this.getSearchedLocations(book) });
     };
     HttpService.prototype.updateStatus = function (book, navigate) {
         var _this = this;
         if (navigate === void 0) { navigate = true; }
-        this.http.post("http://localhost:8000/status/" + book.callNumber, { status: book.searchStatus }).subscribe(function () {
+        this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/status/" + book.callNumber, { status: book.searchStatus }).subscribe(function () {
             if (navigate) {
                 _this.router.navigateByUrl('/');
             }
@@ -1205,7 +1209,7 @@ var HttpService = /** @class */ (function () {
     };
     HttpService.prototype.librarianDecision = function (book) {
         var _this = this;
-        this.http.post("http://localhost:8000/decision/", {
+        this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/decision/", {
             title: book.title,
             callNumber: book.callNumber,
             author: book.author,
@@ -1216,7 +1220,7 @@ var HttpService = /** @class */ (function () {
     };
     HttpService.prototype.lookAgain = function (book) {
         var _this = this;
-        this.http.post("http://localhost:8000/look-again/", {
+        this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/look-again/", {
             title: book.title,
             callNumber: book.callNumber,
             author: book.author,
