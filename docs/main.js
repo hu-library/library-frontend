@@ -1028,7 +1028,7 @@ var buttons = [
         action: 'Look again'
     }
 ];
-var backendLocation = 'https://book-searching-app.herokuapp.com/';
+var backendLocation = 'https://book-searching-app.herokuapp.com';
 
 
 /***/ }),
@@ -1193,7 +1193,7 @@ var HttpService = /** @class */ (function () {
         this.router = router;
     }
     HttpService.prototype.getAllData = function () {
-        return this.http.get(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"]);
+        return this.http.get(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/");
     };
     HttpService.prototype.saveSearchedLocations = function (book) {
         return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/searched/" + book.callNumber, { locations: this.getSearchedLocations(book) });

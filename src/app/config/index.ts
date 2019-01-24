@@ -38,4 +38,4 @@ export const buttons = [
     }
 ];
 
-export const backendLocation = 'https://book-searching-app.herokuapp.com/';
+export const backendLocation = 'https://book-searching-app.herokuapp.com';

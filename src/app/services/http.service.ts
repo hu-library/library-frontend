@@ -13,7 +13,7 @@ export class HttpService {
   constructor(private http: HttpClient, private router: Router) { }
 
   getAllData() {
-    return this.http.get<Book[]>(backendLocation);
+    return this.http.get<Book[]>(`${backendLocation}/`);
   }
 
   saveSearchedLocations(book: Book) {
