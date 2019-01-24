@@ -17,12 +17,12 @@ export class HttpService {
   }
 
   saveSearchedLocations(book: Book) {
-    return this.http.post(`${backendLocation}/searched/${book.callNumber}`,
+    return this.http.post(`${backendLocation}/searched/${book.callNumber.replace(/ /g, '-')}`,
       { locations: this.getSearchedLocations(book) });
   }
 
   updateStatus(book: Book, navigate = true) {
-    this.http.post(`${backendLocation}/status/${book.callNumber}`,
+    this.http.post(`${backendLocation}/status/${book.callNumber.replace(/ /g, '-')}`,
       { status: book.searchStatus }).subscribe(() => {
         if (navigate) {
           this.router.navigateByUrl('/');

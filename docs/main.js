@@ -1196,12 +1196,12 @@ var HttpService = /** @class */ (function () {
         return this.http.get(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/");
     };
     HttpService.prototype.saveSearchedLocations = function (book) {
-        return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/searched/" + book.callNumber, { locations: this.getSearchedLocations(book) });
+        return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/searched/" + book.callNumber.replace(/ /g, '-'), { locations: this.getSearchedLocations(book) });
     };
     HttpService.prototype.updateStatus = function (book, navigate) {
         var _this = this;
         if (navigate === void 0) { navigate = true; }
-        this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/status/" + book.callNumber, { status: book.searchStatus }).subscribe(function () {
+        this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/status/" + book.callNumber.replace(/ /g, '-'), { status: book.searchStatus }).subscribe(function () {
             if (navigate) {
                 _this.router.navigateByUrl('/');
             }
