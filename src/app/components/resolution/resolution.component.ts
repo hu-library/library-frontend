@@ -20,7 +20,7 @@ export class ResolutionComponent implements OnInit {
   private buttonValue: 'Librarian decision' | 'Look again' | 'Found' | '';
   private buttonCSS: string;
   private buttons = buttons;
-  private foundLocation: '';
+  private foundLocation = '';
 
   constructor(private store: Store<fromRoot.State>, private http: HttpService, private router: Router) {
     this.selectedBook$ = store.select(fromRoot.getSelectedBook);

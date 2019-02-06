@@ -647,6 +647,7 @@ var ResolutionComponent = /** @class */ (function () {
         this.http = http;
         this.router = router;
         this.buttons = _config__WEBPACK_IMPORTED_MODULE_5__["buttons"];
+        this.foundLocation = '';
         this.selectedBook$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSelectedBook"]);
     }
     ResolutionComponent.prototype.ngOnInit = function () {
