@@ -595,7 +595,7 @@ var NotSearchedBeforeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"card\">\n  <div class=\"card-body\" *ngIf=\"book\">\n    <h5 class=\"card-title\">{{book.title}}</h5>\n    <h5 class=\"card-title\">{{book.author}}</h5>\n    <h5 class=\"card-title\">{{book.callNumber}}</h5>\n    <span *ngIf=\"book.searchStatus !== 'Found'\">\n      <div [ngClass]=\"[buttonCSS]\">\n        <div *ngFor=\"let button of buttons\">\n          <label><input type=\"radio\" name=\"action\" [value]=\"button.action\" [(ngModel)]=\"buttonValue\"> {{button.name}}</label>\n        </div>\n      </div>\n    </span>\n\n    <div *ngIf=\"book.searchStatus === 'Found'\" class=\"card-title text-center\">\n      <label>Location found: <br><input type=\"text\" class=\"form-control\"></label>\n    </div>\n\n    <div *ngIf=\"book.patron\" class=\"wanted-by\">\n      <div class=\"card-body\">\n        <h6 class=\"card-title text-center\">Wanted by Patron:</h6>\n        <h6 *ngIf=\"checkPatronInfo('name')\" class=\"card-title text-center\">{{book.patron.name}}</h6>\n        <h6 *ngIf=\"checkPatronInfo('hNumber')\" class=\"card-title text-center\">H-Number: {{book.patron.hNumber}}</h6>\n        <h6 *ngIf=\"checkPatronInfo('email')\" class=\"card-title text-center\">{{book.patron.email}}</h6>\n      </div>\n    </div>\n\n    <button class=\"btn btn-large\" (click)=\"updateStatus()\">\n      {{book.searchStatus === 'Found' ? 'Home' : 'Submit'}}\n    </button>\n\n  </div>\n</div>"
+module.exports = "<div class=\"card\">\n  <div class=\"card-body\" *ngIf=\"book\">\n    <h5 class=\"card-title\">{{book.title}}</h5>\n    <h5 class=\"card-title\">{{book.author}}</h5>\n    <h5 class=\"card-title\">{{book.callNumber}}</h5>\n    <span *ngIf=\"book.searchStatus !== 'Found'\">\n      <div [ngClass]=\"[buttonCSS]\">\n        <div *ngFor=\"let button of buttons\">\n          <label><input type=\"radio\" name=\"action\" [value]=\"button.action\" [(ngModel)]=\"buttonValue\"> {{button.name}}</label>\n        </div>\n      </div>\n    </span>\n\n    <div *ngIf=\"book.searchStatus === 'Found'\" class=\"card-title text-center\">\n      <label>Location found: <br><input type=\"text\" [(ngModel)]=\"foundLocation\" class=\"form-control\"></label>\n    </div>\n\n    <div *ngIf=\"book.patron\" class=\"wanted-by\">\n      <div class=\"card-body\">\n        <h6 class=\"card-title text-center\">Wanted by Patron:</h6>\n        <h6 *ngIf=\"checkPatronInfo('name')\" class=\"card-title text-center\">{{book.patron.name}}</h6>\n        <h6 *ngIf=\"checkPatronInfo('hNumber')\" class=\"card-title text-center\">H-Number: {{book.patron.hNumber}}</h6>\n        <h6 *ngIf=\"checkPatronInfo('email')\" class=\"card-title text-center\">{{book.patron.email}}</h6>\n      </div>\n    </div>\n\n    <button class=\"btn btn-large\" (click)=\"updateStatus()\">\n      {{book.searchStatus === 'Found' ? 'Home' : 'Submit'}}\n    </button>\n\n  </div>\n</div>"
 
 /***/ }),
 
@@ -675,7 +675,7 @@ var ResolutionComponent = /** @class */ (function () {
     };
     ResolutionComponent.prototype.updateStatus = function () {
         var _this = this;
-        if (this.buttonValue) {
+        if (this.buttonValue && this.foundLocation) {
             if (this.buttonValue === 'Librarian decision') {
                 this.http.librarianDecision(this.book);
                 this.book.searchStatus = 'Stop searching';
@@ -686,6 +686,7 @@ var ResolutionComponent = /** @class */ (function () {
             }
         }
         else if (this.book.searchStatus === 'Found') {
+            this.http.setFoundLocation(this.book, this.foundLocation);
             this.http.updateStatus(this.book);
         }
         else {
@@ -1206,6 +1207,9 @@ var HttpService = /** @class */ (function () {
                 _this.router.navigateByUrl('/');
             }
         });
+    };
+    HttpService.prototype.setFoundLocation = function (book, foundLocation) {
+        this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/location/" + book.callNumber.replace(/ /g, '-'), { foundLocation: foundLocation }).subscribe();
     };
     HttpService.prototype.librarianDecision = function (book) {
         var _this = this;

@@ -30,6 +30,11 @@ export class HttpService {
       });
   }
 
+  setFoundLocation(book: Book, foundLocation: string) {
+    this.http.post(`${backendLocation}/location/${book.callNumber.replace(/ /g, '-')}`,
+    { foundLocation }).subscribe();
+  }
+
   librarianDecision(book: Book) {
     this.http.post(`${backendLocation}/decision/`, {
       title: book.title,

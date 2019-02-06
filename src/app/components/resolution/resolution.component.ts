@@ -20,6 +20,7 @@ export class ResolutionComponent implements OnInit {
   private buttonValue: 'Librarian decision' | 'Look again' | 'Found' | '';
   private buttonCSS: string;
   private buttons = buttons;
+  private foundLocation: '';
 
   constructor(private store: Store<fromRoot.State>, private http: HttpService, private router: Router) {
     this.selectedBook$ = store.select(fromRoot.getSelectedBook);
@@ -49,7 +50,7 @@ export class ResolutionComponent implements OnInit {
   }
 
   updateStatus() {
-    if (this.buttonValue) {
+    if (this.buttonValue && this.foundLocation) {
       if (this.buttonValue === 'Librarian decision') {
         this.http.librarianDecision(this.book);
         this.book.searchStatus = 'Stop searching';
@@ -58,6 +59,7 @@ export class ResolutionComponent implements OnInit {
         this.book.searchStatus = 'Delay searching';
       }
     } else if (this.book.searchStatus === 'Found') {
+      this.http.setFoundLocation(this.book, this.foundLocation);
       this.http.updateStatus(this.book);
     } else {
       this.buttonCSS += ' invalid-buttons';

@@ -12,7 +12,7 @@
     </span>
 
     <div *ngIf="book.searchStatus === 'Found'" class="card-title text-center">
-      <label>Location found: <br><input type="text" class="form-control"></label>
+      <label>Location found: <br><input type="text" [(ngModel)]="foundLocation" class="form-control"></label>
     </div>
 
     <div *ngIf="book.patron" class="wanted-by">
