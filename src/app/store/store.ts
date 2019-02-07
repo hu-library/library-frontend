@@ -1,13 +1,14 @@
 import * as Actions from './actions';
 import { Book, generateMap } from '../models/book.model';
 import { sortStateBooks } from '../config/sort';
+import { InventoryBook } from '../models/inventoryBook.model';
 
 export interface State {
     books: Book[];
     selectedBook: Book;
     requestedByPatronBooks: Book[];
     ongoingBooks: Book[];
-    inventoryBooks: Book[];
+    inventoryBooks: InventoryBook[];
     followUpBooks: Book[];
     awaitingDecisionBooks: Book[];
     missingBooks: Book[];
@@ -79,7 +80,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             sortStateBooks(state);
             return {
                 ...state,
-                books: [...state.books, action.payload ]
+                books: [...state.books, action.payload]
             };
         }
 
@@ -139,8 +140,24 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             };
         }
 
+        case Actions.LOAD_INVENTORY_ERROR:
         case Actions.RELOAD_BOOKS_ERROR: {
-            alert('error');
+            alert('Problem loading. Try reloading the page!');
+            return state;
+        }
+
+        case Actions.ADD_INVENTORY_BOOKS: {
+            state.inventoryBooks = [];
+            for (const inventoryBook of action.payload) {
+                state.inventoryBooks.push(inventoryBook);
+            }
+            state.inventoryBooks.sort((a, b) => {
+                if (a.callNumber > b.callNumber) {
+                    return 1;
+                } else if (a.callNumber < b.callNumber) {
+                    return -1;
+                }
+            });
             return state;
         }
 

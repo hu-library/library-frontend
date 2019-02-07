@@ -6,6 +6,7 @@ import { Book } from '../../models/book.model';
 import { Router } from '@angular/router';
 import { ButtonNames } from '../../models/buttonName.type';
 import * as Actions from '../../store/actions';
+import { InventoryBook } from 'src/app/models/inventoryBook.model';
 
 @Component({
   selector: 'app-card',
@@ -24,6 +25,8 @@ export class CardComponent implements OnInit {
   private badgeColor: string;
 
   private books$: Observable<Book[]>;
+  private inventoryBooks$: Observable<InventoryBook[]>;
+  private inventoryBooks: InventoryBook[];
   private books: Book[] = [];
 
   constructor(private store: Store<fromRoot.State>, private router: Router) { }
@@ -39,7 +42,8 @@ export class CardComponent implements OnInit {
           this.books$ = this.store.select(fromRoot.getOngoingBooks);
           break;
         case 'Inventory':
-          this.books$ = this.store.select(fromRoot.getInventoryBooks);
+          this.inventoryBooks$ = this.store.select(fromRoot.getInventoryBooks);
+          this.inventoryBooks = [];
           break;
         case 'Follow Up':
           this.books$ = this.store.select(fromRoot.getFollowUpBooks);
@@ -63,6 +67,7 @@ export class CardComponent implements OnInit {
       }
     }
     this.books$.subscribe(books => this.books = books);
+    this.inventoryBooks$.subscribe(books => this.inventoryBooks = books);
   }
 
   redirect(book: Book) {

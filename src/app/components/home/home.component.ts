@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   constructor(private httpService: HttpService, private store: Store<fromRoot.State>) {
     this.allBooks$ = store.select(fromRoot.getAllBooks);
     store.dispatch(new Actions.ReloadBooksAction());
+    store.dispatch(new Actions.LoadInventoryAction());
   }
 
   ngOnInit() { }

@@ -2,6 +2,7 @@ import { Action } from '@ngrx/store';
 import { Book } from '../models/book.model';
 import { PostRequest } from '../models/postRequest.model';
 import { SearchLocation } from '../models/searchLocation.type';
+import { InventoryBook } from '../models/inventoryBook.model';
 
 export const START_BOOK_SEARCH = 'START_BOOK_SEARCH';
 export const ADD_BOOK = 'ADD_BOOK';
@@ -13,7 +14,9 @@ export const SEARCHED_LOCATION = 'SEARCHED_LOCATION';
 export const SAVE_SEARCHED_LOCATION = 'SAVE_SEARCHED_LOCATION';
 export const RELOAD_BOOKS = 'RELOAD_BOOKS';
 export const RELOAD_BOOKS_ERROR = 'RELOAD_BOOKS_ERROR';
-
+export const LOAD_INVENTORY = 'LOAD_INVENTORY';
+export const LOAD_INVENTORY_ERROR = 'LOAD_INVENTORY_ERROR';
+export const ADD_INVENTORY_BOOKS = 'ADD_INVENTORY_BOOKS';
 
 export class StartBookSearchAction implements Action {
     readonly type = START_BOOK_SEARCH;
@@ -75,6 +78,24 @@ export class ReloadBooksErrorAction implements Action {
     constructor() { }
 }
 
+export class LoadInventoryAction implements Action {
+    readonly type = LOAD_INVENTORY;
+
+    constructor() {}
+}
+
+export class LoadInventoryErrorAction implements Action {
+    readonly type = LOAD_INVENTORY_ERROR;
+
+    constructor() {}
+}
+
+export class AddInventoryBooksAction implements Action {
+    readonly type = ADD_INVENTORY_BOOKS;
+
+    constructor(public payload: InventoryBook[]) {}
+}
+
 export type Actions =
     StartBookSearchAction |
     StopBookSearchAction |
@@ -85,4 +106,7 @@ export type Actions =
     SearchedLocationAction |
     SaveSearchedLocationsAction |
     ReloadBooksAction |
-    ReloadBooksErrorAction;
+    ReloadBooksErrorAction |
+    LoadInventoryAction |
+    LoadInventoryErrorAction |
+    AddInventoryBooksAction;

@@ -4,6 +4,7 @@ import { Book } from '../models/book.model';
 import { SearchLocation } from '../models/searchLocation.type';
 import { Router } from '@angular/router';
 import { backendLocation } from '../config';
+import { InventoryBook } from '../models/inventoryBook.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,10 @@ export class HttpService {
 
   getAllData() {
     return this.http.get<Book[]>(`${backendLocation}/`);
+  }
+
+  getInventoryData() {
+    return this.http.get<InventoryBook[]>(`${backendLocation}/inventory`);
   }
 
   saveSearchedLocations(book: Book) {

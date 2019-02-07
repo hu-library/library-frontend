@@ -291,7 +291,8 @@ var CardComponent = /** @class */ (function () {
                     this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getOngoingBooks"]);
                     break;
                 case 'Inventory':
-                    this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getInventoryBooks"]);
+                    this.inventoryBooks$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getInventoryBooks"]);
+                    this.inventoryBooks = [];
                     break;
                 case 'Follow Up':
                     this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getFollowUpBooks"]);
@@ -316,6 +317,7 @@ var CardComponent = /** @class */ (function () {
             }
         }
         this.books$.subscribe(function (books) { return _this.books = books; });
+        this.inventoryBooks$.subscribe(function (books) { return _this.inventoryBooks = books; });
     };
     CardComponent.prototype.redirect = function (book) {
         this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["SelectBookAction"](book));
@@ -405,6 +407,7 @@ var HomeComponent = /** @class */ (function () {
         this.buttonNames = _config__WEBPACK_IMPORTED_MODULE_5__["buttonNames"];
         this.allBooks$ = store.select(_store__WEBPACK_IMPORTED_MODULE_3__["getAllBooks"]);
         store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["ReloadBooksAction"]());
+        store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["LoadInventoryAction"]());
     }
     HomeComponent.prototype.ngOnInit = function () { };
     HomeComponent = __decorate([
@@ -647,7 +650,6 @@ var ResolutionComponent = /** @class */ (function () {
         this.http = http;
         this.router = router;
         this.buttons = _config__WEBPACK_IMPORTED_MODULE_5__["buttons"];
-        this.foundLocation = '';
         this.selectedBook$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSelectedBook"]);
     }
     ResolutionComponent.prototype.ngOnInit = function () {
@@ -1059,7 +1061,6 @@ function sortBooks(a, b) {
 function sortStateBooks(state) {
     state.requestedByPatronBooks.sort(sortBooks);
     state.ongoingBooks.sort(sortBooks);
-    state.inventoryBooks.sort(sortBooks);
     state.followUpBooks.sort(sortBooks);
     state.missingBooks.sort(sortBooks);
     state.awaitingDecisionBooks.sort(sortBooks);
@@ -1197,6 +1198,9 @@ var HttpService = /** @class */ (function () {
     HttpService.prototype.getAllData = function () {
         return this.http.get(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/");
     };
+    HttpService.prototype.getInventoryData = function () {
+        return this.http.get(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/inventory");
+    };
     HttpService.prototype.saveSearchedLocations = function (book) {
         return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/searched/" + book.callNumber.replace(/ /g, '-'), { locations: this.getSearchedLocations(book) });
     };
@@ -1260,7 +1264,7 @@ var HttpService = /** @class */ (function () {
 /*!**********************************!*\
   !*** ./src/app/store/actions.ts ***!
   \**********************************/
-/*! exports provided: START_BOOK_SEARCH, ADD_BOOK, ADD_BOOK_BULK, SELECT_BOOK, STOP_BOOK_SEARCH, FOUND_BOOK, SEARCHED_LOCATION, SAVE_SEARCHED_LOCATION, RELOAD_BOOKS, RELOAD_BOOKS_ERROR, StartBookSearchAction, StopBookSearchAction, FoundBookAction, AddBookAction, AddBookBulkAction, SelectBookAction, SearchedLocationAction, SaveSearchedLocationsAction, ReloadBooksAction, ReloadBooksErrorAction */
+/*! exports provided: START_BOOK_SEARCH, ADD_BOOK, ADD_BOOK_BULK, SELECT_BOOK, STOP_BOOK_SEARCH, FOUND_BOOK, SEARCHED_LOCATION, SAVE_SEARCHED_LOCATION, RELOAD_BOOKS, RELOAD_BOOKS_ERROR, LOAD_INVENTORY, LOAD_INVENTORY_ERROR, ADD_INVENTORY_BOOKS, StartBookSearchAction, StopBookSearchAction, FoundBookAction, AddBookAction, AddBookBulkAction, SelectBookAction, SearchedLocationAction, SaveSearchedLocationsAction, ReloadBooksAction, ReloadBooksErrorAction, LoadInventoryAction, LoadInventoryErrorAction, AddInventoryBooksAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1275,6 +1279,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SAVE_SEARCHED_LOCATION", function() { return SAVE_SEARCHED_LOCATION; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RELOAD_BOOKS", function() { return RELOAD_BOOKS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RELOAD_BOOKS_ERROR", function() { return RELOAD_BOOKS_ERROR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LOAD_INVENTORY", function() { return LOAD_INVENTORY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LOAD_INVENTORY_ERROR", function() { return LOAD_INVENTORY_ERROR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_INVENTORY_BOOKS", function() { return ADD_INVENTORY_BOOKS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StartBookSearchAction", function() { return StartBookSearchAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StopBookSearchAction", function() { return StopBookSearchAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FoundBookAction", function() { return FoundBookAction; });
@@ -1285,6 +1292,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SaveSearchedLocationsAction", function() { return SaveSearchedLocationsAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReloadBooksAction", function() { return ReloadBooksAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReloadBooksErrorAction", function() { return ReloadBooksErrorAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LoadInventoryAction", function() { return LoadInventoryAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LoadInventoryErrorAction", function() { return LoadInventoryErrorAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AddInventoryBooksAction", function() { return AddInventoryBooksAction; });
 var START_BOOK_SEARCH = 'START_BOOK_SEARCH';
 var ADD_BOOK = 'ADD_BOOK';
 var ADD_BOOK_BULK = 'ADD_BOOK_BULK';
@@ -1295,6 +1305,9 @@ var SEARCHED_LOCATION = 'SEARCHED_LOCATION';
 var SAVE_SEARCHED_LOCATION = 'SAVE_SEARCHED_LOCATION';
 var RELOAD_BOOKS = 'RELOAD_BOOKS';
 var RELOAD_BOOKS_ERROR = 'RELOAD_BOOKS_ERROR';
+var LOAD_INVENTORY = 'LOAD_INVENTORY';
+var LOAD_INVENTORY_ERROR = 'LOAD_INVENTORY_ERROR';
+var ADD_INVENTORY_BOOKS = 'ADD_INVENTORY_BOOKS';
 var StartBookSearchAction = /** @class */ (function () {
     function StartBookSearchAction(payload) {
         this.payload = payload;
@@ -1373,6 +1386,28 @@ var ReloadBooksErrorAction = /** @class */ (function () {
     return ReloadBooksErrorAction;
 }());
 
+var LoadInventoryAction = /** @class */ (function () {
+    function LoadInventoryAction() {
+        this.type = LOAD_INVENTORY;
+    }
+    return LoadInventoryAction;
+}());
+
+var LoadInventoryErrorAction = /** @class */ (function () {
+    function LoadInventoryErrorAction() {
+        this.type = LOAD_INVENTORY_ERROR;
+    }
+    return LoadInventoryErrorAction;
+}());
+
+var AddInventoryBooksAction = /** @class */ (function () {
+    function AddInventoryBooksAction(payload) {
+        this.payload = payload;
+        this.type = ADD_INVENTORY_BOOKS;
+    }
+    return AddInventoryBooksAction;
+}());
+
 
 
 /***/ }),
@@ -1420,11 +1455,16 @@ var AuthEffects = /** @class */ (function () {
             // If request fails, dispatch failed action
             Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function () { return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["RELOAD_BOOKS_ERROR"] }); }));
         }));
+        this.loadInventoryBooks$ = this.actions$.pipe(Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_1__["ofType"])(_actions__WEBPACK_IMPORTED_MODULE_4__["LOAD_INVENTORY"]), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function () { return _this.http.getInventoryData().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (data) { return ({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["ADD_INVENTORY_BOOKS"], payload: data }); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function () { return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["LOAD_INVENTORY_ERROR"] }); })); }));
     }
     __decorate([
         Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_1__["Effect"])(),
         __metadata("design:type", rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"])
     ], AuthEffects.prototype, "reloadBooks$", void 0);
+    __decorate([
+        Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_1__["Effect"])(),
+        __metadata("design:type", rxjs__WEBPACK_IMPORTED_MODULE_2__["Observable"])
+    ], AuthEffects.prototype, "loadInventoryBooks$", void 0);
     AuthEffects = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
         __metadata("design:paramtypes", [_services_http_service__WEBPACK_IMPORTED_MODULE_5__["HttpService"], _ngrx_effects__WEBPACK_IMPORTED_MODULE_1__["Actions"]])
@@ -1624,8 +1664,25 @@ function reducer(state, action) {
             newMap.set(action.payload, !newMap.get(action.payload));
             return __assign({}, state, { selectedBook: __assign({}, state.selectedBook, { searchedLocations: newMap }) });
         }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__["LOAD_INVENTORY_ERROR"]:
         case _actions__WEBPACK_IMPORTED_MODULE_0__["RELOAD_BOOKS_ERROR"]: {
-            alert('error');
+            alert('Problem loading. Try reloading the page!');
+            return state;
+        }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__["ADD_INVENTORY_BOOKS"]: {
+            state.inventoryBooks = [];
+            for (var _h = 0, _j = action.payload; _h < _j.length; _h++) {
+                var inventoryBook = _j[_h];
+                state.inventoryBooks.push(inventoryBook);
+            }
+            state.inventoryBooks.sort(function (a, b) {
+                if (a.callNumber > b.callNumber) {
+                    return 1;
+                }
+                else if (a.callNumber < b.callNumber) {
+                    return -1;
+                }
+            });
             return state;
         }
         default: return state;

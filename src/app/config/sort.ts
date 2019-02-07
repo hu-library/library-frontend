@@ -15,7 +15,6 @@ function sortBooks(a: Book, b: Book) {
 export function sortStateBooks(state: State) {
     state.requestedByPatronBooks.sort(sortBooks);
     state.ongoingBooks.sort(sortBooks);
-    state.inventoryBooks.sort(sortBooks);
     state.followUpBooks.sort(sortBooks);
     state.missingBooks.sort(sortBooks);
     state.awaitingDecisionBooks.sort(sortBooks);
