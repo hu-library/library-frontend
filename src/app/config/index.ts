@@ -1,5 +1,7 @@
 import { SearchLocation } from '../models/searchLocation.type';
 
+const dev = false;
+
 export const searchLocations: SearchLocation[] = [
     'Home',
     'Reshelving Carts',
@@ -19,12 +21,12 @@ export const searchLocations: SearchLocation[] = [
 export default searchLocations;
 
 export const buttonNames = [
-    'Requested By Patron',          // info
-    'Ongoing',                      // primary
-    'Inventory',                    // info
-    'Follow Up',                    // primary
-    'Awaiting Librarian Decision',  // info
-    'Searched But Not Found'        // primary
+    'Requested By Patron',
+    'Ongoing',
+    'Inventory',
+    'Follow Up',
+    'Awaiting Librarian Decision',
+    'Searched But Not Found'
 ];
 
 export const buttons = [
@@ -38,4 +40,4 @@ export const buttons = [
     }
 ];
 
-export const backendLocation = 'https://book-searching-app.herokuapp.com';
+export const backendLocation = dev ? 'http://localhost:8000' : 'https://book-searching-app.herokuapp.com';

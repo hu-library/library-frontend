@@ -66,12 +66,18 @@ export class CardComponent implements OnInit {
         this.badgeColor = 'badge-success';
       }
     }
-    this.books$.subscribe(books => this.books = books);
-    this.inventoryBooks$.subscribe(books => this.inventoryBooks = books);
+    if (this.books$) {
+      this.books$.subscribe(books => this.books = books);
+    }
+    if (this.inventoryBooks$) {
+      this.inventoryBooks$.subscribe(books => this.inventoryBooks = books);
+    }
   }
 
   redirect(book: Book) {
     this.store.dispatch(new Actions.SelectBookAction(book));
+    // remove parentheses from url because it breaks routing
+    book.urlID = book.urlID.replace(/\(/g, '').replace(/\)/g, '');
     this.router.navigateByUrl('/' + book.urlID);
   }
 
