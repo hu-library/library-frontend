@@ -316,11 +316,17 @@ var CardComponent = /** @class */ (function () {
                 this.badgeColor = 'badge-success';
             }
         }
-        this.books$.subscribe(function (books) { return _this.books = books; });
-        this.inventoryBooks$.subscribe(function (books) { return _this.inventoryBooks = books; });
+        if (this.books$) {
+            this.books$.subscribe(function (books) { return _this.books = books; });
+        }
+        if (this.inventoryBooks$) {
+            this.inventoryBooks$.subscribe(function (books) { return _this.inventoryBooks = books; });
+        }
     };
     CardComponent.prototype.redirect = function (book) {
         this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["SelectBookAction"](book));
+        // remove parentheses from url because it breaks routing
+        book.urlID = book.urlID.replace(/\(/g, '').replace(/\)/g, '');
         this.router.navigateByUrl('/' + book.urlID);
     };
     CardComponent.prototype.setUpCard = function () {
@@ -998,6 +1004,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonNames", function() { return buttonNames; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttons", function() { return buttons; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "backendLocation", function() { return backendLocation; });
+var dev = false;
 var searchLocations = [
     'Home',
     'Reshelving Carts',
@@ -1020,7 +1027,7 @@ var buttonNames = [
     'Inventory',
     'Follow Up',
     'Awaiting Librarian Decision',
-    'Searched But Not Found' // primary
+    'Searched But Not Found'
 ];
 var buttons = [
     {
@@ -1032,7 +1039,7 @@ var buttons = [
         action: 'Look again'
     }
 ];
-var backendLocation = 'https://book-searching-app.herokuapp.com';
+var backendLocation = dev ? 'http://localhost:8000' : 'https://book-searching-app.herokuapp.com';
 
 
 /***/ }),
