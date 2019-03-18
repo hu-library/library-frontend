@@ -6,22 +6,23 @@ import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
 import { Book } from '../../models/book.model';
 import { buttonNames } from '../../config';
+import { InventoryBook } from 'src/app/models/inventoryBook.model';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
 
-  private allBooks$: Observable<Book[]>;
+  private selectedBook$: Observable<Book>;
+  private selectedInventoryBook$: Observable<InventoryBook>;
   private buttonNames = buttonNames;
 
-  constructor(private httpService: HttpService, private store: Store<fromRoot.State>) {
-    this.allBooks$ = store.select(fromRoot.getAllBooks);
+  constructor(private store: Store<fromRoot.State>) {
+    this.selectedBook$ = store.select(fromRoot.getSelectedBook);
+    this.selectedInventoryBook$ = store.select(fromRoot.getSelectedInventoryBook);
     store.dispatch(new Actions.ReloadBooksAction());
     store.dispatch(new Actions.LoadInventoryAction());
   }
-
-  ngOnInit() { }
 }

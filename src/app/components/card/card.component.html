@@ -13,7 +13,9 @@
                     <thead>
                         <tr>
                             <th scope="col">Call Number</th>
-                            <th class="author"scope="col">Author</th>
+                            <span *ngIf="className !== 'Inventory'">
+                                <th class="author" scope="col">Author</th>
+                            </span>
                             <th class="title" scope="col">Title</th>
                             <th class="searchStatus" scope="col">Status</th>
                         </tr>
@@ -21,9 +23,16 @@
                     <tbody>
                         <tr *ngFor="let book of books" class="cursor-pointer" (click)="redirect(book)">
                             <th scope="row">{{book.callNumber}}</th>
-                            <td class="author">{{book.author}}</td>
+                            <span *ngIf="className !== 'Inventory'">
+                                <td class="author">{{book.author}}</td>
+                            </span>
                             <td class="title">{{book.title}}</td>
-                            <td class="searchStatus">{{book.searchStatus}}</td>
+                            <span *ngIf="className === 'Inventory'">
+                                <td class="searchStatus">{{book.status}}</td>
+                            </span>
+                            <span *ngIf="className !== 'Inventory'">
+                                <td class="searchStatus">{{book.searchStatus}}</td>
+                            </span>
                         </tr>
                     </tbody>
                 </table>

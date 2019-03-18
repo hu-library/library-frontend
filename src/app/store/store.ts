@@ -6,6 +6,7 @@ import { InventoryBook } from '../models/inventoryBook.model';
 export interface State {
     books: Book[];
     selectedBook: Book;
+    selectedInventoryBook: InventoryBook;
     requestedByPatronBooks: Book[];
     ongoingBooks: Book[];
     inventoryBooks: InventoryBook[];
@@ -17,6 +18,7 @@ export interface State {
 export const initialState: State = {
     books: [],
     selectedBook: null,
+    selectedInventoryBook: null,
     requestedByPatronBooks: [],
     ongoingBooks: [],
     inventoryBooks: [],
@@ -124,7 +126,14 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         case Actions.SELECT_BOOK: {
             return {
                 ...state,
-                selectedBook: action.payload
+                selectedBook: action.payload || null
+            };
+        }
+
+        case Actions.SELECT_INVENTORY_BOOK: {
+            return {
+                ...state,
+                selectedInventoryBook: action.payload || null
             };
         }
 
@@ -171,7 +180,8 @@ export const getRequestedByPatronBooks = (state: State) => state.requestedByPatr
 export const getOngoingBooks = (state: State) => state.ongoingBooks;
 export const getInventoryBooks = (state: State) => state.inventoryBooks;
 export const getFollowUpBooks = (state: State) => state.followUpBooks;
-export const getSearchedLocations = (state: State) => state.selectedBook.searchedLocations;
+export const getSearchedLocations = (state: State) => state && state.selectedBook ? state.selectedBook.searchedLocations : null;
 export const getMissingBooks = (state: State) => state.missingBooks;
 export const getAwaitingDecisionBooks = (state: State) => state.awaitingDecisionBooks;
 export const searchedEverywhere = (state: State) => lookedEverywhere(state);
+export const getSelectedInventoryBook = (state: State) => state.selectedInventoryBook;

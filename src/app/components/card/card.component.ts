@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ButtonNames } from '../../models/buttonName.type';
 import * as Actions from '../../store/actions';
 import { InventoryBook } from 'src/app/models/inventoryBook.model';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-card',
@@ -26,10 +27,9 @@ export class CardComponent implements OnInit {
 
   private books$: Observable<Book[]>;
   private inventoryBooks$: Observable<InventoryBook[]>;
-  private inventoryBooks: InventoryBook[];
-  private books: Book[] = [];
+  private books: Book[] | InventoryBook[] = [];
 
-  constructor(private store: Store<fromRoot.State>, private router: Router) { }
+  constructor(private store: Store<fromRoot.State>, private router: Router, private configService: ConfigService) { }
 
   ngOnInit() {
     this.setUpCard();
@@ -43,7 +43,7 @@ export class CardComponent implements OnInit {
           break;
         case 'Inventory':
           this.inventoryBooks$ = this.store.select(fromRoot.getInventoryBooks);
-          this.inventoryBooks = [];
+          this.books = [];
           break;
         case 'Follow Up':
           this.books$ = this.store.select(fromRoot.getFollowUpBooks);
@@ -70,15 +70,21 @@ export class CardComponent implements OnInit {
       this.books$.subscribe(books => this.books = books);
     }
     if (this.inventoryBooks$) {
-      this.inventoryBooks$.subscribe(books => this.inventoryBooks = books);
+      this.inventoryBooks$.subscribe(books => {
+        this.books = books;
+      });
     }
   }
 
-  redirect(book: Book) {
-    this.store.dispatch(new Actions.SelectBookAction(book));
-    // remove parentheses from url because it breaks routing
-    book.urlID = book.urlID.replace(/\(/g, '').replace(/\)/g, '');
-    this.router.navigateByUrl('/' + book.urlID);
+  redirect(book: Book | InventoryBook) {
+    if (this.configService.isBook(book)) {
+      this.store.dispatch(new Actions.SelectBookAction(book));
+      // remove parentheses from url because it breaks routing
+      book.urlID = book.urlID.replace(/(\(|\))/g, '');
+      this.router.navigateByUrl('/' + book.urlID);
+    } else {
+      this.store.dispatch(new Actions.SelectInventoryBookAction(book));
+    }
   }
 
   private setUpCard() {

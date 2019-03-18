@@ -26,11 +26,13 @@ export class CheckboxComponent implements OnInit {
 
   ngOnInit() {
     this.searchedLocations$.subscribe(locations => {
-      this.searchedLocations = locations;
-      this.allCheckBoxes = true;
-      this.searchedLocations.forEach((value, key) => {
-        if (value === false) { this.allCheckBoxes = false; }
-      });
+      if (locations) {
+        this.searchedLocations = locations;
+        this.allCheckBoxes = true;
+        this.searchedLocations.forEach((value, key) => {
+          if (value === false) { this.allCheckBoxes = false; }
+        });
+      }
     });
   }
 

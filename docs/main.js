@@ -229,7 +229,7 @@ var AppModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"card\">\n    <div class=\"card-header\" id=\"{{className}}\">\n        <button class=\"btn btn-lg {{buttonColor}}\" data-toggle=\"collapse\" attr.data-target=\"#{{textName}}\"\n            aria-expanded=\"true\" [attr.aria-controls]=\"textName\">\n            {{title}} <span *ngIf=\"books.length > 0\" class=\"badge {{badgeColor}}\">{{books.length}}</span>\n        </button>\n    </div>\n\n    <div id=\"{{textName}}\" class=\"collapse\" [attr.aria-labelledby]=\"className\" attr.data-parent=\"#{{className}}\">\n        <div class=\"card-body\">\n            <span *ngIf=\"books.length > 0\">\n                <table class=\"table table-striped table-dark\">\n                    <thead>\n                        <tr>\n                            <th scope=\"col\">Call Number</th>\n                            <th class=\"author\"scope=\"col\">Author</th>\n                            <th class=\"title\" scope=\"col\">Title</th>\n                            <th class=\"searchStatus\" scope=\"col\">Status</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let book of books\" class=\"cursor-pointer\" (click)=\"redirect(book)\">\n                            <th scope=\"row\">{{book.callNumber}}</th>\n                            <td class=\"author\">{{book.author}}</td>\n                            <td class=\"title\">{{book.title}}</td>\n                            <td class=\"searchStatus\">{{book.searchStatus}}</td>\n                        </tr>\n                    </tbody>\n                </table>\n            </span>\n        </div>\n    </div>\n</div>"
+module.exports = "<div class=\"card\">\n    <div class=\"card-header\" id=\"{{className}}\">\n        <button class=\"btn btn-lg {{buttonColor}}\" data-toggle=\"collapse\" attr.data-target=\"#{{textName}}\"\n            aria-expanded=\"true\" [attr.aria-controls]=\"textName\">\n            {{title}} <span *ngIf=\"books.length > 0\" class=\"badge {{badgeColor}}\">{{books.length}}</span>\n        </button>\n    </div>\n\n    <div id=\"{{textName}}\" class=\"collapse\" [attr.aria-labelledby]=\"className\" attr.data-parent=\"#{{className}}\">\n        <div class=\"card-body\">\n            <span *ngIf=\"books.length > 0\">\n                <table class=\"table table-striped table-dark\">\n                    <thead>\n                        <tr>\n                            <th scope=\"col\">Call Number</th>\n                            <span *ngIf=\"className !== 'Inventory'\">\n                                <th class=\"author\" scope=\"col\">Author</th>\n                            </span>\n                            <th class=\"title\" scope=\"col\">Title</th>\n                            <th class=\"searchStatus\" scope=\"col\">Status</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let book of books\" class=\"cursor-pointer\" (click)=\"redirect(book)\">\n                            <th scope=\"row\">{{book.callNumber}}</th>\n                            <span *ngIf=\"className !== 'Inventory'\">\n                                <td class=\"author\">{{book.author}}</td>\n                            </span>\n                            <td class=\"title\">{{book.title}}</td>\n                            <span *ngIf=\"className === 'Inventory'\">\n                                <td class=\"searchStatus\">{{book.status}}</td>\n                            </span>\n                            <span *ngIf=\"className !== 'Inventory'\">\n                                <td class=\"searchStatus\">{{book.searchStatus}}</td>\n                            </span>\n                        </tr>\n                    </tbody>\n                </table>\n            </span>\n        </div>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -259,6 +259,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _store_actions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../store/actions */ "./src/app/store/actions.ts");
+/* harmony import */ var src_app_services_config_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/services/config.service */ "./src/app/services/config.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -273,10 +274,12 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var CardComponent = /** @class */ (function () {
-    function CardComponent(store, router) {
+    function CardComponent(store, router, configService) {
         this.store = store;
         this.router = router;
+        this.configService = configService;
         this.books = [];
     }
     CardComponent.prototype.ngOnInit = function () {
@@ -292,7 +295,7 @@ var CardComponent = /** @class */ (function () {
                     break;
                 case 'Inventory':
                     this.inventoryBooks$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getInventoryBooks"]);
-                    this.inventoryBooks = [];
+                    this.books = [];
                     break;
                 case 'Follow Up':
                     this.books$ = this.store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getFollowUpBooks"]);
@@ -320,14 +323,21 @@ var CardComponent = /** @class */ (function () {
             this.books$.subscribe(function (books) { return _this.books = books; });
         }
         if (this.inventoryBooks$) {
-            this.inventoryBooks$.subscribe(function (books) { return _this.inventoryBooks = books; });
+            this.inventoryBooks$.subscribe(function (books) {
+                _this.books = books;
+            });
         }
     };
     CardComponent.prototype.redirect = function (book) {
-        this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["SelectBookAction"](book));
-        // remove parentheses from url because it breaks routing
-        book.urlID = book.urlID.replace(/\(/g, '').replace(/\)/g, '');
-        this.router.navigateByUrl('/' + book.urlID);
+        if (this.configService.isBook(book)) {
+            this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["SelectBookAction"](book));
+            // remove parentheses from url because it breaks routing
+            book.urlID = book.urlID.replace(/(\(|\))/g, '');
+            this.router.navigateByUrl('/' + book.urlID);
+        }
+        else {
+            this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["SelectInventoryBookAction"](book));
+        }
     };
     CardComponent.prototype.setUpCard = function () {
         var title = this.title;
@@ -344,7 +354,7 @@ var CardComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./card.component.html */ "./src/app/components/card/card.component.html"),
             styles: [__webpack_require__(/*! ./card.component.scss */ "./src/app/components/card/card.component.scss")]
         }),
-        __metadata("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_1__["Store"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"]])
+        __metadata("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_1__["Store"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["Router"], src_app_services_config_service__WEBPACK_IMPORTED_MODULE_5__["ConfigService"]])
     ], CardComponent);
     return CardComponent;
 }());
@@ -387,10 +397,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HomeComponent", function() { return HomeComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @ngrx/store */ "./node_modules/@ngrx/store/fesm5/store.js");
-/* harmony import */ var _services_http_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/http.service */ "./src/app/services/http.service.ts");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
-/* harmony import */ var _store_actions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../store/actions */ "./src/app/store/actions.ts");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../config */ "./src/app/config/index.ts");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
+/* harmony import */ var _store_actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../store/actions */ "./src/app/store/actions.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../config */ "./src/app/config/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -405,24 +414,22 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
 var HomeComponent = /** @class */ (function () {
-    function HomeComponent(httpService, store) {
-        this.httpService = httpService;
+    function HomeComponent(store) {
         this.store = store;
-        this.buttonNames = _config__WEBPACK_IMPORTED_MODULE_5__["buttonNames"];
-        this.allBooks$ = store.select(_store__WEBPACK_IMPORTED_MODULE_3__["getAllBooks"]);
-        store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["ReloadBooksAction"]());
-        store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["LoadInventoryAction"]());
+        this.buttonNames = _config__WEBPACK_IMPORTED_MODULE_4__["buttonNames"];
+        this.selectedBook$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSelectedBook"]);
+        this.selectedInventoryBook$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSelectedInventoryBook"]);
+        store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_3__["ReloadBooksAction"]());
+        store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_3__["LoadInventoryAction"]());
     }
-    HomeComponent.prototype.ngOnInit = function () { };
     HomeComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-home',
             template: __webpack_require__(/*! ./home.component.html */ "./src/app/components/home/home.component.html"),
             styles: [__webpack_require__(/*! ./home.component.scss */ "./src/app/components/home/home.component.scss")]
         }),
-        __metadata("design:paramtypes", [_services_http_service__WEBPACK_IMPORTED_MODULE_2__["HttpService"], _ngrx_store__WEBPACK_IMPORTED_MODULE_1__["Store"]])
+        __metadata("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_1__["Store"]])
     ], HomeComponent);
     return HomeComponent;
 }());
@@ -438,7 +445,7 @@ var HomeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<nav class=\"navbar navbar-expand-md navbar-dark bg-dark fixed-top\">\n  <a class=\"navbar-brand\" routerLink=\"/\" style=\"margin-right: auto\">Home</a>\n  <span *ngIf=\"showSave\" class=\"nav-link\">\n    <span (click)=\"save()\">\n      Save\n    </span>\n  </span>\n</nav> "
+module.exports = "<nav class=\"navbar navbar-expand-md navbar-dark bg-dark fixed-top\">\n  <span class=\"navbar-brand nav-link\" (click)=\"goHome()\" routerLink=\"/\" style=\"margin-right: auto\">Home</span>\n  <span *ngIf=\"showSave\" class=\"nav-link\">\n    <span (click)=\"save()\">\n      Save\n    </span>\n  </span>\n</nav> "
 
 /***/ }),
 
@@ -468,6 +475,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
 /* harmony import */ var _services_config_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/config.service */ "./src/app/services/config.service.ts");
 /* harmony import */ var _services_http_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/http.service */ "./src/app/services/http.service.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
+/* harmony import */ var _store_actions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../store/actions */ "./src/app/store/actions.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -482,24 +491,42 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
 var NavbarComponent = /** @class */ (function () {
-    function NavbarComponent(store, config, httpService) {
+    function NavbarComponent(store, config, httpService, router) {
         this.store = store;
         this.config = config;
         this.httpService = httpService;
+        this.router = router;
         this.selectedBook$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSelectedBook"]);
+        this.selectedInventoryBook$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSelectedInventoryBook"]);
     }
     NavbarComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.selectedBook$.subscribe(function (book) {
-            _this.selectedBook = book;
-            if (book && book.searchedLocations) {
-                _this.showSave = _this.config.checkMapForAnyTrue(book.searchedLocations);
-            }
-        });
+        if (this.selectedBook$) {
+            this.selectedBook$.subscribe(function (book) {
+                _this.selectedBook = book;
+                if (book && book.searchedLocations) {
+                    _this.showSave = _this.config.checkMapForAnyTrue(book.searchedLocations);
+                }
+            });
+        }
+        if (this.selectedInventoryBook$) {
+            this.selectedInventoryBook$.subscribe(function (book) { return _this.selectedInventoryBook = book; });
+        }
     };
     NavbarComponent.prototype.save = function () {
         this.httpService.saveSearchedLocations(this.selectedBook).subscribe();
+    };
+    NavbarComponent.prototype.goHome = function () {
+        if (this.selectedBook) {
+            this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_6__["SelectBookAction"]());
+        }
+        if (this.selectedInventoryBook) {
+            this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_6__["SelectInventoryBookAction"]());
+        }
+        this.router.navigateByUrl('/');
     };
     NavbarComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -508,7 +535,7 @@ var NavbarComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./navbar.component.scss */ "./src/app/components/navbar/navbar.component.scss")]
         }),
         __metadata("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_1__["Store"], _services_config_service__WEBPACK_IMPORTED_MODULE_3__["ConfigService"],
-            _services_http_service__WEBPACK_IMPORTED_MODULE_4__["HttpService"]])
+            _services_http_service__WEBPACK_IMPORTED_MODULE_4__["HttpService"], _angular_router__WEBPACK_IMPORTED_MODULE_5__["Router"]])
     ], NavbarComponent);
     return NavbarComponent;
 }());
@@ -859,13 +886,15 @@ var CheckboxComponent = /** @class */ (function () {
     CheckboxComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.searchedLocations$.subscribe(function (locations) {
-            _this.searchedLocations = locations;
-            _this.allCheckBoxes = true;
-            _this.searchedLocations.forEach(function (value, key) {
-                if (value === false) {
-                    _this.allCheckBoxes = false;
-                }
-            });
+            if (locations) {
+                _this.searchedLocations = locations;
+                _this.allCheckBoxes = true;
+                _this.searchedLocations.forEach(function (value, key) {
+                    if (value === false) {
+                        _this.allCheckBoxes = false;
+                    }
+                });
+            }
         });
     };
     CheckboxComponent.prototype.checkboxChanged = function () {
@@ -1004,7 +1033,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonNames", function() { return buttonNames; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttons", function() { return buttons; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "backendLocation", function() { return backendLocation; });
-var dev = false;
+var dev = true;
 var searchLocations = [
     'Home',
     'Reshelving Carts',
@@ -1157,6 +1186,9 @@ var ConfigService = /** @class */ (function () {
         });
         return result;
     };
+    ConfigService.prototype.isBook = function (book) {
+        return 'markedLostBelievedReturned' in book;
+    };
     ConfigService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: 'root'
@@ -1271,7 +1303,7 @@ var HttpService = /** @class */ (function () {
 /*!**********************************!*\
   !*** ./src/app/store/actions.ts ***!
   \**********************************/
-/*! exports provided: START_BOOK_SEARCH, ADD_BOOK, ADD_BOOK_BULK, SELECT_BOOK, STOP_BOOK_SEARCH, FOUND_BOOK, SEARCHED_LOCATION, SAVE_SEARCHED_LOCATION, RELOAD_BOOKS, RELOAD_BOOKS_ERROR, LOAD_INVENTORY, LOAD_INVENTORY_ERROR, ADD_INVENTORY_BOOKS, StartBookSearchAction, StopBookSearchAction, FoundBookAction, AddBookAction, AddBookBulkAction, SelectBookAction, SearchedLocationAction, SaveSearchedLocationsAction, ReloadBooksAction, ReloadBooksErrorAction, LoadInventoryAction, LoadInventoryErrorAction, AddInventoryBooksAction */
+/*! exports provided: START_BOOK_SEARCH, ADD_BOOK, ADD_BOOK_BULK, SELECT_BOOK, STOP_BOOK_SEARCH, FOUND_BOOK, SEARCHED_LOCATION, SAVE_SEARCHED_LOCATION, RELOAD_BOOKS, RELOAD_BOOKS_ERROR, LOAD_INVENTORY, LOAD_INVENTORY_ERROR, ADD_INVENTORY_BOOKS, SELECT_INVENTORY_BOOK, StartBookSearchAction, StopBookSearchAction, FoundBookAction, AddBookAction, AddBookBulkAction, SelectBookAction, SelectInventoryBookAction, SearchedLocationAction, SaveSearchedLocationsAction, ReloadBooksAction, ReloadBooksErrorAction, LoadInventoryAction, LoadInventoryErrorAction, AddInventoryBooksAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1289,12 +1321,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LOAD_INVENTORY", function() { return LOAD_INVENTORY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LOAD_INVENTORY_ERROR", function() { return LOAD_INVENTORY_ERROR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_INVENTORY_BOOKS", function() { return ADD_INVENTORY_BOOKS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SELECT_INVENTORY_BOOK", function() { return SELECT_INVENTORY_BOOK; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StartBookSearchAction", function() { return StartBookSearchAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StopBookSearchAction", function() { return StopBookSearchAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FoundBookAction", function() { return FoundBookAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AddBookAction", function() { return AddBookAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AddBookBulkAction", function() { return AddBookBulkAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectBookAction", function() { return SelectBookAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectInventoryBookAction", function() { return SelectInventoryBookAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchedLocationAction", function() { return SearchedLocationAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SaveSearchedLocationsAction", function() { return SaveSearchedLocationsAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReloadBooksAction", function() { return ReloadBooksAction; });
@@ -1315,6 +1349,7 @@ var RELOAD_BOOKS_ERROR = 'RELOAD_BOOKS_ERROR';
 var LOAD_INVENTORY = 'LOAD_INVENTORY';
 var LOAD_INVENTORY_ERROR = 'LOAD_INVENTORY_ERROR';
 var ADD_INVENTORY_BOOKS = 'ADD_INVENTORY_BOOKS';
+var SELECT_INVENTORY_BOOK = 'SELECT_INVENTORY_BOOK';
 var StartBookSearchAction = /** @class */ (function () {
     function StartBookSearchAction(payload) {
         this.payload = payload;
@@ -1361,6 +1396,14 @@ var SelectBookAction = /** @class */ (function () {
         this.type = SELECT_BOOK;
     }
     return SelectBookAction;
+}());
+
+var SelectInventoryBookAction = /** @class */ (function () {
+    function SelectInventoryBookAction(payload) {
+        this.payload = payload;
+        this.type = SELECT_INVENTORY_BOOK;
+    }
+    return SelectInventoryBookAction;
 }());
 
 var SearchedLocationAction = /** @class */ (function () {
@@ -1487,7 +1530,7 @@ var AuthEffects = /** @class */ (function () {
 /*!********************************!*\
   !*** ./src/app/store/index.ts ***!
   \********************************/
-/*! exports provided: reducers, getStoreState, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getAwaitingDecisionBooks, getMissingBooks, getSearchedLocations, lookedEverywhere */
+/*! exports provided: reducers, getStoreState, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getAwaitingDecisionBooks, getMissingBooks, getSearchedLocations, lookedEverywhere, getSelectedInventoryBook */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1504,6 +1547,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMissingBooks", function() { return getMissingBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSearchedLocations", function() { return getSearchedLocations; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookedEverywhere", function() { return lookedEverywhere; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSelectedInventoryBook", function() { return getSelectedInventoryBook; });
 /* harmony import */ var reselect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! reselect */ "./node_modules/reselect/es/index.js");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./store */ "./src/app/store/store.ts");
 
@@ -1522,6 +1566,7 @@ var getAwaitingDecisionBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["cre
 var getMissingBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getMissingBooks"]);
 var getSearchedLocations = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getSearchedLocations"]);
 var lookedEverywhere = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["searchedEverywhere"]);
+var getSelectedInventoryBook = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getSelectedInventoryBook"]);
 
 
 /***/ }),
@@ -1530,7 +1575,7 @@ var lookedEverywhere = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelec
 /*!********************************!*\
   !*** ./src/app/store/store.ts ***!
   \********************************/
-/*! exports provided: initialState, reducer, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getSearchedLocations, getMissingBooks, getAwaitingDecisionBooks, searchedEverywhere */
+/*! exports provided: initialState, reducer, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getSearchedLocations, getMissingBooks, getAwaitingDecisionBooks, searchedEverywhere, getSelectedInventoryBook */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1547,6 +1592,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMissingBooks", function() { return getMissingBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAwaitingDecisionBooks", function() { return getAwaitingDecisionBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchedEverywhere", function() { return searchedEverywhere; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSelectedInventoryBook", function() { return getSelectedInventoryBook; });
 /* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./src/app/store/actions.ts");
 /* harmony import */ var _models_book_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/book.model */ "./src/app/models/book.model.ts");
 /* harmony import */ var _config_sort__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../config/sort */ "./src/app/config/sort.ts");
@@ -1567,6 +1613,7 @@ var __assign = (undefined && undefined.__assign) || function () {
 var initialState = {
     books: [],
     selectedBook: null,
+    selectedInventoryBook: null,
     requestedByPatronBooks: [],
     ongoingBooks: [],
     inventoryBooks: [],
@@ -1664,7 +1711,10 @@ function reducer(state, action) {
                 awaitingDecisionBooks: awaitingDecisionBooks });
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["SELECT_BOOK"]: {
-            return __assign({}, state, { selectedBook: action.payload });
+            return __assign({}, state, { selectedBook: action.payload || null });
+        }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__["SELECT_INVENTORY_BOOK"]: {
+            return __assign({}, state, { selectedInventoryBook: action.payload || null });
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["SEARCHED_LOCATION"]: {
             var newMap = state.selectedBook.searchedLocations;
@@ -1701,10 +1751,11 @@ var getRequestedByPatronBooks = function (state) { return state.requestedByPatro
 var getOngoingBooks = function (state) { return state.ongoingBooks; };
 var getInventoryBooks = function (state) { return state.inventoryBooks; };
 var getFollowUpBooks = function (state) { return state.followUpBooks; };
-var getSearchedLocations = function (state) { return state.selectedBook.searchedLocations; };
+var getSearchedLocations = function (state) { return state && state.selectedBook ? state.selectedBook.searchedLocations : null; };
 var getMissingBooks = function (state) { return state.missingBooks; };
 var getAwaitingDecisionBooks = function (state) { return state.awaitingDecisionBooks; };
 var searchedEverywhere = function (state) { return lookedEverywhere(state); };
+var getSelectedInventoryBook = function (state) { return state.selectedInventoryBook; };
 
 
 /***/ }),

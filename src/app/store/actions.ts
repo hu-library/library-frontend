@@ -17,6 +17,7 @@ export const RELOAD_BOOKS_ERROR = 'RELOAD_BOOKS_ERROR';
 export const LOAD_INVENTORY = 'LOAD_INVENTORY';
 export const LOAD_INVENTORY_ERROR = 'LOAD_INVENTORY_ERROR';
 export const ADD_INVENTORY_BOOKS = 'ADD_INVENTORY_BOOKS';
+export const SELECT_INVENTORY_BOOK = 'SELECT_INVENTORY_BOOK';
 
 export class StartBookSearchAction implements Action {
     readonly type = START_BOOK_SEARCH;
@@ -51,7 +52,13 @@ export class AddBookBulkAction implements Action {
 export class SelectBookAction implements Action {
     readonly type = SELECT_BOOK;
 
-    constructor(public payload: Book) { }
+    constructor(public payload?: Book) { }
+}
+
+export class SelectInventoryBookAction implements Action {
+    readonly type = SELECT_INVENTORY_BOOK;
+
+    constructor(public payload?: InventoryBook) { }
 }
 
 export class SearchedLocationAction implements Action {
@@ -109,4 +116,5 @@ export type Actions =
     ReloadBooksErrorAction |
     LoadInventoryAction |
     LoadInventoryErrorAction |
-    AddInventoryBooksAction;
+    AddInventoryBooksAction |
+    SelectInventoryBookAction;

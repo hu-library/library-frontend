@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Book } from '../models/book.model';
+import { InventoryBook } from '../models/inventoryBook.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +26,9 @@ export class ConfigService {
       if (val === true) { result = true; return; }
     });
     return result;
+  }
+
+  isBook(book: Book | InventoryBook): book is Book {
+    return 'markedLostBelievedReturned' in book;
   }
 }

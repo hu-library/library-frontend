@@ -1,6 +1,6 @@
 import { SearchLocation } from '../models/searchLocation.type';
 
-const dev = false;
+const dev = true;
 
 export const searchLocations: SearchLocation[] = [
     'Home',

@@ -22,3 +22,4 @@ export const getAwaitingDecisionBooks = createSelector(getStoreState, Store.getA
 export const getMissingBooks = createSelector(getStoreState, Store.getMissingBooks);
 export const getSearchedLocations = createSelector(getStoreState, Store.getSearchedLocations);
 export const lookedEverywhere = createSelector(getStoreState, Store.searchedEverywhere);
+export const getSelectedInventoryBook = createSelector(getStoreState, Store.getSelectedInventoryBook);
