@@ -22,12 +22,12 @@ export class HttpService {
   }
 
   saveSearchedLocations(book: Book) {
-    return this.http.post(`${backendLocation}/searched/${book.callNumber.replace(/ /g, '-')}`,
+    return this.http.post(`${backendLocation}/searched/${book.callNumber.replace(/\s+/g, '-')}`,
       { locations: this.getSearchedLocations(book) });
   }
 
   updateStatus(book: Book, navigate = true) {
-    this.http.post(`${backendLocation}/status/${book.callNumber.replace(/ /g, '-')}`,
+    this.http.post(`${backendLocation}/status/${book.callNumber.replace(/\s+/g, '-')}`,
       { status: book.searchStatus }).subscribe(() => {
         if (navigate) {
           this.router.navigateByUrl('/');
@@ -36,7 +36,7 @@ export class HttpService {
   }
 
   setFoundLocation(book: Book, foundLocation: string) {
-    this.http.post(`${backendLocation}/location/${book.callNumber.replace(/ /g, '-')}`,
+    this.http.post(`${backendLocation}/location/${book.callNumber.replace(/\s+/g, '-')}`,
     { foundLocation }).subscribe();
   }
 

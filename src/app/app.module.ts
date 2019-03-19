@@ -17,6 +17,7 @@ import { NotSearchedBeforeComponent } from './components/not-searched-before/not
 import { ResolutionComponent } from './components/resolution/resolution.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { CheckboxComponent } from './components/searched-before/checkbox/checkbox.component';
+import { InventorySearchingComponent } from './components/inventory-searching/inventory-searching.component';
 
 // ngrx/store
 import { StoreModule } from '@ngrx/store';
@@ -35,7 +36,8 @@ import { AuthEffects } from './store/effects';
     NotSearchedBeforeComponent,
     ResolutionComponent,
     NavbarComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    InventorySearchingComponent
   ],
   imports: [
     AppRoutingModule,

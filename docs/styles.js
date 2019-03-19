@@ -1,13 +1,13 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["styles"],{
 
-/***/ "./node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!./node_modules/postcss-loader/lib/index.js?!./node_modules/sass-loader/lib/loader.js?!./src/styles.scss":
+/***/ "./node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/lib/loader.js?!./src/styles.scss":
 /*!**********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!./node_modules/postcss-loader/lib??embedded!./node_modules/sass-loader/lib/loader.js??ref--14-3!./src/styles.scss ***!
+  !*** ./node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!./node_modules/postcss-loader/src??embedded!./node_modules/sass-loader/lib/loader.js??ref--14-3!./src/styles.scss ***!
   \**********************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = [[module.i, "/* You can add global styles to this file, and also import other style files */\nbody {\n  background-color: #444;\n  color: #fff; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9DOlxcVXNlcnNcXGxpYnN0dWRlbnQyXFxEb2N1bWVudHNcXGNvZGVcXGZyb250ZW5kL3NyY1xcc3R5bGVzLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsK0VBQStFO0FBQy9FO0VBQ0ksdUJBQXNCO0VBQ3RCLFlBQVcsRUFDZCIsImZpbGUiOiJzcmMvc3R5bGVzLnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIvKiBZb3UgY2FuIGFkZCBnbG9iYWwgc3R5bGVzIHRvIHRoaXMgZmlsZSwgYW5kIGFsc28gaW1wb3J0IG90aGVyIHN0eWxlIGZpbGVzICovXG5ib2R5IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNDQ0O1xuICAgIGNvbG9yOiAjZmZmO1xufVxuIl19 */", '', '']]
+module.exports = [[module.i, "/* You can add global styles to this file, and also import other style files */\nbody {\n  background-color: #444;\n  color: #fff; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9DOlxcVXNlcnNcXGxpYnN0dWRlbnQyXFxEb2N1bWVudHNcXGNvZGVcXGZyb250ZW5kL3NyY1xcc3R5bGVzLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsOEVBQUE7QUFDQTtFQUNJLHNCQUFzQjtFQUN0QixXQUFXLEVBQUEiLCJmaWxlIjoic3JjL3N0eWxlcy5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLyogWW91IGNhbiBhZGQgZ2xvYmFsIHN0eWxlcyB0byB0aGlzIGZpbGUsIGFuZCBhbHNvIGltcG9ydCBvdGhlciBzdHlsZSBmaWxlcyAqL1xuYm9keSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzQ0NDtcbiAgICBjb2xvcjogI2ZmZjtcbn1cbiJdfQ== */", '', '']]
 
 /***/ }),
 
@@ -272,7 +272,9 @@ function addStyle (obj, options) {
 
 	// If a transform function was defined, run it on the css
 	if (options.transform && obj.css) {
-	    result = options.transform(obj.css);
+	    result = typeof options.transform === 'function'
+		 ? options.transform(obj.css) 
+		 : options.transform.default(obj.css);
 
 	    if (result) {
 	    	// If transform returns a value, use that instead of the original css.
@@ -526,7 +528,7 @@ module.exports = function (css) {
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(/*! !../node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!../node_modules/postcss-loader/lib??embedded!../node_modules/sass-loader/lib/loader.js??ref--14-3!./styles.scss */ "./node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!./node_modules/postcss-loader/lib/index.js?!./node_modules/sass-loader/lib/loader.js?!./src/styles.scss");
+var content = __webpack_require__(/*! !../node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!../node_modules/postcss-loader/src??embedded!../node_modules/sass-loader/lib/loader.js??ref--14-3!./styles.scss */ "./node_modules/@angular-devkit/build-angular/src/angular-cli-files/plugins/raw-css-loader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/lib/loader.js?!./src/styles.scss");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 

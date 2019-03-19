@@ -1,0 +1,49 @@
+.btn {
+    display: block;
+    margin: 0 auto;
+}
+
+label {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+@media screen and (min-width: 600px) {
+    div {
+        input[type=text] {
+            width: 50%;
+            margin-left: 25%;
+        }
+    }
+    table {
+        margin-left: 35%;
+    }
+}
+@media not screen and (min-width: 600px) {
+    table {
+        margin-left: 25%;
+    }
+}
+
+.ml-25 {
+    margin-left: 25%;
+}
+
+.card {
+    background-color: #555;
+    @media screen and (min-width: 600px) {
+        width: 50%;
+        margin-left: 25%;
+        margin-top: 10%;
+    }
+    @media not screen and (min-width: 600px) {
+        width: 75%;
+        margin-left: 12.5%;
+        margin-top: 20%;
+    }
+    border-radius: 35px;
+}

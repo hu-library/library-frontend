@@ -27,12 +27,37 @@ export class CardComponent implements OnInit {
 
   private books$: Observable<Book[]>;
   private inventoryBooks$: Observable<InventoryBook[]>;
-  private books: Book[] | InventoryBook[] = [];
+  private books: Book[] = [];
+  private inventoryBooks: InventoryBook[] = [];
 
-  constructor(private store: Store<fromRoot.State>, private router: Router, private configService: ConfigService) { }
+  constructor(private store: Store<fromRoot.State>, private router: Router, private configService: ConfigService) {
+    this.inventoryBooks$ = store.select(fromRoot.getInventoryBooks);
+  }
 
   ngOnInit() {
     this.setUpCard();
+
+    this.inventoryBooks$.subscribe(books => this.inventoryBooks = books);
+    if (this.className !== 'Inventory') { this.books$.subscribe(books => this.books = books); }
+  }
+
+  redirect(book: Book | InventoryBook) {
+    if (this.configService.isBook(book)) {
+      this.store.dispatch(new Actions.SelectBookAction(book));
+      // remove parentheses from url because it breaks routing
+      book.urlID = book.urlID.replace(/(\(|\))/g, '');
+      this.router.navigateByUrl('/' + book.urlID);
+    } else {
+      this.store.dispatch(new Actions.SelectInventoryBookAction(book));
+      this.router.navigateByUrl(`/inventory/${book.callNumber}`);
+    }
+  }
+
+  private setUpCard() {
+    const title = this.title;
+    this.className = title.replace(/\s+/g, '');
+    this.textName = this.className + 'Text';
+
     if (this.title) {
       switch (this.title) {
         case 'Requested By Patron':
@@ -40,10 +65,6 @@ export class CardComponent implements OnInit {
           break;
         case 'Ongoing':
           this.books$ = this.store.select(fromRoot.getOngoingBooks);
-          break;
-        case 'Inventory':
-          this.inventoryBooks$ = this.store.select(fromRoot.getInventoryBooks);
-          this.books = [];
           break;
         case 'Follow Up':
           this.books$ = this.store.select(fromRoot.getFollowUpBooks);
@@ -66,30 +87,5 @@ export class CardComponent implements OnInit {
         this.badgeColor = 'badge-success';
       }
     }
-    if (this.books$) {
-      this.books$.subscribe(books => this.books = books);
-    }
-    if (this.inventoryBooks$) {
-      this.inventoryBooks$.subscribe(books => {
-        this.books = books;
-      });
-    }
-  }
-
-  redirect(book: Book | InventoryBook) {
-    if (this.configService.isBook(book)) {
-      this.store.dispatch(new Actions.SelectBookAction(book));
-      // remove parentheses from url because it breaks routing
-      book.urlID = book.urlID.replace(/(\(|\))/g, '');
-      this.router.navigateByUrl('/' + book.urlID);
-    } else {
-      this.store.dispatch(new Actions.SelectInventoryBookAction(book));
-    }
-  }
-
-  private setUpCard() {
-    const title = this.title;
-    this.className = title.replace(/\s+/g, '');
-    this.textName = this.className + 'Text';
   }
 }
