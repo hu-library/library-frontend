@@ -1,7 +1,6 @@
 import { Status } from './searchStatus.type';
 import { Patron } from './patron.model';
 import { SearchLocation } from './searchLocation.type';
-import locationsToSearch from '../config';
 
 export interface Book {
     author: string;
@@ -25,25 +24,4 @@ export interface Book {
     searchedPreviously: boolean;
     urlID?: string;
     searchedLocations: Map<SearchLocation, boolean>;
-}
-
-export function generateMap(book: Book) {
-    let searchedBefore = false;
-    const old = book.searchedLocations;
-    book.searchedLocations = new Map();
-    for (const location of locationsToSearch) {
-        if (old[location]) {
-            searchedBefore = true;
-            book.searchedLocations.set(location, old[location]);
-        } else {
-            book.searchedLocations.set(location, false);
-        }
-    }
-    fixSearchCount(book, searchedBefore);
-}
-
-function fixSearchCount(book: Book, searchedBefore: boolean) {
-    if (book.searchCount === 0 && searchedBefore) {
-        book.searchCount = 1;
-    }
 }
