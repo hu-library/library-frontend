@@ -26,11 +26,6 @@ export class HttpService {
       { locations: this.getSearchedLocations(book) });
   }
 
-  saveSearchedLocationsInventory(book: InventoryBook) {
-    return this.http.post(`${backendLocation}/inventory/searched/${book.barcode}`,
-      { locations: this.getSearchedLocations(book) });
-  }
-
   updateStatus(book: Book, navigate = true) {
     this.http.post(`${backendLocation}/status/${book.callNumber.replace(/\s+/g, '-')}`,
       { status: book.searchStatus }).subscribe(() => {
@@ -67,7 +62,7 @@ export class HttpService {
     });
   }
 
-  private getSearchedLocations(book: Book | InventoryBook) {
+  private getSearchedLocations(book: Book) {
     const result = [];
     book.searchedLocations.forEach((value: boolean, key: SearchLocation) => {
       if (value === true) {

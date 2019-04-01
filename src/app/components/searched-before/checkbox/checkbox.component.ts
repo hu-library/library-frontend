@@ -15,12 +15,26 @@ export class CheckboxComponent implements OnInit {
   @Input()
   name: SearchLocation;
 
-  @Input()
-  value: boolean;
+  private searchedLocations$: Observable<Map<SearchLocation, boolean>>;
+  private searchedLocations: Map<SearchLocation, boolean>;
+  private allCheckBoxes: boolean;
 
-  constructor(private store: Store<fromRoot.State>) { }
+  constructor(private store: Store<fromRoot.State>) {
+    this.searchedLocations$ = store.select(fromRoot.getSearchedLocations);
+    this.searchedLocations = new Map<SearchLocation, boolean>();
+  }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.searchedLocations$.subscribe(locations => {
+      if (locations) {
+        this.searchedLocations = locations;
+        this.allCheckBoxes = true;
+        this.searchedLocations.forEach((value, key) => {
+          if (value === false) { this.allCheckBoxes = false; }
+        });
+      }
+    });
+  }
 
   checkboxChanged() {
     this.store.dispatch(new SearchedLocationAction(this.name));
