@@ -446,7 +446,7 @@ var HomeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"card\">\n  <div class=\"card-body\">\n    <div class=\"md-col-4\" *ngIf=\"book\">\n      <div class=\"card-title text-center\">Title: {{book.title}}</div>\n      <div class=\"card-title text-center\">Call Number: {{book.callNumber}}</div>\n      <div *ngIf=\"book.location !== 'Brack Books-Stacks'\" class=\"card-title text-center\">Location: {{book.location}}</div>\n      <div *ngIf=\"book.status !== 'Not Charged'\" class=\"card-title text-center\">Status: {{book.status}}</div>\n      <div *ngIf=\"book.lastSeen !== 'Invalid Date'\" class=\"card-title text-center\">Last Seen: {{dateManipulation(book.lastSeen)}}</div>\n      <div *ngIf=\"book.tempLocation\" class=\"card-title text-center\">Temp Location: {{book.tempLocation}}</div>\n      <div class=\"card-title text-center\">Creation Date: {{dateManipulation(book.createDate)}}</div>\n      <div>\n        <table>\n          <tr *ngFor=\"let name of names\">\n            <app-checkbox [name]=\"name\" [value]=\"searchedLocations[name]\"></app-checkbox>\n          </tr>\n        </table>\n        <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n        <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "<div class=\"card\">\n  <div class=\"card-body\">\n    <div class=\"md-col-4\" *ngIf=\"book\">\n      <div class=\"card-title text-center\">Title: {{book.title}}</div>\n      <div class=\"card-title text-center\">Call Number: {{book.callNumber}}</div>\n      <div *ngIf=\"book.location !== 'Brack Books-Stacks'\" class=\"card-title text-center\">Location: {{book.location}}</div>\n      <div *ngIf=\"book.status !== 'Not Charged'\" class=\"card-title text-center\">Status: {{book.status}}</div>\n      <div *ngIf=\"book.lastSeen !== 'Invalid Date'\" class=\"card-title text-center\">Last Seen: {{dateManipulation(book.lastSeen)}}</div>\n      <div *ngIf=\"book.tempLocation\" class=\"card-title text-center\">Temp Location: {{book.tempLocation}}</div>\n      <div class=\"card-title text-center\">Creation Date: {{dateManipulation(book.createDate)}}</div>\n      <div>\n        <table>\n          <tr *ngFor=\"let name of names\">\n            <app-checkbox [name]=\"name\"></app-checkbox>\n          </tr>\n        </table>\n        <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n        <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n      </div>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -477,18 +477,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_app_services_http_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/services/http.service */ "./src/app/services/http.service.ts");
 /* harmony import */ var src_app_services_config_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/services/config.service */ "./src/app/services/config.service.ts");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
-/* harmony import */ var src_app_config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/config */ "./src/app/config/index.ts");
-var __assign = (undefined && undefined.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -504,17 +492,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
 var InventorySearchingComponent = /** @class */ (function () {
     function InventorySearchingComponent(store, router, config, http) {
         this.store = store;
         this.router = router;
         this.config = config;
         this.http = http;
-        this.searchedLocations = new Map();
-        this.names = src_app_config__WEBPACK_IMPORTED_MODULE_6__["default"];
         this.book$ = store.select(_store__WEBPACK_IMPORTED_MODULE_5__["getSelectedInventoryBook"]);
-        this.searchedLocations$ = store.select(_store__WEBPACK_IMPORTED_MODULE_5__["getSearchedLocations"]);
     }
     InventorySearchingComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -522,14 +506,7 @@ var InventorySearchingComponent = /** @class */ (function () {
             if (!book) {
                 _this.router.navigateByUrl('/');
             }
-            else {
-                _this.book = __assign({}, book, { callNumber: book.callNumber.replace(/-/g, ' ') });
-            }
-        });
-        this.searchedLocations$.subscribe(function (locations) {
-            if (locations) {
-                _this.searchedLocations = __assign({}, locations);
-            }
+            _this.book = book;
         });
     };
     InventorySearchingComponent.prototype.dateManipulation = function (date) {
@@ -629,21 +606,11 @@ var NavbarComponent = /** @class */ (function () {
             });
         }
         if (this.selectedInventoryBook$) {
-            this.selectedInventoryBook$.subscribe(function (book) {
-                _this.selectedInventoryBook = book;
-                if (book && book.searchedLocations) {
-                    _this.showSave = _this.config.checkMapForAnyTrue(book.searchedLocations);
-                }
-            });
+            this.selectedInventoryBook$.subscribe(function (book) { return _this.selectedInventoryBook = book; });
         }
     };
     NavbarComponent.prototype.save = function () {
-        if (this.selectedBook) {
-            this.httpService.saveSearchedLocations(this.selectedBook).subscribe();
-        }
-        else if (this.selectedInventoryBook) {
-            this.httpService.saveSearchedLocationsInventory(this.selectedInventoryBook).subscribe();
-        }
+        this.httpService.saveSearchedLocations(this.selectedBook).subscribe();
     };
     NavbarComponent.prototype.goHome = function () {
         if (this.selectedBook) {
@@ -961,7 +928,7 @@ var SearchViewComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<td>\n  <input type=\"checkbox\" style=\"text-align: center\" id=\"{{name}}\" [checked]=\"value\" (change)=\"checkboxChanged()\">\n</td>\n<td><label for=\"{{name}}\">{{name}}</label></td>\n<!-- &nbsp;{{name}}&nbsp; -->"
+module.exports = "<td>\n  <input type=\"checkbox\" style=\"text-align: center\" id=\"{{name}}\" [checked]=\"searchedLocations.get(name)\" (change)=\"checkboxChanged()\">\n</td>\n<td><label for=\"{{name}}\">{{name}}</label></td>\n<!-- &nbsp;{{name}}&nbsp; -->"
 
 /***/ }),
 
@@ -988,7 +955,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CheckboxComponent", function() { return CheckboxComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @ngrx/store */ "./node_modules/@ngrx/store/fesm5/store.js");
-/* harmony import */ var _store_actions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../store/actions */ "./src/app/store/actions.ts");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../store */ "./src/app/store/index.ts");
+/* harmony import */ var _store_actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../store/actions */ "./src/app/store/actions.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1001,22 +969,34 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var CheckboxComponent = /** @class */ (function () {
     function CheckboxComponent(store) {
         this.store = store;
+        this.searchedLocations$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSearchedLocations"]);
+        this.searchedLocations = new Map();
     }
-    CheckboxComponent.prototype.ngOnInit = function () { };
+    CheckboxComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.searchedLocations$.subscribe(function (locations) {
+            if (locations) {
+                _this.searchedLocations = locations;
+                _this.allCheckBoxes = true;
+                _this.searchedLocations.forEach(function (value, key) {
+                    if (value === false) {
+                        _this.allCheckBoxes = false;
+                    }
+                });
+            }
+        });
+    };
     CheckboxComponent.prototype.checkboxChanged = function () {
-        this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_2__["SearchedLocationAction"](this.name));
+        this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_3__["SearchedLocationAction"](this.name));
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", String)
     ], CheckboxComponent.prototype, "name", void 0);
-    __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", Boolean)
-    ], CheckboxComponent.prototype, "value", void 0);
     CheckboxComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-checkbox',
@@ -1218,10 +1198,10 @@ function sortStateBooks(state) {
 
 /***/ }),
 
-/***/ "./src/app/models/bookLogic.ts":
-/*!*************************************!*\
-  !*** ./src/app/models/bookLogic.ts ***!
-  \*************************************/
+/***/ "./src/app/models/book.model.ts":
+/*!**************************************!*\
+  !*** ./src/app/models/book.model.ts ***!
+  \**************************************/
 /*! exports provided: generateMap */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1236,7 +1216,7 @@ function generateMap(book) {
     book.searchedLocations = new Map();
     for (var _i = 0, locationsToSearch_1 = _config__WEBPACK_IMPORTED_MODULE_0__["default"]; _i < locationsToSearch_1.length; _i++) {
         var location_1 = locationsToSearch_1[_i];
-        if (old && old[location_1]) {
+        if (old[location_1]) {
             searchedBefore = true;
             book.searchedLocations.set(location_1, old[location_1]);
         }
@@ -1355,9 +1335,6 @@ var HttpService = /** @class */ (function () {
     };
     HttpService.prototype.saveSearchedLocations = function (book) {
         return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/searched/" + book.callNumber.replace(/\s+/g, '-'), { locations: this.getSearchedLocations(book) });
-    };
-    HttpService.prototype.saveSearchedLocationsInventory = function (book) {
-        return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/inventory/searched/" + book.barcode, { locations: this.getSearchedLocations(book) });
     };
     HttpService.prototype.updateStatus = function (book, navigate) {
         var _this = this;
@@ -1710,7 +1687,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchedEverywhere", function() { return searchedEverywhere; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSelectedInventoryBook", function() { return getSelectedInventoryBook; });
 /* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./src/app/store/actions.ts");
-/* harmony import */ var _models_bookLogic__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/bookLogic */ "./src/app/models/bookLogic.ts");
+/* harmony import */ var _models_book_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/book.model */ "./src/app/models/book.model.ts");
 /* harmony import */ var _config_sort__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../config/sort */ "./src/app/config/sort.ts");
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -1748,18 +1725,9 @@ function lookedEverywhere(state) {
     }
     return false;
 }
-function getStateMap(state) {
-    if (state && state.selectedBook)
-        return state.selectedBook.searchedLocations;
-    else if (state && state.selectedInventoryBook)
-        return state.selectedInventoryBook.searchedLocations;
-    else
-        return null;
-}
 function reducer(state, action) {
     if (state === void 0) { state = initialState; }
     switch (action.type) {
-        // #region Rarely used actions
         case _actions__WEBPACK_IMPORTED_MODULE_0__["START_BOOK_SEARCH"]: {
             for (var _i = 0, _a = state.books; _i < _a.length; _i++) {
                 var book = _a[_i];
@@ -1798,27 +1766,15 @@ function reducer(state, action) {
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["ADD_BOOK"]: {
             var book = action.payload;
-            Object(_models_bookLogic__WEBPACK_IMPORTED_MODULE_1__["generateMap"])(book);
+            Object(_models_book_model__WEBPACK_IMPORTED_MODULE_1__["generateMap"])(book);
             Object(_config_sort__WEBPACK_IMPORTED_MODULE_2__["sortStateBooks"])(state);
             return __assign({}, state, { books: state.books.concat([action.payload]) });
         }
-        case _actions__WEBPACK_IMPORTED_MODULE_0__["SELECT_BOOK"]: {
-            return __assign({}, state, { selectedBook: action.payload || null });
-        }
-        case _actions__WEBPACK_IMPORTED_MODULE_0__["SELECT_INVENTORY_BOOK"]: {
-            return __assign({}, state, { selectedInventoryBook: action.payload || null });
-        }
-        case _actions__WEBPACK_IMPORTED_MODULE_0__["LOAD_INVENTORY_ERROR"]:
-        case _actions__WEBPACK_IMPORTED_MODULE_0__["RELOAD_BOOKS_ERROR"]: {
-            alert('Problem loading. Try reloading the page!');
-            return state;
-        }
-        // #endregion
         case _actions__WEBPACK_IMPORTED_MODULE_0__["ADD_BOOK_BULK"]: {
             var books = [], requestedByPatronBooks = [], ongoingBooks = [], followUpBooks = [], missingBooks = [], awaitingDecisionBooks = [];
             for (var _f = 0, _g = action.payload; _f < _g.length; _f++) {
                 var book = _g[_f];
-                Object(_models_bookLogic__WEBPACK_IMPORTED_MODULE_1__["generateMap"])(book);
+                Object(_models_book_model__WEBPACK_IMPORTED_MODULE_1__["generateMap"])(book);
                 books.push(book);
                 book.urlID = book.title.replace(/(\s|:\s)+/g, '-').toLowerCase();
                 switch (book.searchStatus) {
@@ -1847,21 +1803,26 @@ function reducer(state, action) {
                 missingBooks: missingBooks,
                 awaitingDecisionBooks: awaitingDecisionBooks });
         }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__["SELECT_BOOK"]: {
+            return __assign({}, state, { selectedBook: action.payload || null });
+        }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__["SELECT_INVENTORY_BOOK"]: {
+            return __assign({}, state, { selectedInventoryBook: action.payload || null });
+        }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["SEARCHED_LOCATION"]: {
-            var newMap = getStateMap(state);
+            var newMap = state.selectedBook.searchedLocations;
             newMap.set(action.payload, !newMap.get(action.payload));
-            if (state && state.selectedBook) {
-                return __assign({}, state, { selectedBook: __assign({}, state.selectedBook, { searchedLocations: newMap }) });
-            }
-            else {
-                return __assign({}, state, { selectedInventoryBook: __assign({}, state.selectedInventoryBook, { searchedLocations: newMap }) });
-            }
+            return __assign({}, state, { selectedBook: __assign({}, state.selectedBook, { searchedLocations: newMap }) });
+        }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__["LOAD_INVENTORY_ERROR"]:
+        case _actions__WEBPACK_IMPORTED_MODULE_0__["RELOAD_BOOKS_ERROR"]: {
+            alert('Problem loading. Try reloading the page!');
+            return state;
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["ADD_INVENTORY_BOOKS"]: {
             state.inventoryBooks = [];
             for (var _h = 0, _j = action.payload; _h < _j.length; _h++) {
                 var inventoryBook = _j[_h];
-                Object(_models_bookLogic__WEBPACK_IMPORTED_MODULE_1__["generateMap"])(inventoryBook);
                 state.inventoryBooks.push(inventoryBook);
             }
             state.inventoryBooks.sort(function (a, b) {
@@ -1872,7 +1833,7 @@ function reducer(state, action) {
                     return -1;
                 }
             });
-            return __assign({}, state);
+            return state;
         }
         default: return state;
     }
@@ -1883,7 +1844,7 @@ var getRequestedByPatronBooks = function (state) { return state.requestedByPatro
 var getOngoingBooks = function (state) { return state.ongoingBooks; };
 var getInventoryBooks = function (state) { return state.inventoryBooks; };
 var getFollowUpBooks = function (state) { return state.followUpBooks; };
-var getSearchedLocations = function (state) { return getStateMap(state); };
+var getSearchedLocations = function (state) { return state && state.selectedBook ? state.selectedBook.searchedLocations : null; };
 var getMissingBooks = function (state) { return state.missingBooks; };
 var getAwaitingDecisionBooks = function (state) { return state.awaitingDecisionBooks; };
 var searchedEverywhere = function (state) { return lookedEverywhere(state); };

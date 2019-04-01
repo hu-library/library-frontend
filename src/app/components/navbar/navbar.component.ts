@@ -38,21 +38,12 @@ export class NavbarComponent implements OnInit {
       });
     }
     if (this.selectedInventoryBook$) {
-      this.selectedInventoryBook$.subscribe(book => {
-        this.selectedInventoryBook = book;
-        if (book && book.searchedLocations) {
-          this.showSave = this.config.checkMapForAnyTrue(book.searchedLocations);
-        }
-      });
+      this.selectedInventoryBook$.subscribe(book => this.selectedInventoryBook = book);
     }
   }
 
   save() {
-    if (this.selectedBook) {
-      this.httpService.saveSearchedLocations(this.selectedBook).subscribe();
-    } else if (this.selectedInventoryBook) {
-      this.httpService.saveSearchedLocationsInventory(this.selectedInventoryBook).subscribe();
-    }
+    this.httpService.saveSearchedLocations(this.selectedBook).subscribe();
   }
 
   goHome() {

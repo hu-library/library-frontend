@@ -1,6 +1,5 @@
 import * as Actions from './actions';
-import { Book } from '../models/book.model';
-import { generateMap } from '../models/bookLogic';
+import { Book, generateMap } from '../models/book.model';
 import { sortStateBooks } from '../config/sort';
 import { InventoryBook } from '../models/inventoryBook.model';
 
@@ -38,15 +37,8 @@ function lookedEverywhere(state: State) {
     return false;
 }
 
-function getStateMap(state: State) {
-    if (state && state.selectedBook) return state.selectedBook.searchedLocations;
-    else if (state && state.selectedInventoryBook) return state.selectedInventoryBook.searchedLocations;
-    else return null;
-}
-
 export function reducer(state = initialState, action: Actions.Actions): State {
     switch (action.type) {
-        // #region Rarely used actions
         case Actions.START_BOOK_SEARCH: {
             for (const book of state.books) {
                 if (book.callNumber === action.payload) {
@@ -94,26 +86,6 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             };
         }
 
-        case Actions.SELECT_BOOK: {
-            return {
-                ...state,
-                selectedBook: action.payload || null
-            };
-        }
-
-        case Actions.SELECT_INVENTORY_BOOK: {
-            return {
-                ...state,
-                selectedInventoryBook: action.payload || null
-            };
-        }
-
-        case Actions.LOAD_INVENTORY_ERROR:
-        case Actions.RELOAD_BOOKS_ERROR: {
-            alert('Problem loading. Try reloading the page!');
-            return state;
-        }
-        // #endregion
         case Actions.ADD_BOOK_BULK: {
             const books = [], requestedByPatronBooks = [], ongoingBooks = [], followUpBooks = [],
                 missingBooks = [], awaitingDecisionBooks = [];
@@ -151,32 +123,41 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             };
         }
 
+        case Actions.SELECT_BOOK: {
+            return {
+                ...state,
+                selectedBook: action.payload || null
+            };
+        }
+
+        case Actions.SELECT_INVENTORY_BOOK: {
+            return {
+                ...state,
+                selectedInventoryBook: action.payload || null
+            };
+        }
+
         case Actions.SEARCHED_LOCATION: {
-            const newMap = getStateMap(state);
+            const newMap = state.selectedBook.searchedLocations;
             newMap.set(action.payload, !newMap.get(action.payload));
-            if (state && state.selectedBook) {
-                return {
-                    ...state,
-                    selectedBook: {
-                        ...state.selectedBook,
-                        searchedLocations: newMap
-                    }
-                };
-            } else {
-                return {
-                    ...state,
-                    selectedInventoryBook: {
-                        ...state.selectedInventoryBook,
-                        searchedLocations: newMap
-                    }
+            return {
+                ...state,
+                selectedBook: {
+                    ...state.selectedBook,
+                    searchedLocations: newMap
                 }
-            }
+            };
+        }
+
+        case Actions.LOAD_INVENTORY_ERROR:
+        case Actions.RELOAD_BOOKS_ERROR: {
+            alert('Problem loading. Try reloading the page!');
+            return state;
         }
 
         case Actions.ADD_INVENTORY_BOOKS: {
             state.inventoryBooks = [];
             for (const inventoryBook of action.payload) {
-                generateMap(inventoryBook);
                 state.inventoryBooks.push(inventoryBook);
             }
             state.inventoryBooks.sort((a, b) => {
@@ -186,7 +167,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                     return -1;
                 }
             });
-            return { ...state };
+            return state;
         }
 
         default: return state;
@@ -199,7 +180,7 @@ export const getRequestedByPatronBooks = (state: State) => state.requestedByPatr
 export const getOngoingBooks = (state: State) => state.ongoingBooks;
 export const getInventoryBooks = (state: State) => state.inventoryBooks;
 export const getFollowUpBooks = (state: State) => state.followUpBooks;
-export const getSearchedLocations = (state: State) => getStateMap(state);
+export const getSearchedLocations = (state: State) => state && state.selectedBook ? state.selectedBook.searchedLocations : null;
 export const getMissingBooks = (state: State) => state.missingBooks;
 export const getAwaitingDecisionBooks = (state: State) => state.awaitingDecisionBooks;
 export const searchedEverywhere = (state: State) => lookedEverywhere(state);
