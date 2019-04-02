@@ -152,7 +152,7 @@ export function reducer(state = initialState, action: Actions.Actions): State {
         case Actions.LOAD_INVENTORY_ERROR:
         case Actions.RELOAD_BOOKS_ERROR: {
             alert('Problem loading. Try reloading the page!');
-            return state;
+            return { ...state };
         }
 
         case Actions.ADD_INVENTORY_BOOKS: {
@@ -167,10 +167,10 @@ export function reducer(state = initialState, action: Actions.Actions): State {
                     return -1;
                 }
             });
-            return state;
+            return { ...state };
         }
 
-        default: return state;
+        default: return { ...state };
     }
 }
 

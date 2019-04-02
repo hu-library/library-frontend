@@ -7,9 +7,13 @@ import { ReloadBooksAction, RELOAD_BOOKS, ADD_BOOK_BULK,
     RELOAD_BOOKS_ERROR, LoadInventoryAction, LOAD_INVENTORY,
     LOAD_INVENTORY_ERROR, ADD_INVENTORY_BOOKS } from './actions';
 import { HttpService } from '../services/http.service';
+import { flipBackendLocation } from '../config';
 
 @Injectable()
 export class AuthEffects {
+
+    private firstTimeReloadBooks = true;
+    private firstTimeInventoryBooks = true;
 
     @Effect()
     reloadBooks$: Observable<Action> = this.actions$.pipe(
@@ -19,7 +23,14 @@ export class AuthEffects {
                 // If successful, dispatch success action with result
                 map(data => ({ type: ADD_BOOK_BULK, payload: data })),
                 // If request fails, dispatch failed action
-                catchError(() => of({ type: RELOAD_BOOKS_ERROR }))
+                catchError((error) => {
+                    if (error && error.name === 'HttpErrorResponse' && this.firstTimeReloadBooks) {
+                        this.firstTimeReloadBooks = false;
+                        flipBackendLocation();
+                        return of ({type: RELOAD_BOOKS});
+                    }
+                    return of({ type: RELOAD_BOOKS_ERROR });
+                })
             )
         )
     );
@@ -29,7 +40,13 @@ export class AuthEffects {
         ofType<LoadInventoryAction>(LOAD_INVENTORY),
         mergeMap(() => this.http.getInventoryData().pipe(
             map(data => ({ type: ADD_INVENTORY_BOOKS, payload: data })),
-            catchError(() => of({type: LOAD_INVENTORY_ERROR }))
+            catchError((error) => {
+                if (error && error.name === 'HttpErrorResponse' && this.firstTimeInventoryBooks) {
+                    this.firstTimeInventoryBooks = false;
+                    return of({type: LOAD_INVENTORY});
+                }
+                return of({type: LOAD_INVENTORY_ERROR });
+            })
         ))
     );
 

@@ -1117,7 +1117,7 @@ var SearchedBeforeComponent = /** @class */ (function () {
 /*!*********************************!*\
   !*** ./src/app/config/index.ts ***!
   \*********************************/
-/*! exports provided: searchLocations, default, buttonNames, buttons, backendLocation */
+/*! exports provided: searchLocations, default, buttonNames, buttons, backendLocation, flipBackendLocation */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1126,6 +1126,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonNames", function() { return buttonNames; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttons", function() { return buttons; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "backendLocation", function() { return backendLocation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flipBackendLocation", function() { return flipBackendLocation; });
 var dev = false;
 var searchLocations = [
     'Home',
@@ -1161,7 +1162,14 @@ var buttons = [
         action: 'Look again'
     }
 ];
-var backendLocation = dev ? 'http://localhost:8000' : 'https://book-searching-app.herokuapp.com';
+var backendLocation = setBackend();
+function setBackend() {
+    return dev ? 'http://localhost:8000' : 'https://book-searching-app.herokuapp.com';
+}
+function flipBackendLocation() {
+    dev = !dev;
+    backendLocation = setBackend();
+}
 
 
 /***/ }),
@@ -1571,6 +1579,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./actions */ "./src/app/store/actions.ts");
 /* harmony import */ var _services_http_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../services/http.service */ "./src/app/services/http.service.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../config */ "./src/app/config/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1586,19 +1595,35 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var AuthEffects = /** @class */ (function () {
     function AuthEffects(http, actions$) {
         var _this = this;
         this.http = http;
         this.actions$ = actions$;
+        this.firstTimeReloadBooks = true;
+        this.firstTimeInventoryBooks = true;
         this.reloadBooks$ = this.actions$.pipe(Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_1__["ofType"])(_actions__WEBPACK_IMPORTED_MODULE_4__["RELOAD_BOOKS"]), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function () {
             return _this.http.getAllData().pipe(
             // If successful, dispatch success action with result
             Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (data) { return ({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["ADD_BOOK_BULK"], payload: data }); }), 
             // If request fails, dispatch failed action
-            Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function () { return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["RELOAD_BOOKS_ERROR"] }); }));
+            Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function (error) {
+                if (error && error.name === 'HttpErrorResponse' && _this.firstTimeReloadBooks) {
+                    _this.firstTimeReloadBooks = false;
+                    Object(_config__WEBPACK_IMPORTED_MODULE_6__["flipBackendLocation"])();
+                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["RELOAD_BOOKS"] });
+                }
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["RELOAD_BOOKS_ERROR"] });
+            }));
         }));
-        this.loadInventoryBooks$ = this.actions$.pipe(Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_1__["ofType"])(_actions__WEBPACK_IMPORTED_MODULE_4__["LOAD_INVENTORY"]), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function () { return _this.http.getInventoryData().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (data) { return ({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["ADD_INVENTORY_BOOKS"], payload: data }); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function () { return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["LOAD_INVENTORY_ERROR"] }); })); }));
+        this.loadInventoryBooks$ = this.actions$.pipe(Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_1__["ofType"])(_actions__WEBPACK_IMPORTED_MODULE_4__["LOAD_INVENTORY"]), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["mergeMap"])(function () { return _this.http.getInventoryData().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(function (data) { return ({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["ADD_INVENTORY_BOOKS"], payload: data }); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(function (error) {
+            if (error && error.name === 'HttpErrorResponse' && _this.firstTimeInventoryBooks) {
+                _this.firstTimeInventoryBooks = false;
+                return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["LOAD_INVENTORY"] });
+            }
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])({ type: _actions__WEBPACK_IMPORTED_MODULE_4__["LOAD_INVENTORY_ERROR"] });
+        })); }));
     }
     __decorate([
         Object(_ngrx_effects__WEBPACK_IMPORTED_MODULE_1__["Effect"])(),
@@ -1817,7 +1842,7 @@ function reducer(state, action) {
         case _actions__WEBPACK_IMPORTED_MODULE_0__["LOAD_INVENTORY_ERROR"]:
         case _actions__WEBPACK_IMPORTED_MODULE_0__["RELOAD_BOOKS_ERROR"]: {
             alert('Problem loading. Try reloading the page!');
-            return state;
+            return __assign({}, state);
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["ADD_INVENTORY_BOOKS"]: {
             state.inventoryBooks = [];
@@ -1833,9 +1858,9 @@ function reducer(state, action) {
                     return -1;
                 }
             });
-            return state;
+            return __assign({}, state);
         }
-        default: return state;
+        default: return __assign({}, state);
     }
 }
 var getAllBooks = function (state) { return state.books; };

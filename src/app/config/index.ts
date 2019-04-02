@@ -1,6 +1,6 @@
 import { SearchLocation } from '../models/searchLocation.type';
 
-const dev = false;
+let dev = false;
 
 export const searchLocations: SearchLocation[] = [
     'Home',
@@ -40,4 +40,13 @@ export const buttons = [
     }
 ];
 
-export const backendLocation = dev ? 'http://localhost:8000' : 'https://book-searching-app.herokuapp.com';
+export let backendLocation = setBackend();
+
+function setBackend() {
+    return dev ? 'http://localhost:8000' : 'https://book-searching-app.herokuapp.com';
+}
+
+export function flipBackendLocation() {
+    dev = !dev;
+    backendLocation = setBackend();
+}
