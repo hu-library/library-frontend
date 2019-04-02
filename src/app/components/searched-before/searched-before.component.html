@@ -5,7 +5,7 @@
   <div>
     <table>
       <tr *ngFor="let name of names">
-        <app-checkbox [name]="name"></app-checkbox>
+        <app-checkbox [name]="name" [inventory]="false"></app-checkbox>
       </tr>
     </table>
     <button class="btn btn-large mb-1" (click)="found()">Found</button>

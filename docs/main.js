@@ -446,7 +446,7 @@ var HomeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"card\">\n  <div class=\"card-body\">\n    <div class=\"md-col-4\" *ngIf=\"book\">\n      <div class=\"card-title text-center\">Title: {{book.title}}</div>\n      <div class=\"card-title text-center\">Call Number: {{book.callNumber}}</div>\n      <div *ngIf=\"book.location !== 'Brack Books-Stacks'\" class=\"card-title text-center\">Location: {{book.location}}</div>\n      <div *ngIf=\"book.status !== 'Not Charged'\" class=\"card-title text-center\">Status: {{book.status}}</div>\n      <div *ngIf=\"book.lastSeen !== 'Invalid Date'\" class=\"card-title text-center\">Last Seen: {{dateManipulation(book.lastSeen)}}</div>\n      <div *ngIf=\"book.tempLocation\" class=\"card-title text-center\">Temp Location: {{book.tempLocation}}</div>\n      <div class=\"card-title text-center\">Creation Date: {{dateManipulation(book.createDate)}}</div>\n      <div>\n        <table>\n          <tr *ngFor=\"let name of names\">\n            <app-checkbox [name]=\"name\"></app-checkbox>\n          </tr>\n        </table>\n        <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n        <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "<div class=\"card\">\n  <div class=\"card-body\">\n    <div class=\"md-col-4\" *ngIf=\"book\">\n      <div class=\"card-title text-center\">Title: {{book.title}}</div>\n      <div class=\"card-title text-center\">Call Number: {{book.callNumber}}</div>\n      <div *ngIf=\"book.location !== 'Brack Books-Stacks'\" class=\"card-title text-center\">Location: {{book.location}}</div>\n      <div *ngIf=\"book.status !== 'Not Charged'\" class=\"card-title text-center\">Status: {{book.status}}</div>\n      <div *ngIf=\"book.lastSeen !== 'Invalid Date'\" class=\"card-title text-center\">Last Seen: {{dateManipulation(book.lastSeen)}}</div>\n      <div *ngIf=\"book.tempLocation\" class=\"card-title text-center\">Temp Location: {{book.tempLocation}}</div>\n      <div class=\"card-title text-center\">Creation Date: {{dateManipulation(book.createDate)}}</div>\n      <div>\n        <table>\n          <tr *ngFor=\"let name of names\">\n            <app-checkbox [name]=\"name\" [inventory]=\"true\"></app-checkbox>\n          </tr>\n        </table>\n        <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n        <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n      </div>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -477,6 +477,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_app_services_http_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/services/http.service */ "./src/app/services/http.service.ts");
 /* harmony import */ var src_app_services_config_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/services/config.service */ "./src/app/services/config.service.ts");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../config */ "./src/app/config/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -492,12 +493,14 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var InventorySearchingComponent = /** @class */ (function () {
     function InventorySearchingComponent(store, router, config, http) {
         this.store = store;
         this.router = router;
         this.config = config;
         this.http = http;
+        this.names = _config__WEBPACK_IMPORTED_MODULE_6__["default"];
         this.book$ = store.select(_store__WEBPACK_IMPORTED_MODULE_5__["getSelectedInventoryBook"]);
     }
     InventorySearchingComponent.prototype.ngOnInit = function () {
@@ -507,6 +510,9 @@ var InventorySearchingComponent = /** @class */ (function () {
                 _this.router.navigateByUrl('/');
             }
             _this.book = book;
+            if (book && book.searchedLocations) {
+                _this.allChecked = _this.config.checkMapForAllTrue(book.searchedLocations);
+            }
         });
     };
     InventorySearchingComponent.prototype.dateManipulation = function (date) {
@@ -606,11 +612,21 @@ var NavbarComponent = /** @class */ (function () {
             });
         }
         if (this.selectedInventoryBook$) {
-            this.selectedInventoryBook$.subscribe(function (book) { return _this.selectedInventoryBook = book; });
+            this.selectedInventoryBook$.subscribe(function (book) {
+                _this.selectedInventoryBook = book;
+                if (book && book.searchedLocations) {
+                    _this.showSave = _this.config.checkMapForAnyTrue(book.searchedLocations);
+                }
+            });
         }
     };
     NavbarComponent.prototype.save = function () {
-        this.httpService.saveSearchedLocations(this.selectedBook).subscribe();
+        if (this.selectedBook) {
+            this.httpService.saveSearchedLocations(this.selectedBook).subscribe();
+        }
+        else if (this.selectedInventoryBook) {
+            this.httpService.saveSearchedInventoryLocations(this.selectedInventoryBook).subscribe();
+        }
     };
     NavbarComponent.prototype.goHome = function () {
         if (this.selectedBook) {
@@ -928,7 +944,7 @@ var SearchViewComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<td>\n  <input type=\"checkbox\" style=\"text-align: center\" id=\"{{name}}\" [checked]=\"searchedLocations.get(name)\" (change)=\"checkboxChanged()\">\n</td>\n<td><label for=\"{{name}}\">{{name}}</label></td>\n<!-- &nbsp;{{name}}&nbsp; -->"
+module.exports = "<td>\n  <input type=\"checkbox\" style=\"text-align: center\" id=\"{{name}}\" [checked]=\"isChecked(name)\" (change)=\"checkboxChanged()\">\n</td>\n<td><label for=\"{{name}}\">{{name}}</label></td>\n<!-- &nbsp;{{name}}&nbsp; -->"
 
 /***/ }),
 
@@ -975,28 +991,50 @@ var CheckboxComponent = /** @class */ (function () {
         this.store = store;
         this.searchedLocations$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getSearchedLocations"]);
         this.searchedLocations = new Map();
+        this.searchedInventoryLocations$ = store.select(_store__WEBPACK_IMPORTED_MODULE_2__["getInventorySearchedLocations"]);
+        this.searchedInventoryLocations = new Map();
     }
     CheckboxComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.searchedLocations$.subscribe(function (locations) {
-            if (locations) {
-                _this.searchedLocations = locations;
-                _this.allCheckBoxes = true;
-                _this.searchedLocations.forEach(function (value, key) {
-                    if (value === false) {
-                        _this.allCheckBoxes = false;
-                    }
-                });
-            }
-        });
+        if (this.inventory) {
+            this.searchedInventoryLocations$.subscribe(function (locations) {
+                if (locations) {
+                    _this.searchedInventoryLocations = locations;
+                }
+            });
+        }
+        else {
+            this.searchedLocations$.subscribe(function (locations) {
+                if (locations) {
+                    _this.searchedLocations = locations;
+                }
+            });
+        }
+    };
+    CheckboxComponent.prototype.isChecked = function (name) {
+        if (this.inventory) {
+            return this.searchedInventoryLocations.get(name);
+        }
+        else {
+            return this.searchedLocations.get(name);
+        }
     };
     CheckboxComponent.prototype.checkboxChanged = function () {
-        this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_3__["SearchedLocationAction"](this.name));
+        if (this.inventory) {
+            this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_3__["SearchedInventoryLocationAction"](this.name));
+        }
+        else {
+            this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_3__["SearchedLocationAction"](this.name));
+        }
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", String)
     ], CheckboxComponent.prototype, "name", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Boolean)
+    ], CheckboxComponent.prototype, "inventory", void 0);
     CheckboxComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-checkbox',
@@ -1019,7 +1057,7 @@ var CheckboxComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"md-col-4\" *ngIf=\"book\">\n  <div class=\"card-title text-center\">Status: {{book.searchStatus}}</div>\n  <div class=\"card-title text-center\">Search Count: {{book.searchCount}}</div>\n  <div class=\"card-title text-center\">Urgency: {{book.urgency}}</div>\n  <div>\n    <table>\n      <tr *ngFor=\"let name of names\">\n        <app-checkbox [name]=\"name\"></app-checkbox>\n      </tr>\n    </table>\n    <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n    <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n  </div>"
+module.exports = "<div class=\"md-col-4\" *ngIf=\"book\">\n  <div class=\"card-title text-center\">Status: {{book.searchStatus}}</div>\n  <div class=\"card-title text-center\">Search Count: {{book.searchCount}}</div>\n  <div class=\"card-title text-center\">Urgency: {{book.urgency}}</div>\n  <div>\n    <table>\n      <tr *ngFor=\"let name of names\">\n        <app-checkbox [name]=\"name\" [inventory]=\"false\"></app-checkbox>\n      </tr>\n    </table>\n    <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n    <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n  </div>"
 
 /***/ }),
 
@@ -1243,6 +1281,30 @@ function fixSearchCount(book, searchedBefore) {
 
 /***/ }),
 
+/***/ "./src/app/models/inventoryBook.model.ts":
+/*!***********************************************!*\
+  !*** ./src/app/models/inventoryBook.model.ts ***!
+  \***********************************************/
+/*! exports provided: generateMapInventory */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateMapInventory", function() { return generateMapInventory; });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/app/config/index.ts");
+
+function generateMapInventory(book) {
+    var old = book.searchedLocations;
+    book.searchedLocations = new Map();
+    for (var _i = 0, locationsToSearch_1 = _config__WEBPACK_IMPORTED_MODULE_0__["default"]; _i < locationsToSearch_1.length; _i++) {
+        var loc = locationsToSearch_1[_i];
+        book.searchedLocations.set(loc, old && old[loc] ? old[loc] : false);
+    }
+}
+
+
+/***/ }),
+
 /***/ "./src/app/services/config.service.ts":
 /*!********************************************!*\
   !*** ./src/app/services/config.service.ts ***!
@@ -1344,6 +1406,9 @@ var HttpService = /** @class */ (function () {
     HttpService.prototype.saveSearchedLocations = function (book) {
         return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/searched/" + book.callNumber.replace(/\s+/g, '-'), { locations: this.getSearchedLocations(book) });
     };
+    HttpService.prototype.saveSearchedInventoryLocations = function (book) {
+        return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/inventory/searched/" + book.callNumber.replace(/\s+/g, '-'), { locations: this.getSearchedInventoryLocations(book) });
+    };
     HttpService.prototype.updateStatus = function (book, navigate) {
         var _this = this;
         if (navigate === void 0) { navigate = true; }
@@ -1387,6 +1452,17 @@ var HttpService = /** @class */ (function () {
         });
         return result;
     };
+    HttpService.prototype.getSearchedInventoryLocations = function (book) {
+        var result = [];
+        if (book && book.searchedLocations) {
+            book.searchedLocations.forEach(function (val, key) {
+                if (val === true) {
+                    result.push(key);
+                }
+            });
+        }
+        return result;
+    };
     HttpService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: 'root'
@@ -1404,7 +1480,7 @@ var HttpService = /** @class */ (function () {
 /*!**********************************!*\
   !*** ./src/app/store/actions.ts ***!
   \**********************************/
-/*! exports provided: START_BOOK_SEARCH, ADD_BOOK, ADD_BOOK_BULK, SELECT_BOOK, STOP_BOOK_SEARCH, FOUND_BOOK, SEARCHED_LOCATION, SAVE_SEARCHED_LOCATION, RELOAD_BOOKS, RELOAD_BOOKS_ERROR, LOAD_INVENTORY, LOAD_INVENTORY_ERROR, ADD_INVENTORY_BOOKS, SELECT_INVENTORY_BOOK, StartBookSearchAction, StopBookSearchAction, FoundBookAction, AddBookAction, AddBookBulkAction, SelectBookAction, SelectInventoryBookAction, SearchedLocationAction, SaveSearchedLocationsAction, ReloadBooksAction, ReloadBooksErrorAction, LoadInventoryAction, LoadInventoryErrorAction, AddInventoryBooksAction */
+/*! exports provided: START_BOOK_SEARCH, ADD_BOOK, ADD_BOOK_BULK, SELECT_BOOK, STOP_BOOK_SEARCH, FOUND_BOOK, SEARCHED_LOCATION, SEARCHED_INVENTORY_LOCATION, RELOAD_BOOKS, RELOAD_BOOKS_ERROR, LOAD_INVENTORY, LOAD_INVENTORY_ERROR, ADD_INVENTORY_BOOKS, SELECT_INVENTORY_BOOK, StartBookSearchAction, StopBookSearchAction, FoundBookAction, AddBookAction, AddBookBulkAction, SelectBookAction, SelectInventoryBookAction, SearchedLocationAction, SearchedInventoryLocationAction, ReloadBooksAction, ReloadBooksErrorAction, LoadInventoryAction, LoadInventoryErrorAction, AddInventoryBooksAction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1416,7 +1492,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "STOP_BOOK_SEARCH", function() { return STOP_BOOK_SEARCH; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FOUND_BOOK", function() { return FOUND_BOOK; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SEARCHED_LOCATION", function() { return SEARCHED_LOCATION; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SAVE_SEARCHED_LOCATION", function() { return SAVE_SEARCHED_LOCATION; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SEARCHED_INVENTORY_LOCATION", function() { return SEARCHED_INVENTORY_LOCATION; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RELOAD_BOOKS", function() { return RELOAD_BOOKS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RELOAD_BOOKS_ERROR", function() { return RELOAD_BOOKS_ERROR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LOAD_INVENTORY", function() { return LOAD_INVENTORY; });
@@ -1431,7 +1507,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectBookAction", function() { return SelectBookAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectInventoryBookAction", function() { return SelectInventoryBookAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchedLocationAction", function() { return SearchedLocationAction; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SaveSearchedLocationsAction", function() { return SaveSearchedLocationsAction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchedInventoryLocationAction", function() { return SearchedInventoryLocationAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReloadBooksAction", function() { return ReloadBooksAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ReloadBooksErrorAction", function() { return ReloadBooksErrorAction; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LoadInventoryAction", function() { return LoadInventoryAction; });
@@ -1444,7 +1520,7 @@ var SELECT_BOOK = 'SELECT_BOOK';
 var STOP_BOOK_SEARCH = 'STOP_BOOK_SEARCH';
 var FOUND_BOOK = 'FOUND_BOOK';
 var SEARCHED_LOCATION = 'SEARCHED_LOCATION';
-var SAVE_SEARCHED_LOCATION = 'SAVE_SEARCHED_LOCATION';
+var SEARCHED_INVENTORY_LOCATION = 'SEARCHED_INVENTORY_LOCATION';
 var RELOAD_BOOKS = 'RELOAD_BOOKS';
 var RELOAD_BOOKS_ERROR = 'RELOAD_BOOKS_ERROR';
 var LOAD_INVENTORY = 'LOAD_INVENTORY';
@@ -1515,12 +1591,12 @@ var SearchedLocationAction = /** @class */ (function () {
     return SearchedLocationAction;
 }());
 
-var SaveSearchedLocationsAction = /** @class */ (function () {
-    function SaveSearchedLocationsAction(payload) {
+var SearchedInventoryLocationAction = /** @class */ (function () {
+    function SearchedInventoryLocationAction(payload) {
         this.payload = payload;
-        this.type = SAVE_SEARCHED_LOCATION;
+        this.type = SEARCHED_INVENTORY_LOCATION;
     }
-    return SaveSearchedLocationsAction;
+    return SearchedInventoryLocationAction;
 }());
 
 var ReloadBooksAction = /** @class */ (function () {
@@ -1648,7 +1724,7 @@ var AuthEffects = /** @class */ (function () {
 /*!********************************!*\
   !*** ./src/app/store/index.ts ***!
   \********************************/
-/*! exports provided: reducers, getStoreState, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getAwaitingDecisionBooks, getMissingBooks, getSearchedLocations, lookedEverywhere, getSelectedInventoryBook */
+/*! exports provided: reducers, getStoreState, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getAwaitingDecisionBooks, getMissingBooks, getSearchedLocations, getInventorySearchedLocations, lookedEverywhere, getSelectedInventoryBook */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1664,6 +1740,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAwaitingDecisionBooks", function() { return getAwaitingDecisionBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMissingBooks", function() { return getMissingBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSearchedLocations", function() { return getSearchedLocations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInventorySearchedLocations", function() { return getInventorySearchedLocations; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookedEverywhere", function() { return lookedEverywhere; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSelectedInventoryBook", function() { return getSelectedInventoryBook; });
 /* harmony import */ var reselect__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! reselect */ "./node_modules/reselect/es/index.js");
@@ -1683,6 +1760,7 @@ var getFollowUpBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelec
 var getAwaitingDecisionBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getAwaitingDecisionBooks"]);
 var getMissingBooks = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getMissingBooks"]);
 var getSearchedLocations = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getSearchedLocations"]);
+var getInventorySearchedLocations = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getInventorySearchedLocations"]);
 var lookedEverywhere = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["searchedEverywhere"]);
 var getSelectedInventoryBook = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["createSelector"])(getStoreState, _store__WEBPACK_IMPORTED_MODULE_1__["getSelectedInventoryBook"]);
 
@@ -1693,7 +1771,7 @@ var getSelectedInventoryBook = Object(reselect__WEBPACK_IMPORTED_MODULE_0__["cre
 /*!********************************!*\
   !*** ./src/app/store/store.ts ***!
   \********************************/
-/*! exports provided: initialState, reducer, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getSearchedLocations, getMissingBooks, getAwaitingDecisionBooks, searchedEverywhere, getSelectedInventoryBook */
+/*! exports provided: initialState, reducer, getAllBooks, getSelectedBook, getRequestedByPatronBooks, getOngoingBooks, getInventoryBooks, getFollowUpBooks, getSearchedLocations, getInventorySearchedLocations, getMissingBooks, getAwaitingDecisionBooks, searchedEverywhere, getSelectedInventoryBook */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1707,6 +1785,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInventoryBooks", function() { return getInventoryBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFollowUpBooks", function() { return getFollowUpBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSearchedLocations", function() { return getSearchedLocations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInventorySearchedLocations", function() { return getInventorySearchedLocations; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getMissingBooks", function() { return getMissingBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAwaitingDecisionBooks", function() { return getAwaitingDecisionBooks; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchedEverywhere", function() { return searchedEverywhere; });
@@ -1714,6 +1793,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./src/app/store/actions.ts");
 /* harmony import */ var _models_book_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/book.model */ "./src/app/models/book.model.ts");
 /* harmony import */ var _config_sort__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../config/sort */ "./src/app/config/sort.ts");
+/* harmony import */ var _models_inventoryBook_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/inventoryBook.model */ "./src/app/models/inventoryBook.model.ts");
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -1725,6 +1805,7 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+
 
 
 
@@ -1839,15 +1920,21 @@ function reducer(state, action) {
             newMap.set(action.payload, !newMap.get(action.payload));
             return __assign({}, state, { selectedBook: __assign({}, state.selectedBook, { searchedLocations: newMap }) });
         }
+        case _actions__WEBPACK_IMPORTED_MODULE_0__["SEARCHED_INVENTORY_LOCATION"]: {
+            var newMap = state.selectedInventoryBook.searchedLocations;
+            newMap.set(action.payload, !newMap.get(action.payload));
+            return __assign({}, state, { selectedInventoryBook: __assign({}, state.selectedInventoryBook, { searchedLocations: newMap }) });
+        }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["LOAD_INVENTORY_ERROR"]:
         case _actions__WEBPACK_IMPORTED_MODULE_0__["RELOAD_BOOKS_ERROR"]: {
-            alert('Problem loading. Try reloading the page!');
+            console.log('Problem loading. Try reloading the page!');
             return __assign({}, state);
         }
         case _actions__WEBPACK_IMPORTED_MODULE_0__["ADD_INVENTORY_BOOKS"]: {
             state.inventoryBooks = [];
             for (var _h = 0, _j = action.payload; _h < _j.length; _h++) {
                 var inventoryBook = _j[_h];
+                Object(_models_inventoryBook_model__WEBPACK_IMPORTED_MODULE_3__["generateMapInventory"])(inventoryBook);
                 state.inventoryBooks.push(inventoryBook);
             }
             state.inventoryBooks.sort(function (a, b) {
@@ -1870,6 +1957,7 @@ var getOngoingBooks = function (state) { return state.ongoingBooks; };
 var getInventoryBooks = function (state) { return state.inventoryBooks; };
 var getFollowUpBooks = function (state) { return state.followUpBooks; };
 var getSearchedLocations = function (state) { return state && state.selectedBook ? state.selectedBook.searchedLocations : null; };
+var getInventorySearchedLocations = function (state) { return state && state.selectedInventoryBook ? state.selectedInventoryBook.searchedLocations : null; };
 var getMissingBooks = function (state) { return state.missingBooks; };
 var getAwaitingDecisionBooks = function (state) { return state.awaitingDecisionBooks; };
 var searchedEverywhere = function (state) { return lookedEverywhere(state); };

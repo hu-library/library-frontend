@@ -26,6 +26,11 @@ export class HttpService {
       { locations: this.getSearchedLocations(book) });
   }
 
+  saveSearchedInventoryLocations(book: InventoryBook) {
+    return this.http.post(`${backendLocation}/inventory/searched/${book.callNumber.replace(/\s+/g, '-')}`,
+      { locations: this.getSearchedInventoryLocations(book) });
+  }
+
   updateStatus(book: Book, navigate = true) {
     this.http.post(`${backendLocation}/status/${book.callNumber.replace(/\s+/g, '-')}`,
       { status: book.searchStatus }).subscribe(() => {
@@ -69,6 +74,18 @@ export class HttpService {
         result.push(key);
       }
     });
+    return result;
+  }
+
+  private getSearchedInventoryLocations(book: InventoryBook) {
+    const result = [];
+    if (book && book.searchedLocations) {
+      book.searchedLocations.forEach((val, key) => {
+        if (val === true) {
+          result.push(key);
+        }
+      });
+    }
     return result;
   }
 }

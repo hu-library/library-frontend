@@ -1,7 +1,7 @@
 import * as Actions from './actions';
 import { Book, generateMap } from '../models/book.model';
 import { sortStateBooks } from '../config/sort';
-import { InventoryBook } from '../models/inventoryBook.model';
+import { InventoryBook, generateMapInventory } from '../models/inventoryBook.model';
 
 export interface State {
     books: Book[];
@@ -149,15 +149,28 @@ export function reducer(state = initialState, action: Actions.Actions): State {
             };
         }
 
+        case Actions.SEARCHED_INVENTORY_LOCATION: {
+            const newMap = state.selectedInventoryBook.searchedLocations;
+            newMap.set(action.payload, !newMap.get(action.payload));
+            return {
+                ...state,
+                selectedInventoryBook: {
+                    ...state.selectedInventoryBook,
+                    searchedLocations: newMap
+                }
+            };
+        }
+
         case Actions.LOAD_INVENTORY_ERROR:
         case Actions.RELOAD_BOOKS_ERROR: {
-            alert('Problem loading. Try reloading the page!');
+            console.log('Problem loading. Try reloading the page!');
             return { ...state };
         }
 
         case Actions.ADD_INVENTORY_BOOKS: {
             state.inventoryBooks = [];
             for (const inventoryBook of action.payload) {
+                generateMapInventory(inventoryBook);
                 state.inventoryBooks.push(inventoryBook);
             }
             state.inventoryBooks.sort((a, b) => {
@@ -181,6 +194,7 @@ export const getOngoingBooks = (state: State) => state.ongoingBooks;
 export const getInventoryBooks = (state: State) => state.inventoryBooks;
 export const getFollowUpBooks = (state: State) => state.followUpBooks;
 export const getSearchedLocations = (state: State) => state && state.selectedBook ? state.selectedBook.searchedLocations : null;
+export const getInventorySearchedLocations = (state: State) => state && state.selectedInventoryBook ? state.selectedInventoryBook.searchedLocations : null;
 export const getMissingBooks = (state: State) => state.missingBooks;
 export const getAwaitingDecisionBooks = (state: State) => state.awaitingDecisionBooks;
 export const searchedEverywhere = (state: State) => lookedEverywhere(state);

@@ -11,7 +11,7 @@ export const SELECT_BOOK = 'SELECT_BOOK';
 export const STOP_BOOK_SEARCH = 'STOP_BOOK_SEARCH';
 export const FOUND_BOOK = 'FOUND_BOOK';
 export const SEARCHED_LOCATION = 'SEARCHED_LOCATION';
-export const SAVE_SEARCHED_LOCATION = 'SAVE_SEARCHED_LOCATION';
+export const SEARCHED_INVENTORY_LOCATION = 'SEARCHED_INVENTORY_LOCATION';
 export const RELOAD_BOOKS = 'RELOAD_BOOKS';
 export const RELOAD_BOOKS_ERROR = 'RELOAD_BOOKS_ERROR';
 export const LOAD_INVENTORY = 'LOAD_INVENTORY';
@@ -67,10 +67,10 @@ export class SearchedLocationAction implements Action {
     constructor(public payload: SearchLocation) { }
 }
 
-export class SaveSearchedLocationsAction implements Action {
-    readonly type = SAVE_SEARCHED_LOCATION;
+export class SearchedInventoryLocationAction implements Action {
+    readonly type = SEARCHED_INVENTORY_LOCATION;
 
-    constructor(public payload: PostRequest) { }
+    constructor(public payload: SearchLocation) { }
 }
 
 export class ReloadBooksAction implements Action {
@@ -111,7 +111,7 @@ export type Actions =
     AddBookBulkAction |
     SelectBookAction |
     SearchedLocationAction |
-    SaveSearchedLocationsAction |
+    SearchedInventoryLocationAction |
     ReloadBooksAction |
     ReloadBooksErrorAction |
     LoadInventoryAction |

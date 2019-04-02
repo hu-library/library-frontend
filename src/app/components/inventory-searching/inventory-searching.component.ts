@@ -6,6 +6,8 @@ import { ConfigService } from 'src/app/services/config.service';
 import * as fromRoot from '../../store';
 import { Observable } from 'rxjs';
 import { InventoryBook } from 'src/app/models/inventoryBook.model';
+import searchLocations from '../../config';
+
 
 @Component({
   selector: 'app-inventory-searching',
@@ -16,6 +18,8 @@ export class InventorySearchingComponent implements OnInit {
 
   private book$: Observable<InventoryBook>;
   private book: InventoryBook;
+  private names = searchLocations;
+  private allChecked: boolean;
 
   constructor(private store: Store<fromRoot.State>, private router: Router,
     private config: ConfigService, private http: HttpService) {
@@ -28,6 +32,9 @@ export class InventorySearchingComponent implements OnInit {
         this.router.navigateByUrl('/');
       }
       this.book = book;
+      if (book && book.searchedLocations) {
+        this.allChecked = this.config.checkMapForAllTrue(book.searchedLocations);
+      }
     });
   }
 

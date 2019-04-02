@@ -6,7 +6,7 @@ import * as fromRoot from '../../store';
 import * as Actions from '../../store/actions';
 import { Book } from '../../models/book.model';
 import { buttonNames } from '../../config';
-import { InventoryBook } from 'src/app/models/inventoryBook.model';
+import { InventoryBook } from '../../models/inventoryBook.model';
 
 @Component({
   selector: 'app-home',
