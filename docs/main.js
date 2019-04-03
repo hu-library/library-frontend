@@ -474,8 +474,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _ngrx_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @ngrx/store */ "./node_modules/@ngrx/store/fesm5/store.js");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
-/* harmony import */ var src_app_services_http_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/services/http.service */ "./src/app/services/http.service.ts");
-/* harmony import */ var src_app_services_config_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/services/config.service */ "./src/app/services/config.service.ts");
+/* harmony import */ var _services_http_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/http.service */ "./src/app/services/http.service.ts");
+/* harmony import */ var _services_config_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/config.service */ "./src/app/services/config.service.ts");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../store */ "./src/app/store/index.ts");
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../config */ "./src/app/config/index.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
@@ -521,6 +521,13 @@ var InventorySearchingComponent = /** @class */ (function () {
         var day = date.substring(date.lastIndexOf('-') + 1);
         return (month + "/" + day + "/" + year);
     };
+    InventorySearchingComponent.prototype.found = function () {
+        this.http.foundInventoryBook(this.book, 'Found');
+    };
+    InventorySearchingComponent.prototype.stopSearching = function () {
+        this.http.saveInventoryBookIsMissing(this.book);
+        this.http.foundInventoryBook(this.book, 'Missing');
+    };
     InventorySearchingComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-inventory-searching',
@@ -528,7 +535,7 @@ var InventorySearchingComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./inventory-searching.component.scss */ "./src/app/components/inventory-searching/inventory-searching.component.scss")]
         }),
         __metadata("design:paramtypes", [_ngrx_store__WEBPACK_IMPORTED_MODULE_1__["Store"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"],
-            src_app_services_config_service__WEBPACK_IMPORTED_MODULE_4__["ConfigService"], src_app_services_http_service__WEBPACK_IMPORTED_MODULE_3__["HttpService"]])
+            _services_config_service__WEBPACK_IMPORTED_MODULE_4__["ConfigService"], _services_http_service__WEBPACK_IMPORTED_MODULE_3__["HttpService"]])
     ], InventorySearchingComponent);
     return InventorySearchingComponent;
 }());
@@ -1408,6 +1415,15 @@ var HttpService = /** @class */ (function () {
     };
     HttpService.prototype.saveSearchedInventoryLocations = function (book) {
         return this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/inventory/searched/" + book.callNumber.replace(/\s+/g, '-'), { locations: this.getSearchedInventoryLocations(book) });
+    };
+    HttpService.prototype.saveInventoryBookIsMissing = function (book) {
+        this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/inventory/missing/" + book.callNumber.replace(/\s+/g, '-'), { book: book }).subscribe();
+    };
+    HttpService.prototype.foundInventoryBook = function (book, foundOrMissing) {
+        var _this = this;
+        this.http.post(_config__WEBPACK_IMPORTED_MODULE_3__["backendLocation"] + "/inventory/found/" + book.callNumber.replace(/\s+/g, '-'), { book: foundOrMissing }).subscribe(function () {
+            _this.router.navigateByUrl('/');
+        });
     };
     HttpService.prototype.updateStatus = function (book, navigate) {
         var _this = this;

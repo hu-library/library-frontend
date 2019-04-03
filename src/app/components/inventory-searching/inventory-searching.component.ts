@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { HttpService } from 'src/app/services/http.service';
-import { ConfigService } from 'src/app/services/config.service';
+import { HttpService } from '../../services/http.service';
+import { ConfigService } from '../../services/config.service';
 import * as fromRoot from '../../store';
 import { Observable } from 'rxjs';
-import { InventoryBook } from 'src/app/models/inventoryBook.model';
+import { InventoryBook } from '../../models/inventoryBook.model';
 import searchLocations from '../../config';
 
 
@@ -43,6 +43,15 @@ export class InventorySearchingComponent implements OnInit {
     const month = date.substring(5, date.indexOf('-', 5));
     const day = date.substring(date.lastIndexOf('-') + 1);
     return (`${month}/${day}/${year}`);
+  }
+
+  found() {
+    this.http.foundInventoryBook(this.book, 'Found');
+  }
+
+  stopSearching() {
+    this.http.saveInventoryBookIsMissing(this.book);
+    this.http.foundInventoryBook(this.book, 'Missing');
   }
 
 }

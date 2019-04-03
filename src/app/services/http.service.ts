@@ -31,6 +31,18 @@ export class HttpService {
       { locations: this.getSearchedInventoryLocations(book) });
   }
 
+  saveInventoryBookIsMissing(book: InventoryBook) {
+    this.http.post(`${backendLocation}/inventory/missing/${book.callNumber.replace(/\s+/g, '-')}`,
+      { book }).subscribe();
+  }
+
+  foundInventoryBook(book: InventoryBook, foundOrMissing: string) {
+    this.http.post(`${backendLocation}/inventory/found/${book.callNumber.replace(/\s+/g, '-')}`,
+      { book: foundOrMissing }).subscribe(() => {
+        this.router.navigateByUrl('/');
+      });
+  }
+
   updateStatus(book: Book, navigate = true) {
     this.http.post(`${backendLocation}/status/${book.callNumber.replace(/\s+/g, '-')}`,
       { status: book.searchStatus }).subscribe(() => {
