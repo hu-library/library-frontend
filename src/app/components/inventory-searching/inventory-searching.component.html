@@ -5,9 +5,9 @@
       <div class="card-title text-center">Call Number: {{book.callNumber}}</div>
       <div *ngIf="book.location !== 'Brack Books-Stacks'" class="card-title text-center">Location: {{book.location}}</div>
       <div *ngIf="book.status !== 'Not Charged'" class="card-title text-center">Status: {{book.status}}</div>
-      <div *ngIf="book.lastSeen !== 'Invalid Date'" class="card-title text-center">Last Seen: {{dateManipulation(book.lastSeen)}}</div>
+      <div *ngIf="book.lastSeen !== 'Invalid Date'" class="card-title text-center">Last Seen: {{lastSeen}}</div>
       <div *ngIf="book.tempLocation" class="card-title text-center">Temp Location: {{book.tempLocation}}</div>
-      <div class="card-title text-center">Creation Date: {{dateManipulation(book.createDate)}}</div>
+      <div class="card-title text-center">Creation Date: {{creationDate}}</div>
       <div>
         <table>
           <tr *ngFor="let name of names">
