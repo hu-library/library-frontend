@@ -520,10 +520,11 @@ var InventorySearchingComponent = /** @class */ (function () {
         });
     };
     InventorySearchingComponent.prototype.dateManipulation = function (date) {
-        if (date.match(/(\d){1,2}(\/|-)(\d){1,2}(\/|-)(\d){1,4}/)) {
+        if (date.match(/^(\d){1,2}(\/|-)(\d){1,2}(\/|-)(\d){1,4}/)) {
             return date;
         }
         else {
+            console.log('start', date);
             var year = date.substring(0, 4);
             var month = date.substring(5, date.indexOf('-', 5));
             var day = date.substring(date.lastIndexOf('-') + 1);
