@@ -18,6 +18,8 @@ export class InventorySearchingComponent implements OnInit {
 
   private book$: Observable<InventoryBook>;
   private book: InventoryBook;
+  private lastSeen: string;
+  private creationDate: string;
   private names = searchLocations;
   private allChecked: boolean;
 
@@ -32,8 +34,12 @@ export class InventorySearchingComponent implements OnInit {
         this.router.navigateByUrl('/');
       }
       this.book = book;
-      if (book && book.searchedLocations) {
-        this.allChecked = this.config.checkMapForAllTrue(book.searchedLocations);
+      if (book) {
+        if (book.searchedLocations) {
+          this.allChecked = this.config.checkMapForAllTrue(book.searchedLocations);
+        }
+        this.lastSeen = this.dateManipulation(book.lastSeen.toString());
+        this.creationDate = this.dateManipulation(book.createDate.toString());
       }
     });
   }
@@ -42,7 +48,7 @@ export class InventorySearchingComponent implements OnInit {
     const year = date.substring(0, 4);
     const month = date.substring(5, date.indexOf('-', 5));
     const day = date.substring(date.lastIndexOf('-') + 1);
-    return (`${month}/${day}/${year}`);
+    return `${month}/${day}/${year}`;
   }
 
   found() {
