@@ -446,7 +446,7 @@ var HomeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"card\">\n  <div class=\"card-body\">\n    <div class=\"md-col-4\" *ngIf=\"book\">\n      <div class=\"card-title text-center\">Title: {{book.title}}</div>\n      <div class=\"card-title text-center\">Call Number: {{book.callNumber}}</div>\n      <div *ngIf=\"book.location !== 'Brack Books-Stacks'\" class=\"card-title text-center\">Location: {{book.location}}</div>\n      <div *ngIf=\"book.status !== 'Not Charged'\" class=\"card-title text-center\">Status: {{book.status}}</div>\n      <div *ngIf=\"book.lastSeen !== 'Invalid Date'\" class=\"card-title text-center\">Last Seen: {{lastSeen}}</div>\n      <div *ngIf=\"book.tempLocation\" class=\"card-title text-center\">Temp Location: {{book.tempLocation}}</div>\n      <div class=\"card-title text-center\">Creation Date: {{creationDate}}</div>\n      <div>\n        <table>\n          <tr *ngFor=\"let name of names\">\n            <app-checkbox [name]=\"name\" [inventory]=\"true\"></app-checkbox>\n          </tr>\n        </table>\n        <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n        <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "<div class=\"card\">\n  <div class=\"card-body\">\n    <div class=\"md-col-4\" *ngIf=\"book\">\n      <div class=\"card-title text-center\">Title: {{book.title}}</div>\n      <div class=\"card-title text-center\">Call Number: {{book.callNumber}}</div>\n      <div *ngIf=\"book.location !== 'Brack Books-Stacks'\" class=\"card-title text-center\">Location: {{book.location}}</div>\n      <div *ngIf=\"book.status !== 'Not Charged'\" class=\"card-title text-center\">Status: {{book.status}}</div>\n      <div *ngIf=\"book.lastSeen !== 'Invalid Date'\" class=\"card-title text-center\">Last Seen: {{lastSeen}}</div>\n      <div *ngIf=\"book.tempLocation\" class=\"card-title text-center\">Temp Location: {{book.tempLocation}}</div>\n      <div class=\"card-title text-center\">Creation Date: {{creationDate}}</div>\n      <div *ngIf=\"book.barcode\" class=\"card-title text-center\">Barcode: {{book.barcode}}</div>\n      <div>\n        <table>\n          <tr *ngFor=\"let name of names\">\n            <app-checkbox [name]=\"name\" [inventory]=\"true\"></app-checkbox>\n          </tr>\n        </table>\n        <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n        <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n      </div>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -524,12 +524,10 @@ var InventorySearchingComponent = /** @class */ (function () {
             return date;
         }
         else {
-            console.log('start', date);
             var year = date.substring(0, 4);
             var month = date.substring(5, date.indexOf('-', 5));
             var day = date.substring(date.lastIndexOf('-') + 1);
             var result = month + "/" + day + "/" + year;
-            console.log(result);
             return result;
         }
     };

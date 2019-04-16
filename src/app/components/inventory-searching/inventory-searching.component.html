@@ -8,6 +8,7 @@
       <div *ngIf="book.lastSeen !== 'Invalid Date'" class="card-title text-center">Last Seen: {{lastSeen}}</div>
       <div *ngIf="book.tempLocation" class="card-title text-center">Temp Location: {{book.tempLocation}}</div>
       <div class="card-title text-center">Creation Date: {{creationDate}}</div>
+      <div *ngIf="book.barcode" class="card-title text-center">Barcode: {{book.barcode}}</div>
       <div>
         <table>
           <tr *ngFor="let name of names">

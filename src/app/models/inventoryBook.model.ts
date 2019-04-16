@@ -10,6 +10,7 @@ export interface InventoryBook {
     tempLocation: string;
     searchedLocations: Map<SearchLocation, boolean>;
     createDate: Date;
+    barcode: string;
 }
 
 export function generateMapInventory(book: InventoryBook) {
