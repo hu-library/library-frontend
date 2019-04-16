@@ -520,12 +520,17 @@ var InventorySearchingComponent = /** @class */ (function () {
         });
     };
     InventorySearchingComponent.prototype.dateManipulation = function (date) {
-        var year = date.substring(0, 4);
-        var month = date.substring(5, date.indexOf('-', 5));
-        var day = date.substring(date.lastIndexOf('-') + 1);
-        var result = month + "/" + day + "/" + year;
-        console.log(result);
-        return result;
+        if (date.match(/(\d){1,2}(\/|-)(\d){1,2}(\/|-)(\d){1,4}/)) {
+            return date;
+        }
+        else {
+            var year = date.substring(0, 4);
+            var month = date.substring(5, date.indexOf('-', 5));
+            var day = date.substring(date.lastIndexOf('-') + 1);
+            var result = month + "/" + day + "/" + year;
+            console.log(result);
+            return result;
+        }
     };
     InventorySearchingComponent.prototype.found = function () {
         this.http.foundInventoryBook(this.book, 'Found');

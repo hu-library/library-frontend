@@ -45,12 +45,16 @@ export class InventorySearchingComponent implements OnInit {
   }
 
   dateManipulation(date: string) {
-    const year = date.substring(0, 4);
-    const month = date.substring(5, date.indexOf('-', 5));
-    const day = date.substring(date.lastIndexOf('-') + 1);
-    const result = `${month}/${day}/${year}`;
-    console.log(result);
-    return result;
+    if (date.match(/(\d){1,2}(\/|-)(\d){1,2}(\/|-)(\d){1,4}/)) {
+      return date;
+    } else {
+      const year = date.substring(0, 4);
+      const month = date.substring(5, date.indexOf('-', 5));
+      const day = date.substring(date.lastIndexOf('-') + 1);
+      const result = `${month}/${day}/${year}`;
+      console.log(result);
+      return result;
+    }
   }
 
   found() {
