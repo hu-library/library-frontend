@@ -293,20 +293,34 @@ var CardComponent = /** @class */ (function () {
     CardComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.setUpCard();
-        this.inventoryBooks$.subscribe(function (books) { return _this.inventoryBooks = books; });
+        this.inventoryBooks$.subscribe(function (books) {
+            _this.inventoryBooks = books;
+            for (var _i = 0, _a = _this.inventoryBooks; _i < _a.length; _i++) {
+                var book = _a[_i];
+                book.callNumber = book.callNumber.replace(/-/g, ' ');
+            }
+        });
         if (this.className !== 'Inventory') {
-            this.books$.subscribe(function (books) { return _this.books = books; });
+            this.books$.subscribe(function (books) {
+                _this.books = books;
+                for (var _i = 0, _a = _this.books; _i < _a.length; _i++) {
+                    var book = _a[_i];
+                    book.callNumber = book.callNumber.replace(/-/g, ' ');
+                }
+            });
         }
     };
     CardComponent.prototype.redirect = function (book) {
         if (this.configService.isBook(book)) {
             this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["SelectBookAction"](book));
             // remove parentheses from url because it breaks routing
+            book.callNumber = book.callNumber.replace(/\s+/g, '-');
             book.urlID = book.urlID.replace(/(\(|\))/g, '');
             this.router.navigateByUrl('/' + book.urlID);
         }
         else {
             this.store.dispatch(new _store_actions__WEBPACK_IMPORTED_MODULE_4__["SelectInventoryBookAction"](book));
+            book.callNumber = book.callNumber.replace(/\s+/g, '-');
             this.router.navigateByUrl("/inventory/" + book.callNumber);
         }
     };
@@ -446,7 +460,7 @@ var HomeComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"card\">\n  <div class=\"card-body\">\n    <div class=\"md-col-4\" *ngIf=\"book\">\n      <div class=\"card-title text-center\">Title: {{book.title}}</div>\n      <div class=\"card-title text-center\">Call Number: {{book.callNumber}}</div>\n      <div *ngIf=\"book.location !== 'Brack Books-Stacks'\" class=\"card-title text-center\">Location: {{book.location}}</div>\n      <div *ngIf=\"book.status !== 'Not Charged'\" class=\"card-title text-center\">Status: {{book.status}}</div>\n      <div *ngIf=\"book.lastSeen !== 'Invalid Date'\" class=\"card-title text-center\">Last Seen: {{lastSeen}}</div>\n      <div *ngIf=\"book.tempLocation\" class=\"card-title text-center\">Temp Location: {{book.tempLocation}}</div>\n      <div class=\"card-title text-center\">Creation Date: {{creationDate}}</div>\n      <div *ngIf=\"book.barcode\" class=\"card-title text-center\">Barcode: {{book.barcode}}</div>\n      <div>\n        <table>\n          <tr *ngFor=\"let name of names\">\n            <app-checkbox [name]=\"name\" [inventory]=\"true\"></app-checkbox>\n          </tr>\n        </table>\n        <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n        <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "<div class=\"card\">\n  <div class=\"card-body\">\n    <div class=\"md-col-4\" *ngIf=\"book\">\n      <div class=\"card-title text-center\">Title: {{book.title}}</div>\n      <div class=\"card-title text-center\">Call Number: {{callNumber}}</div>\n      <div *ngIf=\"book.location !== 'Brack Books-Stacks'\" class=\"card-title text-center\">Location: {{book.location}}</div>\n      <div *ngIf=\"book.status !== 'Not Charged'\" class=\"card-title text-center\">Status: {{book.status}}</div>\n      <div *ngIf=\"book.lastSeen !== 'Invalid Date'\" class=\"card-title text-center\">Last Seen: {{lastSeen}}</div>\n      <div *ngIf=\"book.tempLocation\" class=\"card-title text-center\">Temp Location: {{book.tempLocation}}</div>\n      <div class=\"card-title text-center\">Creation Date: {{creationDate}}</div>\n      <div *ngIf=\"book.barcode\" class=\"card-title text-center\">Barcode: {{'0' + book.barcode}}</div>\n      <div>\n        <table>\n          <tr *ngFor=\"let name of names\">\n            <app-checkbox [name]=\"name\" [inventory]=\"true\"></app-checkbox>\n          </tr>\n        </table>\n        <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n        <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n      </div>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -516,6 +530,7 @@ var InventorySearchingComponent = /** @class */ (function () {
                 }
                 _this.lastSeen = _this.dateManipulation(book.lastSeen.toString());
                 _this.creationDate = _this.dateManipulation(book.createDate.toString());
+                _this.callNumber = _this.book.callNumber.replace(/-/g, ' ');
             }
         });
     };

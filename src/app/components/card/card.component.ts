@@ -37,18 +37,32 @@ export class CardComponent implements OnInit {
   ngOnInit() {
     this.setUpCard();
 
-    this.inventoryBooks$.subscribe(books => this.inventoryBooks = books);
-    if (this.className !== 'Inventory') { this.books$.subscribe(books => this.books = books); }
+    this.inventoryBooks$.subscribe(books => {
+      this.inventoryBooks = books;
+      for (const book of this.inventoryBooks) {
+        book.callNumber = book.callNumber.replace(/-/g, ' ');
+      }
+    });
+    if (this.className !== 'Inventory') {
+      this.books$.subscribe(books => {
+        this.books = books;
+        for (const book of this.books) {
+          book.callNumber = book.callNumber.replace(/-/g, ' ');
+        }
+      });
+    }
   }
 
   redirect(book: Book | InventoryBook) {
     if (this.configService.isBook(book)) {
       this.store.dispatch(new Actions.SelectBookAction(book));
       // remove parentheses from url because it breaks routing
+      book.callNumber = book.callNumber.replace(/\s+/g, '-');
       book.urlID = book.urlID.replace(/(\(|\))/g, '');
       this.router.navigateByUrl('/' + book.urlID);
     } else {
       this.store.dispatch(new Actions.SelectInventoryBookAction(book));
+      book.callNumber = book.callNumber.replace(/\s+/g, '-');
       this.router.navigateByUrl(`/inventory/${book.callNumber}`);
     }
   }

@@ -22,6 +22,7 @@ export class InventorySearchingComponent implements OnInit {
   private creationDate: string;
   private names = searchLocations;
   private allChecked: boolean;
+  private callNumber: string;
 
   constructor(private store: Store<fromRoot.State>, private router: Router,
     private config: ConfigService, private http: HttpService) {
@@ -40,6 +41,7 @@ export class InventorySearchingComponent implements OnInit {
         }
         this.lastSeen = this.dateManipulation(book.lastSeen.toString());
         this.creationDate = this.dateManipulation(book.createDate.toString());
+        this.callNumber = this.book.callNumber.replace(/-/g, ' ');
       }
     });
   }
