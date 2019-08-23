@@ -2,6 +2,7 @@
   <div class="card-title text-center">Status: {{book.searchStatus}}</div>
   <div class="card-title text-center">Search Count: {{book.searchCount}}</div>
   <div class="card-title text-center">Urgency: {{book.urgency}}</div>
+  <div class="card-title text-center">Creation Date: {{book.timestamp | date: 'MM/dd/yyyy hh:mm a'}}</div>
   <div>
     <table>
       <tr *ngFor="let name of names">
