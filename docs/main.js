@@ -1089,7 +1089,7 @@ var CheckboxComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"md-col-4\" *ngIf=\"book\">\n  <div class=\"card-title text-center\">Status: {{book.searchStatus}}</div>\n  <div class=\"card-title text-center\">Search Count: {{book.searchCount}}</div>\n  <div class=\"card-title text-center\">Urgency: {{book.urgency}}</div>\n  <div>\n    <table>\n      <tr *ngFor=\"let name of names\">\n        <app-checkbox [name]=\"name\" [inventory]=\"false\"></app-checkbox>\n      </tr>\n    </table>\n    <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n    <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n  </div>"
+module.exports = "<div class=\"md-col-4\" *ngIf=\"book\">\n  <div class=\"card-title text-center\">Status: {{book.searchStatus}}</div>\n  <div class=\"card-title text-center\">Search Count: {{book.searchCount}}</div>\n  <div class=\"card-title text-center\">Urgency: {{book.urgency}}</div>\n  <div class=\"card-title text-center\">Creation Date: {{book.timestamp | date: 'MM/dd/yyyy hh:mm a'}}</div>\n  <div>\n    <table>\n      <tr *ngFor=\"let name of names\">\n        <app-checkbox [name]=\"name\" [inventory]=\"false\"></app-checkbox>\n      </tr>\n    </table>\n    <button class=\"btn btn-large mb-1\" (click)=\"found()\">Found</button>\n    <button *ngIf=\"allChecked\" class=\"btn btn-large\" (click)=\"stopSearching()\">Stop Search</button>\n  </div>"
 
 /***/ }),
 
