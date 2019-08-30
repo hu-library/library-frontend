@@ -852,7 +852,7 @@ var ResolutionComponent = /** @class */ (function () {
     };
     ResolutionComponent.prototype.updateStatus = function () {
         var _this = this;
-        if (this.buttonValue && this.foundLocation) {
+        if (this.buttonValue) {
             if (this.buttonValue === 'Librarian decision') {
                 this.http.librarianDecision(this.book);
                 this.book.searchStatus = 'Stop searching';
@@ -862,11 +862,14 @@ var ResolutionComponent = /** @class */ (function () {
                 this.book.searchStatus = 'Delay searching';
             }
         }
-        else if (this.book.searchStatus === 'Found') {
+        else if (this.book.searchStatus === 'Found' && this.foundLocation) {
             this.http.setFoundLocation(this.book, this.foundLocation);
             this.http.updateStatus(this.book);
         }
         else {
+            console.log('button value', this.buttonValue);
+            console.log('found location', this.foundLocation);
+            console.log('book search status', this.book.searchStatus);
             this.buttonCSS += ' invalid-buttons';
             setTimeout(function () {
                 _this.buttonCSS = 'card-title buttons';
